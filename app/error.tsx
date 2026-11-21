@@ -44,6 +44,7 @@ export default function GlobalError({
           variant="outline"
           size="default"
           className="gap-2 text-xs font-semibold cursor-pointer"
+          nativeButton={false}
           render={<Link href="/" />}
         >
           <Home className="w-4 h-4" />

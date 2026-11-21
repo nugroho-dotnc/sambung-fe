@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -64,6 +65,7 @@ export default function TopBar() {
             variant="ghost"
             size="icon"
             className="w-10 h-10 rounded-full relative cursor-pointer"
+            nativeButton={false}
             render={<Link href="/notifikasi" aria-label="Notifikasi transaksi" />}
           >
             <Bell className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
@@ -89,13 +91,15 @@ export default function TopBar() {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl shadow-lg">
-              <DropdownMenuLabel className="font-normal p-2">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-xs font-bold leading-none text-foreground">{user?.name || "Pengguna"}</p>
-                  <p className="text-[11px] leading-none text-muted-foreground">{user?.phone || user?.email || "-"}</p>
-                  <div className="pt-1.5">{getRoleBadge(user?.role)}</div>
-                </div>
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="font-normal p-2">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-xs font-bold leading-none text-foreground">{user?.name || "Pengguna"}</p>
+                    <p className="text-[11px] leading-none text-muted-foreground">{user?.phone || user?.email || "-"}</p>
+                    <div className="pt-1.5">{getRoleBadge(user?.role)}</div>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
