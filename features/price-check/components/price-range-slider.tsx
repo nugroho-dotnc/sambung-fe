@@ -93,11 +93,11 @@ export function PriceRangeSlider({
               <input
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]*"
                 disabled={disabled}
                 value={value ? value.toLocaleString("id-ID") : ""}
                 onChange={handleInputChange}
                 placeholder="0"
+                aria-label="Ketik langsung nominal harga per kg"
                 className="w-36 h-10 rounded-xl border border-input bg-background pl-9 pr-3 text-right text-base font-bold font-mono tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
               />
             </div>
