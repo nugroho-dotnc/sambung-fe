@@ -148,8 +148,8 @@ export default function DigitalContractProofPage({
         </div>
 
         {/* Commodity and Agreed Value */}
-        <div className="rounded-xl border border-border/80 overflow-hidden text-xs">
-          <table className="w-full text-left">
+        <div className="rounded-xl border border-border/80 overflow-x-auto text-xs">
+          <table className="w-full min-w-[500px] text-left">
             <thead className="bg-muted/60 border-b border-border/80 text-xs font-semibold text-muted-foreground">
               <tr>
                 <th className="p-3.5">Komoditas Gabah</th>
@@ -204,8 +204,8 @@ export default function DigitalContractProofPage({
         </div>
 
         {/* Digital Signatures and QR Code Mockup */}
-        <div className="pt-6 border-t border-border/60 grid grid-cols-3 gap-6 items-end text-center text-xs">
-          <div className="space-y-12">
+        <div className="pt-6 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-6 items-end text-center text-xs">
+          <div className="space-y-6 sm:space-y-12 order-1 sm:order-none">
             <span className="text-muted-foreground text-xs">Pihak Pertama</span>
             <div className="border-t border-foreground/30 pt-1">
               <p className="font-bold">{contract.farmerName}</p>
@@ -213,7 +213,7 @@ export default function DigitalContractProofPage({
             </div>
           </div>
 
-          <div className="space-y-2 flex flex-col items-center">
+          <div className="space-y-2 flex flex-col items-center order-3 sm:order-none pt-2 sm:pt-0">
             <div className="w-16 h-16 rounded-xl border border-border/80 bg-muted/40 flex items-center justify-center text-muted-foreground">
               <QrCode className="w-10 h-10 text-foreground/80" />
             </div>
@@ -222,7 +222,7 @@ export default function DigitalContractProofPage({
             </span>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-6 sm:space-y-12 order-2 sm:order-none">
             <span className="text-muted-foreground text-xs">Pihak Kedua</span>
             <div className="border-t border-foreground/30 pt-1">
               <p className="font-bold">{contract.buyerName}</p>

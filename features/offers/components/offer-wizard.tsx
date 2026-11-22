@@ -260,15 +260,15 @@ export function OfferWizard({
       </div>
 
       {/* Stepper Wizard Bar */}
-      <nav aria-label="Tahapan Formulir" className="grid grid-cols-3 gap-2 sm:gap-4">
+      <nav aria-label="Tahapan Formulir" className="grid grid-cols-3 gap-1.5 sm:gap-4">
         {[
-          { num: 1, label: "Detail Panen & Harga" },
-          { num: 2, label: "Tinjau Rincian" },
-          { num: 3, label: "Penerbitan Selesai" },
+          { num: 1, label: isMobile ? "Detail" : "Detail Panen & Harga" },
+          { num: 2, label: isMobile ? "Tinjau" : "Tinjau Rincian" },
+          { num: 3, label: isMobile ? "Selesai" : "Penerbitan Selesai" },
         ].map((item) => (
           <div
             key={item.num}
-            className={`flex items-center gap-2.5 rounded-xl border p-3 text-xs font-medium transition ${
+            className={`flex items-center gap-1.5 sm:gap-2.5 rounded-xl border p-2 sm:p-3 text-xs font-medium transition ${
               step === item.num
                 ? "border-emerald-500 bg-emerald-50/80 text-emerald-950 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-700 shadow-xs"
                 : step > item.num

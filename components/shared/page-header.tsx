@@ -28,7 +28,7 @@ export function PageHeader({
       )}
     >
       <div className="space-y-1">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             {title}
           </h1>
@@ -42,7 +42,7 @@ export function PageHeader({
       </div>
 
       {actions && (
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
           {actions}
         </div>
       )}
