@@ -19,6 +19,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -187,16 +194,35 @@ export default function PriceBoardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: Dari Petani ke Pembeli */}
         <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
-          <div className="border-b border-border/60 pb-3.5">
-            <span className="text-xs font-semibold text-primary">
-              Rantai Pasok Gabah & Beras
-            </span>
-            <h2 className="type-subheading text-foreground font-bold mt-0.5">
-              Pembentukan Harga dari Petani ke Konsumen
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Harga per kilogram ekuivalen beras medium di wilayah {region}.
-            </p>
+          <div className="border-b border-border/60 pb-3.5 flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs font-semibold text-primary">
+                Rantai Pasok Gabah & Beras
+              </span>
+              <h2 className="type-subheading text-foreground font-bold mt-0.5">
+                Pembentukan Harga dari Petani ke Konsumen
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Harga per kilogram ekuivalen beras medium di wilayah {region}.
+              </p>
+            </div>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                aria-label="Penjelasan Tahapan Rantai Pasok"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Tahapan Rantai Pasok
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
+                  Menampilkan runutan pembentukan harga dari petani di sawah, pengeringan dan penggilingan pabrik, distribusi logistik pedagang grosir, hingga tiba di pasar eceran konsumen.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="overflow-x-auto rounded-lg border border-border/70">
@@ -242,26 +268,47 @@ export default function PriceBoardPage() {
 
         {/* Right Column: Indikator Farmer's Share */}
         <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
-          <div className="border-b border-border/60 pb-3.5">
-            <span className="text-xs font-semibold text-primary">
-              Keadilan Distribusi
-            </span>
-            <h2 className="type-subheading text-foreground font-bold mt-0.5">
-              Porsi Nilai untuk Petani
-            </h2>
+          <div className="border-b border-border/60 pb-3.5 flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs font-semibold text-primary">
+                Keadilan Distribusi
+              </span>
+              <h2 className="type-subheading text-foreground font-bold mt-0.5">
+                Porsi Nilai untuk Petani
+              </h2>
+            </div>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                aria-label="Penjelasan Porsi Nilai & Marjin"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2.5 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Porsi Nilai & Marjin Rantai Pasok
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
+                  <p>
+                    Selisih nilai sebesar {formatRupiah(comparison.marginAmount)}/kg mencakup biaya pengeringan padi, penggilingan, susut mutu alami, transportasi antarkabupaten, dan kemasan ritel.
+                  </p>
+                  <p className="pt-1.5 border-t border-border/50 text-[11px]">
+                    Persentase bagian petani dihitung dari perbandingan harga gabah di sawah terhadap harga beras di pasar eceran: (Harga Petani ÷ Harga Konsumen) × 100%.
+                  </p>
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Farmer's Share Percentage Box */}
-          <div className="p-4.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-md bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-              <Percent className="w-5 h-5" />
-            </div>
+          <div className="space-y-1.5 p-4.5 rounded-lg flex bg-muted/30 border border-border/50 items-center gap-4">
             <div>
-              <p className="text-xs font-medium text-muted-foreground">
-                Bagian Petani (Farmer&apos;s Share)
-              </p>
               <p className="text-2xl sm:text-3xl font-extrabold font-display tabular-nums text-emerald-700 dark:text-emerald-400">
                 {comparison.farmerSharePercent}%
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Bagian Petani (Farmer&apos;s Share)
               </p>
             </div>
           </div>
@@ -279,16 +326,6 @@ export default function PriceBoardPage() {
               +{comparison.marginPercent}% marjin kumulatif rantai pasok
             </p>
           </div>
-
-          <div className="pt-2 border-t border-border/60 space-y-2 text-xs text-muted-foreground leading-relaxed">
-            <p>
-              Selisih nilai sebesar {formatRupiah(comparison.marginAmount)}/kg mencakup biaya pengeringan padi, penggilingan, susut mutu alami, transportasi antarkabupaten, dan kemasan ritel.
-            </p>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground" title="Formula rasio: (Harga Petani ÷ Harga Konsumen) × 100%">
-              <Info className="w-3.5 h-3.5 text-primary shrink-0" />
-              <span>Persentase dihitung dari perbandingan harga gabah di sawah terhadap harga beras di pasar eceran.</span>
-            </div>
-          </div>
         </Card>
       </div>
 
@@ -303,16 +340,35 @@ export default function PriceBoardPage() {
               Transmisi pergerakan harga dari tingkat petani, penggilingan padi, hingga pasar konsumen di {region}.
             </p>
           </div>
-          <span className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground tabular-nums self-start sm:self-auto font-semibold">
-            Satuan: Rp/kg
-          </span>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground tabular-nums font-semibold">
+              Satuan: Rp/kg
+            </span>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
+                aria-label="Penjelasan Tren Rantai Pasok"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Tentang Data Historis
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
+                  Grafik ini memantau transmisi pergerakan harga dari tingkat petani, penggilingan padi, hingga pasar konsumen di {region} dalam rentang waktu yang dipilih.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         <PriceChainChart data={trends} />
       </Card>
 
       {/* Jembatan Aksi: Hubungkan Rantai Pasok ke Simulasi & Jual */}
-      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
+      {/* <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
@@ -348,7 +404,7 @@ export default function PriceBoardPage() {
             />
           </div>
         </div>
-      </Card>
+      </Card> */}
     </PageContainer>
   );
 }

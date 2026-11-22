@@ -15,6 +15,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
 import { SEED_FORECASTS, ForecastRecord } from "@/features/forecast/domain/forecast-data";
@@ -83,8 +90,8 @@ export default function ForecastPage() {
       {/* Main Grid: Forecast Metric & Chart vs SHAP Factors */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: AI Prediction & Interactive Chart */}
-        <div className="lg:col-span-7 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
+        <div className="lg:col-span-7">
+          <Card className="p-6 sm:p-7 rounded-2xl bg-card">
             <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3.5">
               <div>
                 <span className="text-xs font-semibold text-primary">
@@ -94,9 +101,28 @@ export default function ForecastPage() {
                   Estimasi Nilai Beras Produsen
                 </h2>
               </div>
-              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                {activeForecast.method}
-              </span>
+              <Popover>
+                <PopoverTrigger
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                  aria-label="Penjelasan Proyeksi Nilai Beras"
+                >
+                  <Info className="w-4 h-4" />
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                  <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                    Tentang Proyeksi Nilai Beras
+                  </PopoverTitle>
+                  <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
+                    <p>
+                      Proyeksi dihitung menggunakan model ensemble machine learning berbasis tren musiman, data historis Bapanas & BPS, serta anomali iklim BMKG.
+                    </p>
+                    <p className="pt-1.5 border-t border-border/50 text-[11px]">
+                      Rentang keyakinan 80% menunjukkan batas wajar kemungkinan deviasi harga di pasar produsen.
+                    </p>
+                  </PopoverDescription>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* Main Predicted Number with Confidence Interval */}
@@ -167,8 +193,8 @@ export default function ForecastPage() {
         </div>
 
         {/* Right Column: Explainable AI Factors (SHAP) */}
-        <div className="lg:col-span-5 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-4 rounded-2xl bg-card">
+        <div className="lg:col-span-5">
+          <Card className="p-6 sm:p-7 rounded-2xl bg-card">
             <div className="border-b border-border/60 pb-3.5 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
@@ -179,6 +205,28 @@ export default function ForecastPage() {
                   Faktor Pembentuk Harga
                 </h3>
               </div>
+              <Popover>
+                <PopoverTrigger
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                  aria-label="Penjelasan Faktor SHAP"
+                >
+                  <Info className="w-4 h-4" />
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                  <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                    Catatan Pemodelan Pasar
+                  </PopoverTitle>
+                  <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
+                    <p>
+                      Analisis SHAP menguraikan variabel iklim, biaya logistik, dan pasokan yang berkontribusi menaikkan (+) atau menahan (-) harga pasar.
+                    </p>
+                    <p className="pt-1.5 border-t border-border/50 text-[11px]">
+                      Prediksi diperbarui berkala menggunakan model terlatih dengan data historis BMKG, BPS, dan Bapanas untuk perencanaan panen.
+                    </p>
+                  </PopoverDescription>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -186,18 +234,11 @@ export default function ForecastPage() {
             </p>
 
             <ShapWaterfall factors={activeForecast.shapContributions} />
-
-            <div className="rounded-lg bg-muted/20 p-3.5 border border-border/40 text-xs text-muted-foreground space-y-1 leading-relaxed">
-              <p className="font-semibold text-foreground">Catatan Pemodelan:</p>
-              <p>
-                Prediksi dihitung berkala menggunakan model machine learning terlatih dengan data historis BMKG, BPS, dan Bapanas untuk membantu perencanaan waktu tanam dan panen.
-              </p>
-            </div>
           </Card>
         </div>
       </div>
 
-      {/* Jembatan Aksi: Hubungkan Prakiraan ke Rencana Transaksi */}
+      {/* Jembatan Aksi: Hubungkan Prakiraan ke Rencana Transaksi
       <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
@@ -234,7 +275,7 @@ export default function ForecastPage() {
             />
           </div>
         </div>
-      </Card>
+      </Card> */}
     </PageContainer>
   );
 }

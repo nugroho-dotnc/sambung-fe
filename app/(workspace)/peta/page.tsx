@@ -14,6 +14,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,6 +37,7 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
+  Info,
 } from "lucide-react";
 
 const COMMODITY_OPTIONS = [
@@ -257,9 +265,28 @@ export default function PetaDisparitasPage() {
               Data terintegrasi dari pusat agregasi pasar gabah SAMBUNG dan survei pengamatan harga daerah.
             </p>
           </div>
-          <Badge variant="outline" className="text-xs font-semibold self-start sm:self-auto px-3 py-1 bg-muted/40">
-            {selectedCoverage}
-          </Badge>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <Badge variant="outline" className="text-xs font-semibold px-3 py-1 bg-muted/40">
+              {selectedCoverage}
+            </Badge>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
+                aria-label="Penjelasan Sumber Data Peta"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Metodologi Sebaran Wilayah
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
+                  Menampilkan sebaran disparitas harga antarwilayah dari titik pengamatan pasar daerah dan pusat agregasi SAMBUNG terhadap median nasional untuk mendeteksi sentra surplus dan defisit.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         {viewMode === "map" ? (
@@ -354,6 +381,28 @@ export default function PetaDisparitasPage() {
               Konteks Harga & Analisis Penentu Disparitas di {activeProvinceItem.province}
             </h3>
           </div>
+          <Popover>
+            <PopoverTrigger
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+              aria-label="Penjelasan Faktor Penjelas Disparitas"
+            >
+              <Info className="w-4 h-4" />
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+              <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                Faktor Penjelas Disparitas
+              </PopoverTitle>
+              <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
+                <p>
+                  Faktor penjelas dihitung untuk memetakan dinamika pasar dan mempermudah perencanaan pasokan lokal, bukan sebagai dasar klaim legal.
+                </p>
+                <p className="pt-1.5 border-t border-border/50 text-[11px]">
+                  Variabel mencakup estimasi jarak logistik antarpulau, iklim penjemuran gabah, dan volume surplus lokal.
+                </p>
+              </PopoverDescription>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -417,14 +466,6 @@ export default function PetaDisparitasPage() {
                   </tr>
                 </tbody>
               </table>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
-              <span>
-                Faktor penjelas dihitung untuk memetakan dinamika pasar dan mempermudah
-                perencanaan pasokan, bukan dasar klaim legal.
-              </span>
             </div>
           </div>
 
@@ -492,15 +533,6 @@ export default function PetaDisparitasPage() {
                 <span>Jual Gabah di Wilayah Ini</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
-              <div className="pt-1 flex items-center justify-between text-xs text-muted-foreground border-t border-border/60">
-                <Link href="/harga-wajar" className="hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                  <Scale className="w-3 h-3" />
-                  Kalkulator Harga Wajar
-                </Link>
-                <Link href="/prakiraan" className="hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                  Prakiraan AI →
-                </Link>
-              </div>
             </div>
           </div>
         </div>

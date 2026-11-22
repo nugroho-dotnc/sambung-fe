@@ -15,6 +15,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -69,9 +76,28 @@ export function FairPriceSimulator() {
               Ubah nilai di bawah untuk mensimulasikan bagaimana mutu gabah dan harga beras memengaruhi batas harga wajar.
             </p>
           </div>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
-            Formula Transparan
-          </span>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+              Formula Transparan
+            </span>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
+                aria-label="Penjelasan Parameter Mutu"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Parameter Mutu Gabah
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
+                  Kadar air dan jenis gabah (GKP/GKG) menentukan susut bobot saat pengeringan serta rendemen giling beras, memengaruhi harga bersih yang diterima petani.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -164,19 +190,38 @@ export function FairPriceSimulator() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Fair Price Range Display */}
         <Card className="lg:col-span-7 p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
-          <div>
-            <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 block">
-              Rentang Harga Wajar Rekomendasi
-            </span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-3xl sm:text-4xl font-extrabold font-display tabular-nums text-emerald-700 dark:text-emerald-400">
-                Rp{result.lowerBound.toLocaleString("id-ID")} – Rp{result.upperBound.toLocaleString("id-ID")}
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 block">
+                Rentang Harga Wajar Rekomendasi
+              </span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <p className="text-3xl sm:text-4xl font-extrabold font-display tabular-nums text-emerald-700 dark:text-emerald-400">
+                  Rp{result.lowerBound.toLocaleString("id-ID")} – Rp{result.upperBound.toLocaleString("id-ID")}
+                </p>
+                <span className="text-sm font-normal text-muted-foreground font-sans">/ kg</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Rentang harga adil untuk gabah {result.grainType} di {result.region} dengan kadar air {result.moisturePercent}%.
               </p>
-              <span className="text-sm font-normal text-muted-foreground font-sans">/ kg</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-              Rentang harga adil untuk gabah {result.grainType} di {result.region} dengan kadar air {result.moisturePercent}%.
-            </p>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                aria-label="Penjelasan Rentang Wajar"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Rentang Harga Wajar
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
+                  Rentang rekomendasi dihitung agar petani memperoleh harga yang menutup biaya produksi dan margin wajar, sekaligus menjamin harga gabah tetap ekonomis bagi penggilingan.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Interactive Preview Slider */}
@@ -209,13 +254,37 @@ export function FairPriceSimulator() {
 
         {/* Right Column: Mathematical Step-by-Step Breakdown */}
         <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
-          <div className="border-b border-border/60 pb-3">
-            <span className="text-xs font-semibold text-primary">
-              Rincian Perhitungan Transparan
-            </span>
-            <h3 className="type-subheading text-foreground font-bold mt-0.5">
-              Bagaimana Nilai Ini Terbentuk?
-            </h3>
+          <div className="border-b border-border/60 pb-3 flex items-start justify-between gap-3">
+            <div>
+              <span className="text-xs font-semibold text-primary">
+                Rincian Perhitungan Transparan
+              </span>
+              <h3 className="type-subheading text-foreground font-bold mt-0.5">
+                Bagaimana Nilai Ini Terbentuk?
+              </h3>
+            </div>
+            <Popover>
+              <PopoverTrigger
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
+                aria-label="Penjelasan Rincian Perhitungan"
+              >
+                <Info className="w-4 h-4" />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
+                <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5 text-primary shrink-0" />
+                  Rincian Konversi Nilai
+                </PopoverTitle>
+                <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
+                  <p>
+                    Dengan rendemen konversi {Math.round(result.rendemen * 100)}%, setiap 1 kg gabah menghasilkan sekitar {result.rendemen.toFixed(2)} kg beras.
+                  </p>
+                  <p className="pt-1.5 border-t border-border/50 text-[11px]">
+                    Formula memperhitungkan potongan susut kadar air dan margin giling pabrik agar kedua belah pihak terlindungi secara adil.
+                  </p>
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-3 text-xs">
@@ -253,16 +322,10 @@ export function FairPriceSimulator() {
               </span>
             </div>
           </div>
-
-          <div className="rounded-lg bg-muted/20 p-3.5 text-xs text-muted-foreground leading-relaxed border border-border/40">
-            <p>
-              Dengan rendemen konversi {Math.round(result.rendemen * 100)}%, setiap 1 kg gabah menghasilkan sekitar {result.rendemen.toFixed(2)} kg beras. Formula ini menjamin keuntungan petani terlindungi tanpa memberatkan biaya pengolahan penggilingan.
-            </p>
-          </div>
         </Card>
       </div>
 
-      {/* Jembatan Aksi: Hubungkan Simulasi ke Transaksi Nyata */}
+      {/* Jembatan Aksi: Hubungkan Simulasi ke Transaksi Nyata
       <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
@@ -299,7 +362,7 @@ export function FairPriceSimulator() {
             />
           </div>
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 }
