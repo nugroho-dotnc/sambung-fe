@@ -198,7 +198,6 @@ export default function ForecastPage() {
             <div className="border-b border-border/60 pb-3.5 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                  <Cpu className="w-3.5 h-3.5" />
                   <span>Transparansi AI Pasar</span>
                 </div>
                 <h3 className="type-subheading text-foreground font-bold mt-0.5">

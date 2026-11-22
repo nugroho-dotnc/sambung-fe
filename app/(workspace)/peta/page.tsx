@@ -309,8 +309,7 @@ export default function PetaDisparitasPage() {
         <div className="pt-4 border-t border-border/80 grid grid-cols-1 sm:grid-cols-3 gap-5">
           <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
-              <TrendingDown className="w-4 h-4" />
-              <p className="text-xs font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold  tracking-wider">
                 Harga Terendah (Sentra Surplus)
               </p>
             </div>
@@ -328,8 +327,7 @@ export default function PetaDisparitasPage() {
 
           <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
-              <TrendingUp className="w-4 h-4" />
-              <p className="text-xs font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold tracking-wider">
                 Harga Tertinggi (Wilayah Konsumen)
               </p>
             </div>
@@ -347,8 +345,7 @@ export default function PetaDisparitasPage() {
 
           <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-foreground">
-              <Scale className="w-4 h-4 text-primary" />
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-bold tracking-wider text-muted-foreground">
                 Rentang Disparitas Nasional
               </p>
             </div>
@@ -410,7 +407,6 @@ export default function PetaDisparitasPage() {
           <div className="lg:col-span-8 space-y-4">
             <div>
               <h4 className="font-bold text-sm text-foreground flex items-center gap-2 font-display">
-                <Sparkles className="w-4 h-4 text-primary" />
                 <span>Faktor Penjelas Deviasi Harga Regional</span>
               </h4>
               <p className="text-xs text-muted-foreground mt-0.5">
