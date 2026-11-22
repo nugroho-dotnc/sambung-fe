@@ -59,7 +59,7 @@ export function FairPriceSimulator() {
   return (
     <div className="space-y-6">
       {/* Control Card */}
-      <Card className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all space-y-5">
+      <Card className="p-6 rounded-2xl bg-card space-y-5">
         <div className="border-b border-border/60 pb-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="type-subheading text-foreground font-bold">
@@ -89,7 +89,7 @@ export function FairPriceSimulator() {
                 }
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectTrigger className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
                 <SelectValue placeholder="Pilih jenis gabah" />
               </SelectTrigger>
               <SelectContent>
@@ -113,7 +113,7 @@ export function FairPriceSimulator() {
                 if (val) setRegion(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectTrigger className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
                 <SelectValue placeholder="Pilih wilayah" />
               </SelectTrigger>
               <SelectContent>
@@ -136,7 +136,7 @@ export function FairPriceSimulator() {
               onChange={(e) => setRicePrice(Number(e.target.value))}
               step={100}
               min={8000}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs tabular-nums font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs transition-colors"
+              className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs tabular-nums font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs transition-colors"
             />
           </div>
 
@@ -163,7 +163,7 @@ export function FairPriceSimulator() {
       {/* Result Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Fair Price Range Display */}
-        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
           <div>
             <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 block">
               Rentang Harga Wajar Rekomendasi
@@ -194,7 +194,7 @@ export function FairPriceSimulator() {
           </div>
 
           {/* Government HPP Floor Reference */}
-          <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex items-center justify-between text-xs">
+          <div className="p-4 rounded-lg bg-muted/30 border border-border/50 flex items-center justify-between text-xs">
             <div>
               <span className="text-muted-foreground block text-xs">Batas Pengaman HPP Pemerintah</span>
               <span className="font-bold text-foreground">
@@ -208,7 +208,7 @@ export function FairPriceSimulator() {
         </Card>
 
         {/* Right Column: Mathematical Step-by-Step Breakdown */}
-        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
           <div className="border-b border-border/60 pb-3">
             <span className="text-xs font-semibold text-primary">
               Rincian Perhitungan Transparan
@@ -254,7 +254,7 @@ export function FairPriceSimulator() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-muted/20 p-3.5 text-xs text-muted-foreground leading-relaxed border border-border/40">
+          <div className="rounded-lg bg-muted/20 p-3.5 text-xs text-muted-foreground leading-relaxed border border-border/40">
             <p>
               Dengan rendemen konversi {Math.round(result.rendemen * 100)}%, setiap 1 kg gabah menghasilkan sekitar {result.rendemen.toFixed(2)} kg beras. Formula ini menjamin keuntungan petani terlindungi tanpa memberatkan biaya pengolahan penggilingan.
             </p>
@@ -263,7 +263,7 @@ export function FairPriceSimulator() {
       </div>
 
       {/* Jembatan Aksi: Hubungkan Simulasi ke Transaksi Nyata */}
-      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/30 shadow-xs">
+      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
@@ -279,7 +279,7 @@ export function FairPriceSimulator() {
           </div>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
             <Button
-              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial"
+              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href={`/petani/jual?grainType=${result.grainType}&askPrice=${result.medianPrice}&quality=${result.moisturePercent}`}>
                   Jual Gabah dengan Harga Ini
@@ -289,7 +289,7 @@ export function FairPriceSimulator() {
             />
             <Button
               variant="outline"
-              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial"
+              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/pembeli/katalog">
                   <ShoppingBag className="w-3.5 h-3.5 text-muted-foreground" />

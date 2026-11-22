@@ -168,7 +168,7 @@ export default function PetaDisparitasPage() {
       </div>
 
       {/* Filter Bar */}
-      <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs hover:shadow-sm transition-all mb-6">
+      <Card className="p-4 sm:p-5 bg-card rounded-2xl mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground block">
@@ -181,7 +181,7 @@ export default function PetaDisparitasPage() {
                 if (val) setSelectedCommodity(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectTrigger className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
                 <SelectValue placeholder="Pilih komoditas" />
               </SelectTrigger>
               <SelectContent>
@@ -205,7 +205,7 @@ export default function PetaDisparitasPage() {
                 if (val) setSelectedCoverage(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectTrigger className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
                 <SelectValue placeholder="Pilih cakupan" />
               </SelectTrigger>
               <SelectContent>
@@ -229,7 +229,7 @@ export default function PetaDisparitasPage() {
                 if (val) setSelectedTime(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectTrigger className="w-full h-11 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
                 <SelectValue placeholder="Pilih snapshot" />
               </SelectTrigger>
               <SelectContent>
@@ -245,7 +245,7 @@ export default function PetaDisparitasPage() {
       </Card>
 
       {/* Main Map or Table Container */}
-      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all mb-8">
+      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl bg-card mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60">
           <div>
             <h2 className="type-subheading font-bold text-foreground">
@@ -280,7 +280,7 @@ export default function PetaDisparitasPage() {
 
         {/* 3 Summary Metrics */}
         <div className="pt-4 border-t border-border/80 grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
+          <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
               <TrendingDown className="w-4 h-4" />
               <p className="text-xs font-bold uppercase tracking-wider">
@@ -299,7 +299,7 @@ export default function PetaDisparitasPage() {
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
+          <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
               <TrendingUp className="w-4 h-4" />
               <p className="text-xs font-bold uppercase tracking-wider">
@@ -318,7 +318,7 @@ export default function PetaDisparitasPage() {
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
+          <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-foreground">
               <Scale className="w-4 h-4 text-primary" />
               <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -339,7 +339,7 @@ export default function PetaDisparitasPage() {
       </Card>
 
       {/* Selected Province Context & Factors */}
-      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs">
+      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/80">
           <div>
             <div className="flex items-center gap-2">
@@ -370,7 +370,7 @@ export default function PetaDisparitasPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto border border-border/80 rounded-xl bg-background">
+            <div className="overflow-x-auto border border-border/80 rounded-lg bg-background">
               <table className="w-full text-left text-xs">
                 <thead className="bg-muted/60">
                   <tr className="border-b border-border/80 text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -429,7 +429,7 @@ export default function PetaDisparitasPage() {
           </div>
 
           {/* Sidebar Summary Card */}
-          <div className="lg:col-span-4 space-y-4 p-5 rounded-2xl bg-card border border-border/70 shadow-xs">
+          <div className="lg:col-span-4 space-y-4 p-5 rounded-lg bg-card border border-border/70 shadow-xs">
             <div>
               <span className="text-xs font-semibold text-primary block">
                 Ringkasan Wilayah
@@ -477,7 +477,7 @@ export default function PetaDisparitasPage() {
             <div className="pt-2 space-y-2">
               <Button
                 size="sm"
-                className="w-full text-xs font-bold justify-between cursor-pointer"
+                className="w-full text-xs font-bold justify-between cursor-pointer rounded-lg"
                 render={<Link href="/pembeli/katalog" />}
               >
                 <span>Cari Pasokan di {activeProvinceItem.province}</span>
@@ -486,7 +486,7 @@ export default function PetaDisparitasPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full text-xs font-semibold justify-between cursor-pointer"
+                className="w-full text-xs font-semibold justify-between cursor-pointer rounded-lg"
                 render={<Link href="/petani/jual" />}
               >
                 <span>Jual Gabah di Wilayah Ini</span>

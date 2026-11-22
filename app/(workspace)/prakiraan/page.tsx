@@ -39,12 +39,12 @@ export default function ForecastPage() {
         title="Prakiraan Tren Harga & Analisis Pasar AI"
         description="Proyeksi harga beras produsen dan estimasi turunan gabah untuk 2 hingga 4 pekan ke depan, dilengkapi transparansi faktor pendorong pasar."
         actions={
-          <div className="flex items-center bg-muted/80 p-1 rounded-xl border border-border/80 shadow-2xs">
+          <div className="flex items-center bg-muted/80 p-1 rounded-lg border border-border/80 shadow-2xs">
             <Button
               variant={horizon === 2 ? "default" : "ghost"}
               size="sm"
               onClick={() => setHorizon(2)}
-              className="px-3 text-xs font-semibold gap-1.5"
+              className="px-3 text-xs font-semibold gap-1.5 rounded-md"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Horizon 2 Pekan</span>
@@ -53,7 +53,7 @@ export default function ForecastPage() {
               variant={horizon === 4 ? "default" : "ghost"}
               size="sm"
               onClick={() => setHorizon(4)}
-              className="px-3 text-xs font-semibold gap-1.5"
+              className="px-3 text-xs font-semibold gap-1.5 rounded-md"
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Horizon 4 Pekan</span>
@@ -73,7 +73,7 @@ export default function ForecastPage() {
             size="sm"
             variant={province === prov ? "default" : "outline"}
             onClick={() => setProvince(prov)}
-            className="min-h-8 text-xs font-semibold rounded-xl"
+            className="min-h-8 text-xs font-semibold rounded-lg"
           >
             {prov}
           </Button>
@@ -84,7 +84,7 @@ export default function ForecastPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: AI Prediction & Interactive Chart */}
         <div className="lg:col-span-7 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+          <Card className="p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
             <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3.5">
               <div>
                 <span className="text-xs font-semibold text-primary">
@@ -100,7 +100,7 @@ export default function ForecastPage() {
             </div>
 
             {/* Main Predicted Number with Confidence Interval */}
-            <div className="p-5 rounded-2xl bg-muted/30 border border-border/50 space-y-3">
+            <div className="p-5 rounded-lg bg-muted/30 border border-border/50 space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground font-medium">Prediksi Rata-rata</span>
                 <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
@@ -115,7 +115,7 @@ export default function ForecastPage() {
                     / kg beras
                   </span>
                 </p>
-                <span className="text-xs font-bold text-foreground bg-background px-3 py-1.5 rounded-lg border border-border/70 tabular-nums shadow-2xs">
+                <span className="text-xs font-bold text-foreground bg-background px-3 py-1.5 rounded-md border border-border/70 tabular-nums shadow-2xs">
                   {formatRupiah(activeForecast.confidenceInterval80[0])} – {formatRupiah(activeForecast.confidenceInterval80[1])}
                 </span>
               </div>
@@ -123,7 +123,7 @@ export default function ForecastPage() {
 
             {/* Derived Grain Estimates (GKP & GKG) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div className="p-4.5 rounded-xl border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
+              <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-foreground">Estimasi Turunan GKP</span>
                   <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
@@ -139,7 +139,7 @@ export default function ForecastPage() {
                 </p>
               </div>
 
-              <div className="p-4.5 rounded-xl border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
+              <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-foreground">Estimasi Turunan GKG</span>
                   <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
@@ -168,7 +168,7 @@ export default function ForecastPage() {
 
         {/* Right Column: Explainable AI Factors (SHAP) */}
         <div className="lg:col-span-5 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+          <Card className="p-6 sm:p-7 space-y-4 rounded-2xl bg-card">
             <div className="border-b border-border/60 pb-3.5 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
@@ -187,7 +187,7 @@ export default function ForecastPage() {
 
             <ShapWaterfall factors={activeForecast.shapContributions} />
 
-            <div className="rounded-xl bg-muted/20 p-3.5 border border-border/40 text-xs text-muted-foreground space-y-1 leading-relaxed">
+            <div className="rounded-lg bg-muted/20 p-3.5 border border-border/40 text-xs text-muted-foreground space-y-1 leading-relaxed">
               <p className="font-semibold text-foreground">Catatan Pemodelan:</p>
               <p>
                 Prediksi dihitung berkala menggunakan model machine learning terlatih dengan data historis BMKG, BPS, dan Bapanas untuk membantu perencanaan waktu tanam dan panen.
@@ -198,7 +198,7 @@ export default function ForecastPage() {
       </div>
 
       {/* Jembatan Aksi: Hubungkan Prakiraan ke Rencana Transaksi */}
-      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/30 shadow-xs mb-8">
+      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
@@ -214,7 +214,7 @@ export default function ForecastPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
             <Button
-              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial"
+              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/petani/jual">
                   Daftarkan Rencana Panen
@@ -224,7 +224,7 @@ export default function ForecastPage() {
             />
             <Button
               variant="outline"
-              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial"
+              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/pembeli/katalog">
                   <ShoppingBag className="w-3.5 h-3.5 text-muted-foreground" />

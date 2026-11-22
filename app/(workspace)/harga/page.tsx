@@ -107,7 +107,7 @@ export default function PriceBoardPage() {
       />
 
       {/* Filter Bar (3 Columns) */}
-      <Card className="p-4 sm:p-5 bg-card rounded-2xl transition-all mb-8">
+      <Card className="p-4 sm:p-5 bg-card rounded-2xl mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground block">
@@ -120,7 +120,7 @@ export default function PriceBoardPage() {
                 if (val) setCommodity(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+              <SelectTrigger className="w-full h-11 rounded-lg bg-background px-3 text-xs font-semibold text-foreground">
                 <SelectValue placeholder="Pilih komoditas" />
               </SelectTrigger>
               <SelectContent>
@@ -144,7 +144,7 @@ export default function PriceBoardPage() {
                 if (val) setRegion(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+              <SelectTrigger className="w-full h-11 rounded-lg bg-background px-3 text-xs font-semibold text-foreground">
                 <SelectValue placeholder="Pilih wilayah" />
               </SelectTrigger>
               <SelectContent>
@@ -168,7 +168,7 @@ export default function PriceBoardPage() {
                 if (val) setPeriod(val);
               }}
             >
-              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+              <SelectTrigger className="w-full h-11 rounded-lg bg-background px-3 text-xs font-semibold text-foreground">
                 <SelectValue placeholder="Pilih rentang" />
               </SelectTrigger>
               <SelectContent>
@@ -186,7 +186,7 @@ export default function PriceBoardPage() {
       {/* Main 2-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: Dari Petani ke Pembeli */}
-        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl bg-card transition-all">
+        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
           <div className="border-b border-border/60 pb-3.5">
             <span className="text-xs font-semibold text-primary">
               Rantai Pasok Gabah & Beras
@@ -199,7 +199,7 @@ export default function PriceBoardPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-border/70">
+          <div className="overflow-x-auto rounded-lg border border-border/70">
             <table className="w-full text-left text-xs">
               <thead className="bg-muted/40 border-b border-border/70 text-xs font-semibold text-muted-foreground">
                 <tr>
@@ -215,7 +215,7 @@ export default function PriceBoardPage() {
                     <tr key={item.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-3.5 px-4 font-semibold text-foreground">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                          <div className="p-2 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
                             <Icon className="w-4 h-4" />
                           </div>
                           <div>
@@ -241,7 +241,7 @@ export default function PriceBoardPage() {
         </Card>
 
         {/* Right Column: Indikator Farmer's Share */}
-        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card transition-all">
+        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card">
           <div className="border-b border-border/60 pb-3.5">
             <span className="text-xs font-semibold text-primary">
               Keadilan Distribusi
@@ -252,8 +252,8 @@ export default function PriceBoardPage() {
           </div>
 
           {/* Farmer's Share Percentage Box */}
-          <div className="p-4.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+          <div className="p-4.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-md bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
               <Percent className="w-5 h-5" />
             </div>
             <div>
@@ -267,7 +267,7 @@ export default function PriceBoardPage() {
           </div>
 
           {/* Total Margin Spread */}
-          <div className="space-y-1.5 p-4 rounded-xl bg-muted/30 border border-border/50">
+          <div className="space-y-1.5 p-4 rounded-lg bg-muted/30 border border-border/50">
             <p className="text-xs font-medium text-muted-foreground">
               Total Selisih (Petani → Konsumen)
             </p>
@@ -293,7 +293,7 @@ export default function PriceBoardPage() {
       </div>
 
       {/* 12-Week Price Transmission Trend Chart */}
-      <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all mb-8">
+      <Card className="p-6 sm:p-7 space-y-4 rounded-2xl bg-card mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3.5">
           <div>
             <h2 className="type-subheading text-foreground font-bold">
@@ -312,7 +312,7 @@ export default function PriceBoardPage() {
       </Card>
 
       {/* Jembatan Aksi: Hubungkan Rantai Pasok ke Simulasi & Jual */}
-      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/30 shadow-xs mb-8">
+      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
@@ -328,7 +328,7 @@ export default function PriceBoardPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
             <Button
-              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial"
+              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/harga-wajar">
                   <Scale className="w-4 h-4" />
@@ -339,7 +339,7 @@ export default function PriceBoardPage() {
             />
             <Button
               variant="outline"
-              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial"
+              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/petani/jual">
                   Daftarkan Hasil Panen
