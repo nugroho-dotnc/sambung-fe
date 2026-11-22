@@ -14,7 +14,9 @@ import {
   ScrollText,
   ChevronRight,
   TrendingUp,
+  Send,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageContainer } from "@/components/shared/page-container";
@@ -61,8 +63,26 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
         requestId: crypto.randomUUID(),
       });
       setIsEditingPrice(false);
-    } catch {
-      // Handled by mutation
+      toast.success("Harga minta berhasil diperbarui!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gagal memperbarui harga minta.");
+    }
+  }
+
+  async function handlePublish() {
+    if (!offer) return;
+    try {
+      await mutation.mutateAsync({
+        command: {
+          action: "publish",
+          id: offer.id,
+          version: offer.version,
+        },
+        requestId: crypto.randomUUID(),
+      });
+      toast.success("Tawaran panen berhasil diterbitkan ke pasar!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gagal menerbitkan tawaran panen.");
     }
   }
 
@@ -78,8 +98,13 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
         requestId: crypto.randomUUID(),
       });
       setConfirmWithdraw(false);
-    } catch {
-      // Handled by mutation
+      toast.success(
+        offer.status === "draft"
+          ? "Draf tawaran berhasil dihapus."
+          : "Tawaran berhasil ditarik dari pasar."
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gagal memproses penarikan tawaran.");
     }
   }
 
@@ -154,22 +179,22 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60">
-                <span className="text-[11px] text-muted-foreground block">Total Volume</span>
-                <span className="text-lg font-bold font-mono tabular-nums text-foreground">
+                <span className="text-xs text-muted-foreground block">Total Volume</span>
+                <span className="text-lg font-bold tabular-nums text-foreground">
                   {offer.totalVolumeKg.toLocaleString("id-ID")}{" "}
                   <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
                 </span>
               </div>
               <div className="p-3.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-500/20">
-                <span className="text-[11px] text-emerald-800 dark:text-emerald-300 block">Volume Tersedia</span>
-                <span className="text-lg font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+                <span className="text-xs text-emerald-800 dark:text-emerald-300 block">Volume Tersedia</span>
+                <span className="text-lg font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
                   {offer.availableVolumeKg.toLocaleString("id-ID")}{" "}
                   <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
                 </span>
               </div>
               <div className="p-3.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-500/20">
-                <span className="text-[11px] text-amber-800 dark:text-amber-300 block">Tertahan (Nego)</span>
-                <span className="text-lg font-bold font-mono tabular-nums text-amber-700 dark:text-amber-400">
+                <span className="text-xs text-amber-800 dark:text-amber-300 block">Tertahan (Nego)</span>
+                <span className="text-lg font-bold tabular-nums text-amber-700 dark:text-amber-400">
                   {offer.reservedVolumeKg.toLocaleString("id-ID")}{" "}
                   <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
                 </span>
@@ -215,11 +240,11 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                   Harga per kilogram yang dilihat pembeli di katalog pasar.
                 </p>
               </div>
-              {offer.status === "published" && !isEditingPrice && (
+              {(offer.status === "published" || offer.status === "draft") && !isEditingPrice && (
                 <Button
                   size="sm"
                   variant="outline"
-                  className="min-h-9 text-xs"
+                  className="text-xs"
                   onClick={() => {
                     setNewPrice(offer.askPrice);
                     setIsEditingPrice(true);
@@ -233,14 +258,14 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
             {!isEditingPrice ? (
               <div className="flex items-baseline justify-between pt-1">
                 <div>
-                  <span className="text-3xl font-extrabold font-mono tabular-nums text-foreground">
+                  <span className="text-3xl font-extrabold tabular-nums text-foreground">
                     {formatRupiah(offer.askPrice)}
                   </span>
                   <span className="text-xs text-muted-foreground ml-1.5">/ kg</span>
                 </div>
                 <div className="text-right text-xs">
                   <span className="text-muted-foreground block">Rentang Acuan Pasar</span>
-                  <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
+                  <span className="tabular-nums text-emerald-700 dark:text-emerald-400 font-semibold">
                     Rp{priceRef.lowerBound.toLocaleString("id-ID")} – Rp{priceRef.upperBound.toLocaleString("id-ID")}
                   </span>
                 </div>
@@ -300,8 +325,41 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
             />
           </Card>
 
-          {/* Withdraw Offer Action */}
-          {offer.status !== "withdrawn" && (
+          {/* Action Card: Terbitkan Draf ke Pasar */}
+          {offer.status === "draft" && !confirmWithdraw && (
+            <Card className="rounded-2xl border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-6 space-y-3">
+              <h3 className="text-sm font-semibold text-emerald-900 dark:text-emerald-200 flex items-center gap-2">
+                <Send className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                Terbitkan Tawaran ke Pasar
+              </h3>
+              <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 leading-relaxed">
+                Tawaran ini masih berupa draf dan belum terlihat oleh pembeli di pasar. Terbitkan sekarang agar pembeli dapat mengajukan pesanan dan kesepakatan harga.
+              </p>
+
+              <div className="pt-2 flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  className="text-xs font-semibold gap-1.5"
+                  disabled={mutation.isPending}
+                  onClick={() => void handlePublish()}
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{mutation.isPending ? "Menerbitkan…" : "Terbitkan Tawaran Sekarang"}</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-xs text-muted-foreground hover:text-destructive"
+                  onClick={() => setConfirmWithdraw(true)}
+                >
+                  Hapus Draf
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          {/* Action Card: Tarik Tawaran dari Pasar */}
+          {offer.status === "published" && !confirmWithdraw && (
             <Card className="rounded-2xl border-destructive/30 bg-card p-6 space-y-3">
               <h3 className="text-sm font-semibold text-foreground">
                 Tarik Tawaran dari Pasar
@@ -310,41 +368,50 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                 Menarik tawaran akan menghapusnya dari katalog pasar pembeli. Tawaran yang ditarik tidak dapat dipesan lagi.
               </p>
 
-              {confirmWithdraw ? (
-                <div className="space-y-2 pt-2">
-                  <p className="text-xs font-semibold text-destructive">
-                    Apakah Anda yakin ingin menarik tawaran ini?
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      className="min-h-9 text-xs"
-                      disabled={mutation.isPending}
-                      onClick={() => void handleWithdraw()}
-                    >
-                      Ya, Tarik Sekarang
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="min-h-9 text-xs"
-                      onClick={() => setConfirmWithdraw(false)}
-                    >
-                      Batal
-                    </Button>
-                  </div>
-                </div>
-              ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-xs text-destructive hover:bg-destructive/10"
+                onClick={() => setConfirmWithdraw(true)}
+              >
+                Tarik Tawaran Ini
+              </Button>
+            </Card>
+          )}
+
+          {/* Confirmation Box for Withdrawing / Deleting */}
+          {confirmWithdraw && (
+            <Card className="rounded-2xl border-destructive/40 bg-destructive/5 p-6 space-y-3">
+              <h3 className="text-sm font-semibold text-destructive">
+                {offer.status === "draft"
+                  ? "Konfirmasi Hapus Draf"
+                  : "Konfirmasi Tarik Tawaran dari Pasar"}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {offer.status === "draft"
+                  ? "Apakah Anda yakin ingin menghapus draf ini? Data tawaran yang belum terbit ini akan dihapus dari sistem."
+                  : "Apakah Anda yakin ingin menarik tawaran ini dari pasar? Pembeli tidak akan dapat menemukan atau memesan gabah ini lagi."}
+              </p>
+
+              <div className="flex items-center gap-2 pt-1">
                 <Button
                   size="sm"
-                  variant="outline"
-                  className="min-h-9 text-xs text-destructive hover:bg-destructive/10"
-                  onClick={() => setConfirmWithdraw(true)}
+                  variant="destructive"
+                  className="text-xs"
+                  disabled={mutation.isPending}
+                  onClick={() => void handleWithdraw()}
                 >
-                  Tarik Tawaran Ini
+                  {offer.status === "draft" ? "Ya, Hapus Draf" : "Ya, Tarik Sekarang"}
                 </Button>
-              )}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-xs"
+                  onClick={() => setConfirmWithdraw(false)}
+                >
+                  Batal
+                </Button>
+              </div>
             </Card>
           )}
         </div>

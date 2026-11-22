@@ -15,7 +15,9 @@ import {
   ChevronRight,
   TrendingUp,
   Scale,
+  Send,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -38,6 +40,7 @@ export function OffersWorkspace({
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
 
   // Aggregate metrics (5 Volume Statuses)
   const metrics = useMemo(() => {
@@ -75,6 +78,25 @@ export function OffersWorkspace({
     });
   }, [offers, activeTab, searchQuery]);
 
+  async function handlePublish(offer: HarvestOffer) {
+    try {
+      setPublishingId(offer.id);
+      await mutation.mutateAsync({
+        command: {
+          action: "publish",
+          id: offer.id,
+          version: offer.version,
+        },
+        requestId: crypto.randomUUID(),
+      });
+      toast.success("Tawaran panen berhasil diterbitkan ke pasar!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gagal menerbitkan tawaran panen.");
+    } finally {
+      setPublishingId(null);
+    }
+  }
+
   async function handleWithdraw(offer: HarvestOffer) {
     try {
       await mutation.mutateAsync({
@@ -85,9 +107,14 @@ export function OffersWorkspace({
         },
         requestId: crypto.randomUUID(),
       });
+      toast.success(
+        offer.status === "draft"
+          ? "Draf tawaran berhasil dihapus."
+          : "Tawaran berhasil ditarik dari pasar."
+      );
       setWithdrawingId(null);
-    } catch {
-      // Error handled by TanStack mutation
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gagal menarik tawaran.");
     }
   }
 
@@ -112,48 +139,48 @@ export function OffersWorkspace({
       {/* 5 Volume Status Cards Breakdown */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mb-8">
         <Card className="rounded-2xl border-border/70 bg-card p-4">
-          <p className="text-[11px] font-medium text-muted-foreground">Total Deklarasi Panen</p>
-          <p className="text-xl font-bold font-mono tabular-nums text-foreground mt-1">
+          <p className="text-xs font-medium text-muted-foreground">Total Deklarasi Panen</p>
+          <p className="text-xl font-bold tabular-nums text-foreground mt-1">
             {metrics.total.toLocaleString("id-ID")}{" "}
             <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
           </p>
-          <p className="text-[10px] text-muted-foreground mt-1">Seluruh tawaran aktif & draf</p>
+          <p className="text-xs text-muted-foreground mt-1">Seluruh tawaran aktif & draf</p>
         </Card>
 
-        <Card className="rounded-2xl border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20 p-4">
-          <p className="text-[11px] font-medium text-emerald-800 dark:text-emerald-300">Volume Siap Dipesan</p>
-          <p className="text-xl font-bold font-mono tabular-nums text-emerald-700 dark:text-emerald-400 mt-1">
+        <Card className="rounded-2xl bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground">Volume Siap Dipesan</p>
+          <p className="text-xl font-bold tabular-nums mt-1">
             {metrics.available.toLocaleString("id-ID")}{" "}
             <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
           </p>
-          <p className="text-[10px] text-emerald-800/80 dark:text-emerald-300/70 mt-1">Tersedia di katalog</p>
+          <p className="text-xs mt-1 text-muted-foreground">Tersedia di katalog</p>
         </Card>
 
-        <Card className="rounded-2xl border-amber-500/30 bg-amber-50/40 dark:bg-amber-950/20 p-4">
-          <p className="text-[11px] font-medium text-amber-800 dark:text-amber-300">Sedang Dinegosiasi</p>
-          <p className="text-xl font-bold font-mono tabular-nums text-amber-700 dark:text-amber-400 mt-1">
+        <Card className="rounded-2xl bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground">Sedang Dinegosiasi</p>
+          <p className="text-xl font-bold tabular-nums  mt-1">
             {metrics.reserved.toLocaleString("id-ID")}{" "}
             <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
           </p>
-          <p className="text-[10px] text-amber-800/80 dark:text-amber-300/70 mt-1">Tertahan dalam pesanan</p>
+          <p className="text-xs mt-1 text-muted-foreground">Tertahan dalam pesanan</p>
         </Card>
 
-        <Card className="rounded-2xl border-blue-500/30 bg-blue-50/40 dark:bg-blue-950/20 p-4">
-          <p className="text-[11px] font-medium text-blue-800 dark:text-blue-300">Kesepakatan Sah</p>
-          <p className="text-xl font-bold font-mono tabular-nums text-blue-700 dark:text-blue-400 mt-1">
+        <Card className="rounded-2xl bg-card p-4">
+          <p className="text-xs font-medium text-muted-foreground">Kesepakatan Sah</p>
+          <p className="text-xl font-bold tabular-nums mt-1">
             {metrics.approved.toLocaleString("id-ID")}{" "}
             <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
           </p>
-          <p className="text-[10px] text-blue-800/80 dark:text-blue-300/70 mt-1">Menunggu angkut gabah</p>
+          <p className="text-xs mt-1 text-muted-foreground">Menunggu angkut gabah</p>
         </Card>
 
-        <Card className="rounded-2xl border-border/70 bg-card p-4 col-span-2 sm:col-span-1">
-          <p className="text-[11px] font-medium text-muted-foreground">Panen Telah Selesai</p>
-          <p className="text-xl font-bold font-mono tabular-nums text-foreground mt-1">
+        <Card className="rounded-2xl bg-card p-4 col-span-2 sm:col-span-1">
+          <p className="text-xs font-medium text-muted-foreground">Panen Telah Selesai</p>
+          <p className="text-xl font-bold tabular-nums text-foreground mt-1">
             {metrics.completed.toLocaleString("id-ID")}{" "}
             <span className="text-xs font-normal text-muted-foreground font-sans">kg</span>
           </p>
-          <p className="text-[10px] text-muted-foreground mt-1">Tuntas serah terima</p>
+          <p className="text-xs text-muted-foreground mt-1">Tuntas serah terima</p>
         </Card>
       </div>
 
@@ -162,18 +189,18 @@ export function OffersWorkspace({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
             <TabsList className="bg-muted/80 p-1 rounded-xl h-auto flex flex-wrap gap-1">
-              <TabsTrigger value="all" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="all" className=" px-3 text-xs rounded-lg">
                 Semua ({offers.length})
               </TabsTrigger>
-              <TabsTrigger value="published" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="published" className=" px-3 text-xs rounded-lg">
                 <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
                 Terbit ({offers.filter((o) => o.status === "published").length})
               </TabsTrigger>
-              <TabsTrigger value="draft" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="draft" className=" px-3 text-xs rounded-lg">
                 <Clock className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
                 Draf ({offers.filter((o) => o.status === "draft").length})
               </TabsTrigger>
-              <TabsTrigger value="withdrawn" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="withdrawn" className=" px-3 text-xs rounded-lg">
                 <Archive className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
                 Ditarik ({offers.filter((o) => o.status === "withdrawn").length})
               </TabsTrigger>
@@ -257,7 +284,7 @@ export function OffersWorkspace({
                     </div>
 
                     <span
-                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                         offer.status === "published"
                           ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300"
                           : offer.status === "draft"
@@ -277,14 +304,14 @@ export function OffersWorkspace({
                   <div className="flex items-baseline justify-between pt-1">
                     <div>
                       <span className="text-xs text-muted-foreground block">Harga Minta</span>
-                      <p className="text-xl font-bold font-mono tabular-nums text-foreground">
+                      <p className="text-xl font-bold tabular-nums text-foreground">
                         {formatRupiah(offer.askPrice)}{" "}
                         <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
                       </p>
                     </div>
                     <div className="text-right">
                       <span className="text-xs text-muted-foreground block">Estimasi Nilai Total</span>
-                      <p className="text-sm font-semibold font-mono tabular-nums text-foreground">
+                      <p className="text-sm font-semibold tabular-nums text-foreground">
                         {formatRupiah(offer.askPrice * offer.totalVolumeKg)}
                       </p>
                     </div>
@@ -292,7 +319,7 @@ export function OffersWorkspace({
 
                   {/* Volume Allocation Bar */}
                   <div className="space-y-1.5 pt-1">
-                    <div className="flex justify-between text-xs font-mono tabular-nums">
+                    <div className="flex justify-between text-xs tabular-nums">
                       <span className="text-muted-foreground">
                         Tersedia: <strong>{offer.availableVolumeKg.toLocaleString("id-ID")} kg</strong>
                       </span>
@@ -319,10 +346,10 @@ export function OffersWorkspace({
                   </div>
 
                   {/* Actions Row */}
-                  <div className="pt-2 border-t border-border/60 flex items-center justify-between gap-2">
+                  <div className="pt-2 border-t border-border/60 flex flex-wrap items-center justify-between gap-2">
                     <Button
                       variant="outline"
-                      className="min-h-9 text-xs rounded-xl"
+                      className="text-xs rounded-xl"
                       render={
                         <Link href={`/petani/tawaran/${offer.id}`}>
                           Lihat Detail & Pesanan
@@ -331,23 +358,23 @@ export function OffersWorkspace({
                       }
                     />
 
-                    {offer.status !== "withdrawn" && (
+                    {offer.status === "draft" && (
                       <div className="flex items-center gap-2">
                         {withdrawingId === offer.id ? (
                           <div className="flex items-center gap-1.5">
                             <Button
                               size="sm"
                               variant="destructive"
-                              className="min-h-8 text-xs px-2.5"
+                              className="text-xs px-2.5"
                               disabled={mutation.isPending}
                               onClick={() => void handleWithdraw(offer)}
                             >
-                              Yakin Tarik
+                              Yakin Hapus
                             </Button>
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="min-h-8 text-xs px-2"
+                              className="text-xs px-2"
                               onClick={() => setWithdrawingId(null)}
                             >
                               Batal
@@ -357,10 +384,56 @@ export function OffersWorkspace({
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="min-h-8 text-xs text-muted-foreground hover:text-destructive"
+                            className="text-xs text-muted-foreground hover:text-destructive"
                             onClick={() => setWithdrawingId(offer.id)}
                           >
-                            Tarik Tawaran
+                            Hapus Draf
+                          </Button>
+                        )}
+
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="text-xs font-semibold gap-1.5"
+                          disabled={mutation.isPending && publishingId === offer.id}
+                          onClick={() => void handlePublish(offer)}
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>{publishingId === offer.id ? "Menerbitkan…" : "Terbitkan ke Pasar"}</span>
+                        </Button>
+                      </div>
+                    )}
+
+                    {offer.status === "published" && (
+                      <div className="flex items-center gap-2">
+                        {withdrawingId === offer.id ? (
+                          <div className="flex items-center gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="text-xs px-2.5"
+                              disabled={mutation.isPending}
+                              onClick={() => void handleWithdraw(offer)}
+                            >
+                              Yakin Tarik
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs px-2"
+                              onClick={() => setWithdrawingId(null)}
+                            >
+                              Batal
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs text-muted-foreground hover:text-destructive"
+                            onClick={() => setWithdrawingId(offer.id)}
+                          >
+                            Tarik dari Pasar
                           </Button>
                         )}
                       </div>
