@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/shared/page-container";
 import { useContract } from "@/features/contracts/hooks/use-contracts";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
+import { useMobile } from "@/hooks/use-mobile";
 
 export default function DigitalContractProofPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const isMobile = useMobile();
   const { id } = use(params);
   const { data: contract, isLoading, isError } = useContract(id);
 
@@ -49,7 +51,7 @@ export default function DigitalContractProofPage({
           className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground transition"
         >
           <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-          Kembali ke Ruang Kesepakatan
+          {isMobile ? "Kembali" : "Kembali ke Ruang Kesepakatan"}
         </Link>
 
         <Button
@@ -57,7 +59,7 @@ export default function DigitalContractProofPage({
           onClick={() => window.print()}
         >
           <Printer className="w-4 h-4" />
-          Cetak Surat Kesepakatan (PDF)
+          {isMobile ? "Cetak PDF" : "Cetak Surat Kesepakatan (PDF)"}
         </Button>
       </div>
 

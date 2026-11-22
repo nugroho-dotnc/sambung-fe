@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useMobile } from "@/hooks/use-mobile";
 
 interface ConfirmRedLightDialogProps {
   open: boolean;
@@ -30,6 +31,7 @@ export function ConfirmRedLightDialog({
   redThreshold,
   onConfirm,
 }: ConfirmRedLightDialogProps) {
+  const isMobile = useMobile();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -71,7 +73,7 @@ export function ConfirmRedLightDialog({
             className="w-full sm:w-auto min-h-10"
             onClick={() => onOpenChange(false)}
           >
-            Sesuaikan Ulang Harga
+            {isMobile ? "Ubah Harga" : "Sesuaikan Ulang Harga"}
           </Button>
           <Button
             type="button"
@@ -82,7 +84,7 @@ export function ConfirmRedLightDialog({
               onConfirm();
             }}
           >
-            Tetap Lanjutkan Tawaran
+            {isMobile ? "Tetap Lanjutkan" : "Tetap Lanjutkan Tawaran"}
           </Button>
         </DialogFooter>
       </DialogContent>

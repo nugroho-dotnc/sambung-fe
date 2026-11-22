@@ -21,9 +21,11 @@ import { PageHeader } from "@/components/shared/page-header";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { PriceRangeSlider, PriceReferenceService } from "@/features/price-check";
 import { useCreateOrder } from "@/features/contracts/hooks/use-contracts";
+import { useMobile } from "@/hooks/use-mobile";
 import type { CatalogItem } from "../schemas";
 
 export function PartialOrderForm({ item }: { item: CatalogItem }) {
+  const isMobile = useMobile();
   const router = useRouter();
   const createOrder = useCreateOrder();
 
@@ -95,7 +97,7 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
         className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground transition mb-4"
       >
         <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-        Kembali ke Katalog Pasokan
+        {isMobile ? "Kembali" : "Kembali ke Katalog Pasokan"}
       </Link>
 
       <PageHeader
@@ -188,7 +190,13 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
                       className="min-h-8 text-xs rounded-lg"
                       onClick={() => setVolumePercentage(pct)}
                     >
-                      {pct === 100 ? "Seluruhnya (100%)" : `${pct}% (${Math.round((item.availableVolumeKg * pct) / 100).toLocaleString("id-ID")} kg)`}
+                      {pct === 100
+                        ? isMobile
+                          ? "100%"
+                          : "Seluruhnya (100%)"
+                        : isMobile
+                        ? `${pct}%`
+                        : `${pct}% (${Math.round((item.availableVolumeKg * pct) / 100).toLocaleString("id-ID")} kg)`}
                     </Button>
                   ))}
                 </div>
@@ -294,7 +302,13 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
                 className="w-full min-h-12 text-sm font-semibold justify-between"
                 disabled={createOrder.isPending || !agreedTerms || numVolume <= 0}
               >
-                <span>{createOrder.isPending ? "Mengirim Pesanan…" : "Kirim Permintaan Pesanan"}</span>
+                <span>
+                  {createOrder.isPending
+                    ? "Mengirim Pesanan…"
+                    : isMobile
+                    ? "Kirim Pesanan"
+                    : "Kirim Permintaan Pesanan"}
+                </span>
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Card>

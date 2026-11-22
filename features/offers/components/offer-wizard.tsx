@@ -27,6 +27,7 @@ import {
   PriceReferenceService,
   evaluatePriceLight,
 } from "@/features/price-check";
+import { useMobile } from "@/hooks/use-mobile";
 
 const emptyFields = {
   grainType: "GKP" as "GKP" | "GKG",
@@ -64,6 +65,7 @@ export function OfferWizard({
   initialOffer?: HarvestOffer;
   onBack?: () => void;
 }) {
+  const isMobile = useMobile();
   const router = useRouter();
   const searchParams = useSearchParams();
   const paramGrainType = searchParams.get("grainType") as "GKP" | "GKG" | null;
@@ -493,7 +495,7 @@ export function OfferWizard({
                 className="flex-1 sm:flex-none min-h-11 px-6 font-semibold"
                 disabled={pending}
               >
-                Lanjut Tinjau Tawaran
+                {isMobile ? "Lanjut Tinjau" : "Lanjut Tinjau Tawaran"}
                 <ChevronRight className="w-4 h-4 ml-1.5" />
               </Button>
             </div>
@@ -563,32 +565,36 @@ export function OfferWizard({
                 Anda masih dapat menarik atau memperbarui tawaran selama belum ada pesanan aktif.
               </p>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <Button
                 type="button"
                 variant="outline"
-                className="min-h-11 px-4"
+                className="flex-1 sm:flex-initial min-h-11 px-3 sm:px-4"
                 disabled={pending}
                 onClick={() => setStep(1)}
               >
-                Ubah Detail
+                {isMobile ? "Ubah" : "Ubah Detail"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                className="min-h-11 px-4"
+                className="flex-1 sm:flex-initial min-h-11 px-3 sm:px-4"
                 disabled={pending}
                 onClick={() => void persist(review, false)}
               >
-                Simpan Draf
+                {isMobile ? "Draf" : "Simpan Draf"}
               </Button>
               <Button
                 type="button"
-                className="min-h-11 px-6 font-semibold"
+                className="flex-1 sm:flex-initial min-h-11 px-4 sm:px-6 font-semibold"
                 disabled={pending}
                 onClick={() => void persist(review, true)}
               >
-                {pending ? "Menerbitkan…" : "Terbitkan Tawaran Sekarang"}
+                {pending
+                  ? "Menerbitkan…"
+                  : isMobile
+                  ? "Terbitkan"
+                  : "Terbitkan Tawaran Sekarang"}
               </Button>
             </div>
           </footer>
@@ -621,7 +627,7 @@ export function OfferWizard({
               className="w-full sm:w-auto min-h-11 px-6"
               onClick={() => router.push("/petani/tawaran")}
             >
-              Buka Halaman Tawaran Saya
+              {isMobile ? "Tawaran Saya" : "Buka Halaman Tawaran Saya"}
             </Button>
             <Button
               variant="outline"
@@ -633,7 +639,7 @@ export function OfferWizard({
                 setStep(1);
               }}
             >
-              Pasang Tawaran Lain
+              {isMobile ? "Tawaran Lain" : "Pasang Tawaran Lain"}
             </Button>
           </div>
         </section>

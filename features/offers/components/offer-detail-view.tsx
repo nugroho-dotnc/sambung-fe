@@ -25,9 +25,11 @@ import { AsyncBoundary } from "@/components/shared/async-boundary";
 import { useOffers, useOfferCommand } from "../hooks/use-offers";
 import { formatRupiah } from "./offer-summary";
 import { PriceRangeSlider, PriceReferenceService } from "@/features/price-check";
+import { useMobile } from "@/hooks/use-mobile";
 import type { HarvestOffer } from "../schemas";
 
 export function OfferDetailView({ offerId }: { offerId: string }) {
+  const isMobile = useMobile();
   const router = useRouter();
   const { data: offers = [], isLoading, isError, error, refetch } = useOffers();
   const mutation = useOfferCommand();
@@ -125,7 +127,11 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
             Tawaran panen dengan ID #{offerId} tidak ditemukan atau bukan milik akun Anda.
           </p>
           <Button
-            render={<Link href="/petani/tawaran">Kembali ke Daftar Tawaran</Link>}
+            render={
+              <Link href="/petani/tawaran">
+                {isMobile ? "Kembali" : "Kembali ke Daftar Tawaran"}
+              </Link>
+            }
             className="mt-3 min-h-10 text-xs"
           />
         </div>
@@ -142,7 +148,7 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
         className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground transition mb-4"
       >
         <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-        Kembali ke Daftar Tawaran Panen
+        {isMobile ? "Kembali" : "Kembali ke Daftar Tawaran Panen"}
       </Link>
 
       <PageHeader
@@ -250,7 +256,7 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                     setIsEditingPrice(true);
                   }}
                 >
-                  Perbarui Harga
+                  {isMobile ? "Ubah Harga" : "Perbarui Harga"}
                 </Button>
               )}
             </div>
@@ -295,7 +301,11 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                     disabled={mutation.isPending}
                     onClick={() => void handlePriceUpdate()}
                   >
-                    {mutation.isPending ? "Menyimpan…" : "Simpan Harga Baru"}
+                    {mutation.isPending
+                      ? "Menyimpan…"
+                      : isMobile
+                      ? "Simpan Harga"
+                      : "Simpan Harga Baru"}
                   </Button>
                 </div>
               </div>
@@ -318,7 +328,7 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
               className="w-full min-h-10 text-xs justify-between"
               render={
                 <Link href="/kontrak">
-                  Buka Menu Kontrak & Negosiasi
+                  {isMobile ? "Menu Kontrak" : "Buka Menu Kontrak & Negosiasi"}
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               }
@@ -344,7 +354,13 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                   onClick={() => void handlePublish()}
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>{mutation.isPending ? "Menerbitkan…" : "Terbitkan Tawaran Sekarang"}</span>
+                  <span>
+                    {mutation.isPending
+                      ? "Menerbitkan…"
+                      : isMobile
+                      ? "Terbitkan Sekarang"
+                      : "Terbitkan Tawaran Sekarang"}
+                  </span>
                 </Button>
                 <Button
                   size="sm"
@@ -374,7 +390,7 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                 className="text-xs text-destructive hover:bg-destructive/10"
                 onClick={() => setConfirmWithdraw(true)}
               >
-                Tarik Tawaran Ini
+                {isMobile ? "Tarik Tawaran" : "Tarik Tawaran Ini"}
               </Button>
             </Card>
           )}
@@ -401,7 +417,13 @@ export function OfferDetailView({ offerId }: { offerId: string }) {
                   disabled={mutation.isPending}
                   onClick={() => void handleWithdraw()}
                 >
-                  {offer.status === "draft" ? "Ya, Hapus Draf" : "Ya, Tarik Sekarang"}
+                  {offer.status === "draft"
+                    ? isMobile
+                      ? "Hapus Draf"
+                      : "Ya, Hapus Draf"
+                    : isMobile
+                    ? "Tarik Sekarang"
+                    : "Ya, Tarik Sekarang"}
                 </Button>
                 <Button
                   size="sm"

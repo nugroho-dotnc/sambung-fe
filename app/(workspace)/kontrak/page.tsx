@@ -30,9 +30,11 @@ import { useCurrentUser } from "@/features/auth/hooks/use-auth";
 import { useContracts } from "@/features/contracts/hooks/use-contracts";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { CONTRACT_STATUS_LABELS } from "@/features/contracts/domain/state-machine";
+import { useMobile } from "@/hooks/use-mobile";
 import type { Contract } from "@/features/contracts/schemas";
 
 export default function ContractsListPage() {
+  const isMobile = useMobile();
   const { data: user } = useCurrentUser();
   const [activeTab, setActiveTab] = useState<string>("all");
   const { data: contracts = [], isLoading, isError, error, refetch } = useContracts(activeTab);
@@ -135,7 +137,11 @@ export default function ContractsListPage() {
               </p>
               {user?.role === "pembeli" && (
                 <Button
-                  render={<Link href="/pembeli/katalog">Buka Katalog Pasokan</Link>}
+                  render={
+                    <Link href="/pembeli/katalog">
+                      {isMobile ? "Buka Katalog" : "Buka Katalog Pasokan"}
+                    </Link>
+                  }
                   className="mt-3 min-h-10 text-xs"
                 />
               )}
@@ -247,7 +253,7 @@ export default function ContractsListPage() {
                       variant="outline"
                       render={
                         <Link href={`/kontrak/${contract.id}`}>
-                          Buka Ruang Kesepakatan
+                          {isMobile ? "Buka Kesepakatan" : "Buka Ruang Kesepakatan"}
                           <ChevronRight className="w-4 h-4 ml-1" />
                         </Link>
                       }

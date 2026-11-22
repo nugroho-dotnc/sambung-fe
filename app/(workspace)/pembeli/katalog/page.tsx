@@ -30,6 +30,7 @@ import { AsyncBoundary } from "@/components/shared/async-boundary";
 import { useCatalog } from "@/features/catalog/hooks/use-catalog";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { PriceReferenceService, evaluatePriceLight } from "@/features/price-check";
+import { useMobile } from "@/hooks/use-mobile";
 import type { CatalogItem } from "@/features/catalog/schemas";
 
 const REGENCY_OPTIONS = [
@@ -46,6 +47,7 @@ const GRAIN_TAB_OPTIONS = [
 ];
 
 export default function BuyerCatalogPage() {
+  const isMobile = useMobile();
   const [selectedGrain, setSelectedGrain] = useState<"ALL" | "GKP" | "GKG">("ALL");
   const [selectedRegency, setSelectedRegency] = useState<string>("Semua");
   const [searchQuery, setSearchQuery] = useState("");
@@ -361,7 +363,7 @@ export default function BuyerCatalogPage() {
                     className="w-full min-h-10 text-xs font-semibold justify-between"
                     render={
                       <Link href={`/pembeli/katalog/${item.id}`}>
-                        Pesan Pasokan Ini
+                        {isMobile ? "Pesan Pasokan" : "Pesan Pasokan Ini"}
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Link>
                     }

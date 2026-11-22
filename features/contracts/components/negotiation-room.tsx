@@ -41,9 +41,11 @@ import {
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { isContactRevealed, CONTRACT_STATUS_LABELS } from "../domain/state-machine";
 import { PriceRangeSlider, PriceReferenceService } from "@/features/price-check";
+import { useMobile } from "@/hooks/use-mobile";
 import type { Contract } from "../schemas";
 
 export function NegotiationRoom({ contract }: { contract: Contract }) {
+  const isMobile = useMobile();
   const { data: user } = useCurrentUser();
   const acceptPrice = useAcceptPrice();
   const counterOffer = useCounterOffer();
@@ -124,7 +126,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
         className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground transition mb-4"
       >
         <ArrowLeft className="w-3.5 h-3.5 mr-1.5" />
-        Kembali ke Daftar Kesepakatan
+        {isMobile ? "Kembali" : "Kembali ke Daftar Kesepakatan"}
       </Link>
 
       <PageHeader
@@ -177,7 +179,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
             render={
               <Link href={`/kontrak/${contract.id}/bukti`}>
                 <FileText className="w-3.5 h-3.5 mr-1.5" />
-                Surat Kesepakatan Digital
+                {isMobile ? "Surat Kesepakatan" : "Surat Kesepakatan Digital"}
               </Link>
             }
           />
@@ -388,6 +390,8 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                       <CheckCircle2 className="w-4 h-4 mr-2" />
                       {acceptPrice.isPending
                         ? "Memproses…"
+                        : isMobile
+                        ? `Setujui ${formatRupiah(contract.currentPrice)}`
                         : `Setujui Harga ${formatRupiah(contract.currentPrice)}/kg`}
                     </Button>
 
@@ -400,7 +404,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                       }}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
-                      Ajukan Nego Harga Baru
+                      {isMobile ? "Nego Harga" : "Ajukan Nego Harga Baru"}
                     </Button>
 
                     <Button
@@ -408,7 +412,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                       className="w-full min-h-9 text-xs text-muted-foreground hover:text-destructive"
                       onClick={() => setCancelModalOpen(true)}
                     >
-                      Tolak / Batalkan Pesanan
+                      {isMobile ? "Batalkan Pesanan" : "Tolak / Batalkan Pesanan"}
                     </Button>
                   </>
                 ) : (
@@ -460,6 +464,8 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                     <CheckCheck className="w-4 h-4 mr-2" />
                     {confirmCompletion.isPending
                       ? "Menyimpan Konfirmasi…"
+                      : isMobile
+                      ? "Konfirmasi Selesai"
                       : "Konfirmasi Gabah Diterima / Transaksi Selesai"}
                   </Button>
                 ) : (
@@ -474,7 +480,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                   render={
                     <Link href={`/kontrak/${contract.id}/bukti`}>
                       <FileText className="w-3.5 h-3.5 mr-2" />
-                      Buka Surat Bukti Kesepakatan
+                      {isMobile ? "Bukti Kesepakatan" : "Buka Surat Bukti Kesepakatan"}
                     </Link>
                   }
                 />
@@ -491,7 +497,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                     }}
                   >
                     <AlertTriangle className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
-                    Kendala Lapangan / Batalkan Kesepakatan
+                    {isMobile ? "Batalkan Kesepakatan" : "Kendala Lapangan / Batalkan Kesepakatan"}
                   </Button>
                 </div>
               </div>
@@ -512,7 +518,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                   render={
                     <Link href={`/kontrak/${contract.id}/bukti`}>
                       <FileText className="w-3.5 h-3.5 mr-2" />
-                      Cetak Surat Bukti Kesepakatan
+                      {isMobile ? "Cetak Bukti" : "Cetak Surat Bukti Kesepakatan"}
                     </Link>
                   }
                 />
@@ -671,7 +677,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
               disabled={cancelContract.isPending || !cancelReason.trim()}
               onClick={() => void handleCancelSubmit()}
             >
-              {cancelContract.isPending ? "Membatalkan…" : "Ya, Batalkan Kesepakatan"}
+              {cancelContract.isPending ? "Membatalkan…" : isMobile ? "Ya, Batalkan" : "Ya, Batalkan Kesepakatan"}
             </Button>
           </DialogFooter>
         </DialogContent>

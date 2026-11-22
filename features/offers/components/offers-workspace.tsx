@@ -33,6 +33,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { AsyncBoundary } from "@/components/shared/async-boundary";
 import { useOffers, useOfferCommand } from "../hooks/use-offers";
 import { formatRupiah } from "./offer-summary";
+import { useMobile } from "@/hooks/use-mobile";
 import type { HarvestOffer } from "../schemas";
 
 export function OffersWorkspace({
@@ -40,6 +41,7 @@ export function OffersWorkspace({
 }: {
   initialId?: string | null;
 }) {
+  const isMobile = useMobile();
   const router = useRouter();
   const { data: offers = [], isLoading, isError, error, refetch } = useOffers();
   const mutation = useOfferCommand();
@@ -154,7 +156,7 @@ export function OffersWorkspace({
             render={
               <Link href="/petani/jual">
                 <Plus className="w-4 h-4 mr-2" />
-                Pasang Tawaran Baru
+                {isMobile ? "Tawaran Baru" : "Pasang Tawaran Baru"}
               </Link>
             }
             className="min-h-11 px-5 font-semibold"
@@ -295,7 +297,7 @@ export function OffersWorkspace({
                   render={
                     <Link href="/petani/jual">
                       <Plus className="w-4 h-4 mr-1.5" />
-                      Pasang Tawaran Panen
+                      {isMobile ? "Pasang Tawaran" : "Pasang Tawaran Panen"}
                     </Link>
                   }
                   className="mt-3 min-h-10 text-xs"
@@ -401,7 +403,7 @@ export function OffersWorkspace({
                       className="text-xs rounded-xl"
                       render={
                         <Link href={`/petani/tawaran/${offer.id}`}>
-                          Lihat Detail & Pesanan
+                          {isMobile ? "Lihat Detail" : "Lihat Detail & Pesanan"}
                           <ChevronRight className="w-3.5 h-3.5 ml-1" />
                         </Link>
                       }
@@ -436,7 +438,7 @@ export function OffersWorkspace({
                             className="text-xs text-muted-foreground hover:text-destructive"
                             onClick={() => setWithdrawingId(offer.id)}
                           >
-                            Hapus Draf
+                            {isMobile ? "Hapus" : "Hapus Draf"}
                           </Button>
                         )}
 
@@ -448,7 +450,13 @@ export function OffersWorkspace({
                           onClick={() => void handlePublish(offer)}
                         >
                           <Send className="w-3.5 h-3.5" />
-                          <span>{publishingId === offer.id ? "Menerbitkan…" : "Terbitkan ke Pasar"}</span>
+                          <span>
+                            {publishingId === offer.id
+                              ? "Menerbitkan…"
+                              : isMobile
+                              ? "Terbitkan"
+                              : "Terbitkan ke Pasar"}
+                          </span>
                         </Button>
                       </div>
                     )}
@@ -482,7 +490,7 @@ export function OffersWorkspace({
                             className="text-xs text-muted-foreground hover:text-destructive"
                             onClick={() => setWithdrawingId(offer.id)}
                           >
-                            Tarik dari Pasar
+                            {isMobile ? "Tarik" : "Tarik dari Pasar"}
                           </Button>
                         )}
                       </div>

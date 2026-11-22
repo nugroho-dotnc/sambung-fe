@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useMobile } from "@/hooks/use-mobile";
 import {
   Bell,
   CheckCircle2,
@@ -81,6 +82,7 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 ];
 
 export default function NotificationsPage() {
+  const isMobile = useMobile();
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [filter, setFilter] = useState<string>("semua");
 
@@ -133,7 +135,7 @@ export default function NotificationsPage() {
             className="gap-1.5 text-xs font-semibold cursor-pointer shrink-0"
           >
             <Check className="w-3.5 h-3.5" />
-            <span>Tandai Semua Dibaca ({unreadCount})</span>
+            <span>{isMobile ? `Dibaca (${unreadCount})` : `Tandai Semua Dibaca (${unreadCount})`}</span>
           </Button>
         )}
       </div>

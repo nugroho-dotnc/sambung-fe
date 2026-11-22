@@ -41,6 +41,7 @@ import {
 } from "@/features/price-board/domain/price-chain";
 import { PriceChainChart } from "@/features/price-board/components/price-chain-chart";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
+import { useMobile } from "@/hooks/use-mobile";
 
 const COMMODITY_OPTIONS = [
   { value: "Beras Medium I", label: "Beras Medium I (Standar)" },
@@ -69,6 +70,7 @@ const LEVEL_ICONS: Record<string, typeof Sprout> = {
 };
 
 export default function PriceBoardPage() {
+  const isMobile = useMobile();
   const [commodity, setCommodity] = useState<string>("Beras Medium I");
   const [region, setRegion] = useState<string>("Jawa Barat");
   const [period, setPeriod] = useState<string>("12 Pekan Terakhir");
@@ -108,7 +110,7 @@ export default function PriceBoardPage() {
             onClick={handleExportCsv}
           >
             <Download className="w-3.5 h-3.5 text-primary" />
-            Unduh Ringkasan (CSV)
+            {isMobile ? "Unduh CSV" : "Unduh Ringkasan (CSV)"}
           </Button>
         }
       />
@@ -388,7 +390,7 @@ export default function PriceBoardPage() {
               render={
                 <Link href="/harga-wajar">
                   <Scale className="w-4 h-4" />
-                  Hitung di Kalkulator Harga Wajar
+                  {isMobile ? "Kalkulator Harga" : "Hitung di Kalkulator Harga Wajar"}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               }
@@ -398,7 +400,7 @@ export default function PriceBoardPage() {
               className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
               render={
                 <Link href="/petani/jual">
-                  Daftarkan Hasil Panen
+                  {isMobile ? "Daftar Panen" : "Daftarkan Hasil Panen"}
                 </Link>
               }
             />

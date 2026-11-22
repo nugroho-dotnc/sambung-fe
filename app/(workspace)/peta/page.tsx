@@ -9,6 +9,7 @@ import {
 import { IndonesiaSvgMap } from "@/features/region-map/components/indonesia-svg-map";
 import { ProvincialTable } from "@/features/region-map/components/provincial-table";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
+import { useMobile } from "@/hooks/use-mobile";
 import { PageContainer } from "@/components/shared/page-container";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ const TIME_OPTIONS = [
 ];
 
 export default function PetaDisparitasPage() {
+  const isMobile = useMobile();
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
   const [selectedCommodity, setSelectedCommodity] = useState("Gabah Kering Panen (GKP)");
   const [selectedCoverage, setSelectedCoverage] = useState("Seluruh Indonesia");
@@ -162,12 +164,12 @@ export default function PetaDisparitasPage() {
               {viewMode === "map" ? (
                 <>
                   <TableIcon className="w-3.5 h-3.5 text-primary" />
-                  <span>Tampilan Tabel</span>
+                  <span>{isMobile ? "Tabel" : "Tampilan Tabel"}</span>
                 </>
               ) : (
                 <>
                   <MapIcon className="w-3.5 h-3.5 text-primary" />
-                  <span>Tampilan Peta</span>
+                  <span>{isMobile ? "Peta" : "Tampilan Peta"}</span>
                 </>
               )}
             </Button>
@@ -517,7 +519,7 @@ export default function PetaDisparitasPage() {
                 className="w-full text-xs font-bold justify-between cursor-pointer rounded-lg"
                 render={<Link href="/pembeli/katalog" />}
               >
-                <span>Cari Pasokan di {activeProvinceItem.province}</span>
+                <span>{isMobile ? `Cari di ${activeProvinceItem.province}` : `Cari Pasokan di ${activeProvinceItem.province}`}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
               <Button
@@ -526,7 +528,7 @@ export default function PetaDisparitasPage() {
                 className="w-full text-xs font-semibold justify-between cursor-pointer rounded-lg"
                 render={<Link href="/petani/jual" />}
               >
-                <span>Jual Gabah di Wilayah Ini</span>
+                <span>{isMobile ? "Jual Gabah" : "Jual Gabah di Wilayah Ini"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </div>
