@@ -27,13 +27,13 @@ export function PriceChainChart({ data }: PriceChainChartProps) {
             dataKey="week"
             tickLine={false}
             axisLine={{ stroke: "var(--border)" }}
-            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
           />
           <YAxis
             domain={["dataMin - 500", "dataMax + 500"]}
             tickLine={false}
             axisLine={false}
-            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
             tickFormatter={(value) => `Rp${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip

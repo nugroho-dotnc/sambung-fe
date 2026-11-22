@@ -17,6 +17,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
 import { AsyncBoundary } from "@/components/shared/async-boundary";
@@ -24,6 +31,13 @@ import { useCatalog } from "@/features/catalog/hooks/use-catalog";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { PriceReferenceService, evaluatePriceLight } from "@/features/price-check";
 import type { CatalogItem } from "@/features/catalog/schemas";
+
+const REGENCY_OPTIONS = [
+  { value: "Semua", label: "Semua Kabupaten" },
+  { value: "Subang", label: "Kabupaten Subang" },
+  { value: "Karawang", label: "Kabupaten Karawang" },
+  { value: "Indramayu", label: "Kabupaten Indramayu" },
+];
 
 export default function BuyerCatalogPage() {
   const [selectedGrain, setSelectedGrain] = useState<"ALL" | "GKP" | "GKG">("ALL");
@@ -162,16 +176,24 @@ export default function BuyerCatalogPage() {
           </Tabs>
 
           <div className="flex items-center gap-2">
-            <select
+            <Select
+              items={REGENCY_OPTIONS}
               value={selectedRegency}
-              onChange={(e) => setSelectedRegency(e.target.value)}
-              className="h-10 rounded-xl border border-input bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+              onValueChange={(val) => {
+                if (val) setSelectedRegency(val);
+              }}
             >
-              <option value="Semua">Semua Kabupaten</option>
-              <option value="Subang">Kabupaten Subang</option>
-              <option value="Karawang">Kabupaten Karawang</option>
-              <option value="Indramayu">Kabupaten Indramayu</option>
-            </select>
+              <SelectTrigger className="h-10 min-w-44 rounded-xl border border-input bg-background px-3 text-xs shadow-2xs">
+                <SelectValue placeholder="Pilih kabupaten" />
+              </SelectTrigger>
+              <SelectContent>
+                {REGENCY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div className="relative w-full sm:w-64">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />

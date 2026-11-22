@@ -84,38 +84,38 @@ export default function ForecastPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: AI Prediction & Interactive Chart */}
         <div className="lg:col-span-7 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs">
-            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
+          <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3.5">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                <span className="text-xs font-semibold text-primary">
                   Sasaran: {activeForecast.province} • {activeForecast.targetDate}
                 </span>
-                <h2 className="text-xl font-bold text-foreground mt-0.5">
+                <h2 className="type-subheading text-foreground font-bold mt-0.5">
                   Estimasi Nilai Beras Produsen
                 </h2>
               </div>
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                 {activeForecast.method}
               </span>
             </div>
 
             {/* Main Predicted Number with Confidence Interval */}
-            <div className="p-5 rounded-xl bg-muted/30 border border-border/60 space-y-3">
+            <div className="p-5 rounded-2xl bg-muted/30 border border-border/50 space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground font-semibold">Prediksi Rata-rata</span>
-                <span className="text-emerald-700 dark:text-emerald-400 font-bold">
+                <span className="text-muted-foreground font-medium">Prediksi Rata-rata</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
                   Rentang Keyakinan 80%
                 </span>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-                <p className="text-3xl sm:text-4xl font-extrabold tabular-nums text-foreground">
+                <p className="text-3xl sm:text-4xl font-extrabold font-display tabular-nums text-foreground">
                   {formatRupiah(activeForecast.riceProducerPrice)}
                   <span className="text-xs font-normal text-muted-foreground font-sans ml-1.5">
                     / kg beras
                   </span>
                 </p>
-                <span className="text-xs font-bold text-foreground bg-muted/80 px-3 py-1.5 rounded-lg border border-border/70 tabular-nums">
+                <span className="text-xs font-bold text-foreground bg-background px-3 py-1.5 rounded-lg border border-border/70 tabular-nums shadow-2xs">
                   {formatRupiah(activeForecast.confidenceInterval80[0])} – {formatRupiah(activeForecast.confidenceInterval80[1])}
                 </span>
               </div>
@@ -123,14 +123,14 @@ export default function ForecastPage() {
 
             {/* Derived Grain Estimates (GKP & GKG) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div className="p-4 rounded-xl border border-border/70 bg-card space-y-1.5">
+              <div className="p-4.5 rounded-xl border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-foreground">Estimasi Turunan GKP</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-bold">
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
                     Rendemen 52%
                   </span>
                 </div>
-                <p className="text-2xl font-bold tabular-nums text-foreground">
+                <p className="text-2xl font-bold font-display tabular-nums text-foreground">
                   {formatRupiah(activeForecast.gkpEstimate)}{" "}
                   <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
                 </p>
@@ -139,14 +139,14 @@ export default function ForecastPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border/70 bg-card space-y-1.5">
+              <div className="p-4.5 rounded-xl border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-foreground">Estimasi Turunan GKG</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-bold">
+                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
                     Rendemen 63%
                   </span>
                 </div>
-                <p className="text-2xl font-bold tabular-nums text-foreground">
+                <p className="text-2xl font-bold font-display tabular-nums text-foreground">
                   {formatRupiah(activeForecast.gkgEstimate)}{" "}
                   <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
                 </p>
@@ -168,14 +168,14 @@ export default function ForecastPage() {
 
         {/* Right Column: Explainable AI Factors (SHAP) */}
         <div className="lg:col-span-5 space-y-6">
-          <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs">
-            <div className="border-b border-border/60 pb-3 flex items-center justify-between">
+          <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all">
+            <div className="border-b border-border/60 pb-3.5 flex items-center justify-between">
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
                   <Cpu className="w-3.5 h-3.5" />
                   <span>Transparansi AI Pasar</span>
                 </div>
-                <h3 className="text-lg font-bold text-foreground mt-0.5">
+                <h3 className="type-subheading text-foreground font-bold mt-0.5">
                   Faktor Pembentuk Harga
                 </h3>
               </div>
@@ -187,7 +187,7 @@ export default function ForecastPage() {
 
             <ShapWaterfall factors={activeForecast.shapContributions} />
 
-            <div className="rounded-xl bg-muted/30 p-3.5 border border-border/50 text-xs text-muted-foreground space-y-1 leading-relaxed">
+            <div className="rounded-xl bg-muted/20 p-3.5 border border-border/40 text-xs text-muted-foreground space-y-1 leading-relaxed">
               <p className="font-semibold text-foreground">Catatan Pemodelan:</p>
               <p>
                 Prediksi dihitung berkala menggunakan model machine learning terlatih dengan data historis BMKG, BPS, dan Bapanas untuk membantu perencanaan waktu tanam dan panen.

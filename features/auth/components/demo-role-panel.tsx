@@ -2,9 +2,22 @@
 
 import { useState, type ReactNode } from "react";
 import { useIsMutating, useQueryClient } from "@tanstack/react-query";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useSession } from "../hooks/use-session";
 import { roleSchema, type Role } from "../schemas";
 import { setDemoRole } from "@/mock/session";
+
+const ROLE_OPTIONS = [
+  { value: "petani", label: "Petani" },
+  { value: "pembeli", label: "Pembeli / produsen" },
+  { value: "admin", label: "Admin" },
+];
 
 export function DemoRolePanel({ children, requiredRole }: { children: ReactNode; requiredRole: Role }) {
   const { user, isPending, isDemo } = useSession();
@@ -26,7 +39,28 @@ export function DemoRolePanel({ children, requiredRole }: { children: ReactNode;
   return <>
     <aside className="mb-6 flex flex-wrap items-center gap-4 rounded-lg border bg-muted p-4">
       <div className="mr-auto"><p className="font-medium">Identitas demo: {user?.name}</p><p className="text-sm">Data ilustrasi · bukan sesi login nyata</p></div>
-      <label className="text-sm">Lihat sebagai <select className="ml-2 min-h-11 rounded border bg-background px-3" value={user?.role ?? "petani"} disabled={switching || mutationCount > 0} onChange={(event) => void switchRole(event.target.value)}><option value="petani">Petani</option><option value="pembeli">Pembeli / produsen</option><option value="admin">Admin</option></select></label>
+      <div className="flex items-center gap-2 text-sm">
+        <span>Lihat sebagai</span>
+        <Select
+          items={ROLE_OPTIONS}
+          value={user?.role ?? "petani"}
+          disabled={switching || mutationCount > 0}
+          onValueChange={(val) => {
+            if (val) void switchRole(val);
+          }}
+        >
+          <SelectTrigger className="h-10 min-w-44 rounded-xl border border-input bg-background px-3 text-xs font-semibold shadow-2xs">
+            <SelectValue placeholder="Pilih role" />
+          </SelectTrigger>
+          <SelectContent>
+            {ROLE_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       {error && <p role="alert">{error}</p>}
     </aside>
     {switching ? <p role="status">Mengganti identitas…</p> : user?.role === requiredRole ? <div key={user.id}>{children}</div> : <p role="status">Role {user?.role} tidak memiliki akses ke ruang Petani. Pilih Petani untuk melanjutkan. Halaman role lainnya belum tersedia.</p>}

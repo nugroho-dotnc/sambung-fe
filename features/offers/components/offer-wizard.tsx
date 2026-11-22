@@ -5,6 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { CheckCircle2, ChevronRight, ArrowLeft, ShieldCheck, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCurrentUser } from "@/features/auth/hooks/use-auth";
 import { useOfferCommand } from "../hooks/use-offers";
 import {
@@ -39,6 +46,16 @@ const DISTRICT_OPTIONS = [
   { id: "Purwadadi", label: "Kecamatan Purwadadi, Kab. Subang" },
   { id: "Telagasari", label: "Kecamatan Telagasari, Kab. Karawang" },
 ];
+
+const GRAIN_TYPE_OPTIONS = [
+  { value: "GKP", label: "Gabah Kering Panen (GKP)" },
+  { value: "GKG", label: "Gabah Kering Giling (GKG)" },
+];
+
+const DISTRICT_SELECT_ITEMS = DISTRICT_OPTIONS.map((d) => ({
+  value: d.id,
+  label: d.label,
+}));
 
 export function OfferWizard({
   initialOffer,
@@ -297,20 +314,32 @@ export function OfferWizard({
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="sm:col-span-2 block space-y-1.5">
-                    <span className="text-xs font-medium text-foreground">
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <span className="text-xs font-medium text-foreground block">
                       Jenis Gabah <span className="text-destructive">*</span>
                     </span>
-                    <select
+                    <Select
+                      items={GRAIN_TYPE_OPTIONS}
                       value={fields.grainType}
                       disabled={initialOffer?.typeLocationLocked}
-                      onChange={(e) => updateField("grainType", e.target.value as "GKP" | "GKG")}
-                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      onValueChange={(val) => {
+                        if (val === "GKP" || val === "GKG") {
+                          updateField("grainType", val);
+                        }
+                      }}
                     >
-                      <option value="GKP">Gabah Kering Panen (GKP)</option>
-                      <option value="GKG">Gabah Kering Giling (GKG)</option>
-                    </select>
-                  </label>
+                      <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <SelectValue placeholder="Pilih jenis gabah" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {GRAIN_TYPE_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <label className="block space-y-1.5">
                     <span className="text-xs font-medium text-foreground">
@@ -347,23 +376,30 @@ export function OfferWizard({
                     </span>
                   </label>
 
-                  <label className="block space-y-1.5">
-                    <span className="text-xs font-medium text-foreground">
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-medium text-foreground block">
                       Lokasi Pengambilan (Kecamatan) <span className="text-destructive">*</span>
                     </span>
-                    <select
+                    <Select
+                      items={DISTRICT_SELECT_ITEMS}
                       value={fields.districtId}
                       disabled={initialOffer?.typeLocationLocked}
-                      onChange={(e) => updateField("districtId", e.target.value)}
-                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      onValueChange={(val) => {
+                        if (val) updateField("districtId", val);
+                      }}
                     >
-                      {DISTRICT_OPTIONS.map((opt) => (
-                        <option key={opt.id} value={opt.id}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <SelectValue placeholder="Pilih kecamatan" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DISTRICT_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.id} value={opt.id}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <label className="block space-y-1.5">
                     <span className="text-xs font-medium text-foreground">

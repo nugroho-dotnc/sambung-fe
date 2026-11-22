@@ -14,6 +14,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Map as MapIcon,
   Table as TableIcon,
   ChevronDown,
@@ -24,6 +31,23 @@ import {
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
+
+const COMMODITY_OPTIONS = [
+  { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
+  { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
+  { value: "Beras Medium", label: "Beras Medium" },
+];
+
+const COVERAGE_OPTIONS = [
+  { value: "Seluruh Indonesia", label: "Seluruh Indonesia (34 Provinsi)" },
+  { value: "Pulau Jawa", label: "Pulau Jawa (Sentra Utama)" },
+  { value: "Luar Jawa", label: "Luar Jawa" },
+];
+
+const TIME_OPTIONS = [
+  { value: "Snapshot Terkini", label: "Snapshot Terkini (Pekan Berjalan)" },
+  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari Terakhir" },
+];
 
 export default function PetaDisparitasPage() {
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
@@ -144,77 +168,96 @@ export default function PetaDisparitasPage() {
       </div>
 
       {/* Filter Bar */}
-      <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs">
+      <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs hover:shadow-sm transition-all mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-medium text-muted-foreground block">
               Komoditas Acuan
             </label>
-            <div className="relative">
-              <select
-                value={selectedCommodity}
-                onChange={(e) => setSelectedCommodity(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Gabah Kering Panen (GKP)">Gabah Kering Panen (GKP)</option>
-                <option value="Gabah Kering Giling (GKG)">Gabah Kering Giling (GKG)</option>
-                <option value="Beras Medium">Beras Medium</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={COMMODITY_OPTIONS}
+              value={selectedCommodity}
+              onValueChange={(val) => {
+                if (val) setSelectedCommodity(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih komoditas" />
+              </SelectTrigger>
+              <SelectContent>
+                {COMMODITY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-medium text-muted-foreground block">
               Cakupan Wilayah
             </label>
-            <div className="relative">
-              <select
-                value={selectedCoverage}
-                onChange={(e) => setSelectedCoverage(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Seluruh Indonesia">Seluruh Indonesia (34 Provinsi)</option>
-                <option value="Pulau Jawa">Pulau Jawa (Sentra Utama)</option>
-                <option value="Luar Jawa">Luar Jawa</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={COVERAGE_OPTIONS}
+              value={selectedCoverage}
+              onValueChange={(val) => {
+                if (val) setSelectedCoverage(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih cakupan" />
+              </SelectTrigger>
+              <SelectContent>
+                {COVERAGE_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-medium text-muted-foreground block">
               Snapshot Waktu
             </label>
-            <div className="relative">
-              <select
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Snapshot Terkini">Snapshot Terkini (Pekan Berjalan)</option>
-                <option value="Rata-rata 30 Hari">Rata-rata 30 Hari Terakhir</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={TIME_OPTIONS}
+              value={selectedTime}
+              onValueChange={(val) => {
+                if (val) setSelectedTime(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih snapshot" />
+              </SelectTrigger>
+              <SelectContent>
+                {TIME_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </Card>
 
       {/* Main Map or Table Container */}
-      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/80">
+      <Card className="p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60">
           <div>
-            <h2 className="font-display font-bold text-xl text-foreground">
+            <h2 className="type-subheading font-bold text-foreground">
               {viewMode === "map"
-                ? "Peta Sebaran Disparitas Spasial"
-                : "Tabel Peringkat Disparitas Antarwilayah"}
+                ? "Peta Sebaran Harga Antarwilayah"
+                : "Tabel Peringkat Harga Antarwilayah"}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               Data terintegrasi dari pusat agregasi pasar gabah SAMBUNG dan survei pengamatan harga daerah.
             </p>
           </div>
-          <Badge variant="outline" className="text-xs font-bold self-start sm:self-auto">
+          <Badge variant="outline" className="text-xs font-semibold self-start sm:self-auto px-3 py-1 bg-muted/40">
             {selectedCoverage}
           </Badge>
         </div>
@@ -386,25 +429,30 @@ export default function PetaDisparitasPage() {
           </div>
 
           {/* Sidebar Summary Card */}
-          <div className="lg:col-span-4 space-y-4 p-5 rounded-xl bg-muted/30 border border-border/80">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Ringkasan {activeProvinceItem.province}
-            </span>
+          <div className="lg:col-span-4 space-y-4 p-5 rounded-2xl bg-card border border-border/70 shadow-xs">
+            <div>
+              <span className="text-xs font-semibold text-primary block">
+                Ringkasan Wilayah
+              </span>
+              <h3 className="type-subheading text-foreground font-bold mt-0.5">
+                {activeProvinceItem.province}
+              </h3>
+            </div>
 
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between items-center py-1.5 border-b border-border/70">
+              <div className="flex justify-between items-center py-1.5 border-b border-border/40">
                 <span className="text-muted-foreground">Harga Acuan Rata-rata:</span>
                 <span className="font-bold text-foreground text-sm tabular-nums">
                   {formatRupiah(activeProvinceItem.price)}/kg
                 </span>
               </div>
-              <div className="flex justify-between items-center py-1.5 border-b border-border/70">
+              <div className="flex justify-between items-center py-1.5 border-b border-border/40">
                 <span className="text-muted-foreground">Median Acuan Nasional:</span>
                 <span className="font-bold text-foreground text-sm tabular-nums">
                   {formatRupiah(activeProvinceItem.medianPrice)}/kg
                 </span>
               </div>
-              <div className="flex justify-between items-center py-1.5 border-b border-border/70">
+              <div className="flex justify-between items-center py-1.5 border-b border-border/40">
                 <span className="text-muted-foreground">Deviasi vs Median:</span>
                 <span
                   className={`font-black text-sm tabular-nums ${

@@ -7,9 +7,22 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { useOffers } from "@/features/offers/hooks/use-offers";
 import { Search, ShoppingBag, Eye, Download } from "lucide-react";
+
+const COMMODITY_FILTER_OPTIONS = [
+  { value: "all", label: "Semua Komoditas" },
+  { value: "GKP", label: "GKP (Gabah Kering Panen)" },
+  { value: "GKG", label: "GKG (Gabah Kering Giling)" },
+];
 
 export default function AdminCatalogPage() {
   const { data: offers, isLoading } = useOffers();
@@ -86,15 +99,24 @@ export default function AdminCatalogPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <select
+          <Select
+            items={COMMODITY_FILTER_OPTIONS}
             value={commodityFilter}
-            onChange={(e) => setCommodityFilter(e.target.value)}
-            className="h-10 px-3 rounded-xl border border-border/80 bg-background text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-2xs cursor-pointer"
+            onValueChange={(val) => {
+              if (val) setCommodityFilter(val);
+            }}
           >
-            <option value="all">Semua Komoditas</option>
-            <option value="GKP">GKP (Gabah Kering Panen)</option>
-            <option value="GKG">GKG (Gabah Kering Giling)</option>
-          </select>
+            <SelectTrigger className="h-10 min-w-48 px-3 rounded-xl border border-border/80 bg-background text-xs font-semibold text-foreground shadow-2xs">
+              <SelectValue placeholder="Pilih komoditas" />
+            </SelectTrigger>
+            <SelectContent>
+              {COMMODITY_FILTER_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

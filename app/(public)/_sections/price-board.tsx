@@ -1,12 +1,37 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { PriceBoardService } from "@/features/price-board/services/price-board.service";
 import type { SupplyChainLevel } from "@/features/price-board/domain/price-chain";
+
+const COMMODITY_OPTIONS = [
+  { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
+  { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
+  { value: "Beras Medium", label: "Beras Medium" },
+];
+
+const REGION_OPTIONS = [
+  { value: "Jawa Barat", label: "Jawa Barat (Sentra Utama)" },
+  { value: "Jawa Tengah", label: "Jawa Tengah" },
+  { value: "Jawa Timur", label: "Jawa Timur" },
+  { value: "Sulawesi Selatan", label: "Sulawesi Selatan" },
+  { value: "Sumatera Utara", label: "Sumatera Utara" },
+];
+
+const PERIOD_OPTIONS = [
+  { value: "Pekan Berjalan", label: "Pekan Berjalan (Terkini)" },
+  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari" },
+];
 
 export default function PriceBoardSection() {
   const [commodity, setCommodity] = useState("Gabah Kering Panen (GKP)");
@@ -42,58 +67,75 @@ export default function PriceBoardSection() {
       <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Komoditas Acuan
             </label>
-            <div className="relative">
-              <select
-                value={commodity}
-                onChange={(e) => setCommodity(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Gabah Kering Panen (GKP)">Gabah Kering Panen (GKP)</option>
-                <option value="Gabah Kering Giling (GKG)">Gabah Kering Giling (GKG)</option>
-                <option value="Beras Medium">Beras Medium</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={COMMODITY_OPTIONS}
+              value={commodity}
+              onValueChange={(val) => {
+                if (val) setCommodity(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-10 rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih komoditas" />
+              </SelectTrigger>
+              <SelectContent>
+                {COMMODITY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Wilayah Pengamatan
             </label>
-            <div className="relative">
-              <select
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Jawa Barat">Jawa Barat (Sentra Utama)</option>
-                <option value="Jawa Tengah">Jawa Tengah</option>
-                <option value="Jawa Timur">Jawa Timur</option>
-                <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-                <option value="Sumatera Utara">Sumatera Utara</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={REGION_OPTIONS}
+              value={region}
+              onValueChange={(val) => {
+                if (val) setRegion(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-10 rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih wilayah" />
+              </SelectTrigger>
+              <SelectContent>
+                {REGION_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Periode Snapshot
             </label>
-            <div className="relative">
-              <select
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                className="w-full h-10 appearance-none rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary pr-9 cursor-pointer shadow-2xs"
-              >
-                <option value="Pekan Berjalan">Pekan Berjalan (Terkini)</option>
-                <option value="Rata-rata 30 Hari">Rata-rata 30 Hari</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+            <Select
+              items={PERIOD_OPTIONS}
+              value={period}
+              onValueChange={(val) => {
+                if (val) setPeriod(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-10 rounded-xl border border-border/80 bg-background px-3.5 text-xs font-semibold text-foreground shadow-2xs">
+                <SelectValue placeholder="Pilih periode" />
+              </SelectTrigger>
+              <SelectContent>
+                {PERIOD_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </Card>

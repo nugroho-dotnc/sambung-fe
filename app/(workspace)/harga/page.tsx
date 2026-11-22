@@ -18,6 +18,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
 import { PriceBoardService } from "@/features/price-board/services/price-board.service";
@@ -27,6 +34,25 @@ import {
 } from "@/features/price-board/domain/price-chain";
 import { PriceChainChart } from "@/features/price-board/components/price-chain-chart";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
+
+const COMMODITY_OPTIONS = [
+  { value: "Beras Medium I", label: "Beras Medium I (Standar)" },
+  { value: "Beras Premium", label: "Beras Premium" },
+  { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
+];
+
+const REGION_OPTIONS = [
+  { value: "Jawa Barat", label: "Provinsi Jawa Barat (Subang/Karawang)" },
+  { value: "Jawa Tengah", label: "Provinsi Jawa Tengah" },
+  { value: "Jawa Timur", label: "Provinsi Jawa Timur" },
+  { value: "Nasional", label: "Rata-rata Nasional (Bapanas)" },
+];
+
+const PERIOD_OPTIONS = [
+  { value: "12 Pekan Terakhir", label: "12 Pekan Terakhir" },
+  { value: "8 Pekan Terakhir", label: "8 Pekan Terakhir" },
+  { value: "4 Pekan Terakhir", label: "4 Pekan Terakhir" },
+];
 
 const LEVEL_ICONS: Record<string, typeof Sprout> = {
   petani: Sprout,
@@ -81,52 +107,78 @@ export default function PriceBoardPage() {
       />
 
       {/* Filter Bar (3 Columns) */}
-      <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs mb-8">
+      <Card className="p-4 sm:p-5 bg-card rounded-2xl transition-all mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-medium text-muted-foreground block">
               Komoditas Acuan
             </label>
-            <select
+            <Select
+              items={COMMODITY_OPTIONS}
               value={commodity}
-              onChange={(e) => setCommodity(e.target.value)}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs cursor-pointer"
+              onValueChange={(val) => {
+                if (val) setCommodity(val);
+              }}
             >
-              <option value="Beras Medium I">Beras Medium I (Standar)</option>
-              <option value="Beras Premium">Beras Premium</option>
-              <option value="Gabah Kering Panen (GKP)">Gabah Kering Panen (GKP)</option>
-            </select>
+              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+                <SelectValue placeholder="Pilih komoditas" />
+              </SelectTrigger>
+              <SelectContent>
+                {COMMODITY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-medium text-muted-foreground block">
               Wilayah Pembanding
             </label>
-            <select
+            <Select
+              items={REGION_OPTIONS}
               value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs cursor-pointer"
+              onValueChange={(val) => {
+                if (val) setRegion(val);
+              }}
             >
-              <option value="Jawa Barat">Provinsi Jawa Barat (Subang/Karawang)</option>
-              <option value="Jawa Tengah">Provinsi Jawa Tengah</option>
-              <option value="Jawa Timur">Provinsi Jawa Timur</option>
-              <option value="Nasional">Rata-rata Nasional (Bapanas)</option>
-            </select>
+              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+                <SelectValue placeholder="Pilih wilayah" />
+              </SelectTrigger>
+              <SelectContent>
+                {REGION_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-medium text-muted-foreground block">
               Rentang Pengamatan
             </label>
-            <select
+            <Select
+              items={PERIOD_OPTIONS}
               value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs cursor-pointer"
+              onValueChange={(val) => {
+                if (val) setPeriod(val);
+              }}
             >
-              <option value="12 Pekan Terakhir">12 Pekan Terakhir</option>
-              <option value="8 Pekan Terakhir">8 Pekan Terakhir</option>
-              <option value="4 Pekan Terakhir">4 Pekan Terakhir</option>
-            </select>
+              <SelectTrigger className="w-full h-11 rounded-xl bg-background px-3 text-xs font-semibold text-foreground">
+                <SelectValue placeholder="Pilih rentang" />
+              </SelectTrigger>
+              <SelectContent>
+                {PERIOD_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </Card>
@@ -134,22 +186,22 @@ export default function PriceBoardPage() {
       {/* Main 2-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: Dari Petani ke Pembeli */}
-        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs">
-          <div className="border-b border-border/60 pb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-primary">
-              Struktur Rantai Pasok Gabah & Beras
+        <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl bg-card transition-all">
+          <div className="border-b border-border/60 pb-3.5">
+            <span className="text-xs font-semibold text-primary">
+              Rantai Pasok Gabah & Beras
             </span>
-            <h2 className="text-lg font-bold text-foreground mt-0.5">
-              Dari Petani hingga Konsumen Akhir
+            <h2 className="type-subheading text-foreground font-bold mt-0.5">
+              Pembentukan Harga dari Petani ke Konsumen
             </h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Harga per kilogram ekuivalen beras medium di wilayah {region}.
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-border/80">
+          <div className="overflow-x-auto rounded-xl border border-border/70">
             <table className="w-full text-left text-xs">
-              <thead className="bg-muted/60 border-b border-border/80 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <thead className="bg-muted/40 border-b border-border/70 text-xs font-semibold text-muted-foreground">
                 <tr>
                   <th className="py-3 px-4">Tingkat Rantai</th>
                   <th className="py-3 px-4">Keterangan Biaya</th>
@@ -163,7 +215,7 @@ export default function PriceBoardPage() {
                     <tr key={item.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-3.5 px-4 font-semibold text-foreground">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
                             <Icon className="w-4 h-4" />
                           </div>
                           <div>
@@ -189,37 +241,37 @@ export default function PriceBoardPage() {
         </Card>
 
         {/* Right Column: Indikator Farmer's Share */}
-        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs">
-          <div className="border-b border-border/60 pb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-primary">
-              Indikator Keadilan Distribusi
+        <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl bg-card transition-all">
+          <div className="border-b border-border/60 pb-3.5">
+            <span className="text-xs font-semibold text-primary">
+              Keadilan Distribusi
             </span>
-            <h2 className="text-lg font-bold text-foreground mt-0.5">
-              Transparansi Nilai & Farmer&apos;s Share
+            <h2 className="type-subheading text-foreground font-bold mt-0.5">
+              Porsi Nilai untuk Petani
             </h2>
           </div>
 
           {/* Farmer's Share Percentage Box */}
-          <div className="p-4 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+          <div className="p-4.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
               <Percent className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-emerald-950 dark:text-emerald-200">
+              <p className="text-xs font-medium text-muted-foreground">
                 Bagian Petani (Farmer&apos;s Share)
               </p>
-              <p className="text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
+              <p className="text-2xl sm:text-3xl font-extrabold font-display tabular-nums text-emerald-700 dark:text-emerald-400">
                 {comparison.farmerSharePercent}%
               </p>
             </div>
           </div>
 
           {/* Total Margin Spread */}
-          <div className="space-y-1.5 p-4 rounded-xl bg-muted/40 border border-border/60">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-1.5 p-4 rounded-xl bg-muted/30 border border-border/50">
+            <p className="text-xs font-medium text-muted-foreground">
               Total Selisih (Petani → Konsumen)
             </p>
-            <p className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground">
+            <p className="text-2xl sm:text-3xl font-extrabold font-display tabular-nums text-foreground">
               {formatRupiah(comparison.marginAmount)}{" "}
               <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
             </p>
@@ -241,10 +293,10 @@ export default function PriceBoardPage() {
       </div>
 
       {/* 12-Week Price Transmission Trend Chart */}
-      <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
+      <Card className="p-6 sm:p-7 space-y-4 rounded-2xl border border-border/80 bg-card shadow-xs hover:shadow-sm transition-all mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3.5">
           <div>
-            <h2 className="text-lg font-bold text-foreground">
+            <h2 className="type-subheading text-foreground font-bold">
               Pergerakan Harga Rantai Pasok ({period})
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
