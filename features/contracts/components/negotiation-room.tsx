@@ -536,7 +536,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
 
       {/* Modal: Counter-Offer Price Slider */}
       <Dialog open={counterModalOpen} onOpenChange={setCounterModalOpen}>
-        <DialogContent className="w-full max-w-[calc(100%-2rem)] sm:max-w-md md:max-w-3xl lg:max-w-6xl">
+        <DialogContent className="w-full max-w-md sm:max-w-3xl lg:max-w-6xl">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-foreground">
               Ajukan Nego Harga Baru
