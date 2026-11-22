@@ -52,14 +52,14 @@ export function ForecastChart({ series }: ForecastChartProps) {
                     .filter((p) => p.dataKey !== "lowerCi")
                     .map((entry, index) => (
                       <div key={index} className="flex items-center justify-between gap-4">
-                        <span className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
+                        <span className="flex items-center gap-1.5 text-muted-foreground text-xs">
                           <span
                             className="w-2.5 h-2.5 rounded-full"
                             style={{ backgroundColor: entry.color }}
                           />
                           {entry.name}
                         </span>
-                        <span className="font-mono tabular-nums font-semibold text-foreground">
+                        <span className="tabular-nums font-semibold text-foreground">
                           {formatRupiah(Number(entry.value))}
                         </span>
                       </div>

@@ -127,14 +127,14 @@ export default function AdminParametersPage() {
                   max="168"
                   value={defaultDurationHours}
                   onChange={(e) => setDefaultDurationHours(Number(e.target.value))}
-                  className="pr-12 text-sm font-mono font-bold"
+                  className="pr-12 text-sm tabular-nums font-bold"
                   required
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
                   Jam
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground">Nilai standar yang disarankan: 24 jam.</p>
+              <p className="text-xs text-muted-foreground">Nilai standar yang disarankan: 24 jam.</p>
             </div>
           </Card>
 
@@ -162,14 +162,14 @@ export default function AdminParametersPage() {
                   max="15"
                   value={tolerancePercent}
                   onChange={(e) => setTolerancePercent(Number(e.target.value))}
-                  className="pr-10 text-sm font-mono font-bold"
+                  className="pr-10 text-sm tabular-nums font-bold"
                   required
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
                   %
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground">Nilai standar sistem: 3.0% (0.03).</p>
+              <p className="text-xs text-muted-foreground">Nilai standar sistem: 3.0% (0.03).</p>
             </div>
           </Card>
 
@@ -198,14 +198,14 @@ export default function AdminParametersPage() {
                     max="75"
                     value={rendemenGKP}
                     onChange={(e) => setRendemenGKP(Number(e.target.value))}
-                    className="pr-10 text-sm font-mono font-bold"
+                    className="pr-10 text-sm tabular-nums font-bold"
                     required
                   />
                   <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
                     %
                   </span>
                 </div>
-                <p className="text-[11px] text-muted-foreground">Standar: 53.38%.</p>
+                <p className="text-xs text-muted-foreground">Standar: 53.38%.</p>
               </div>
 
               <div className="space-y-1.5">
@@ -220,14 +220,14 @@ export default function AdminParametersPage() {
                     max="85"
                     value={rendemenGKG}
                     onChange={(e) => setRendemenGKG(Number(e.target.value))}
-                    className="pr-10 text-sm font-mono font-bold"
+                    className="pr-10 text-sm tabular-nums font-bold"
                     required
                   />
                   <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
                     %
                   </span>
                 </div>
-                <p className="text-[11px] text-muted-foreground">Standar: 63.0%.</p>
+                <p className="text-xs text-muted-foreground">Standar: 63.0%.</p>
               </div>
             </div>
           </Card>
@@ -256,14 +256,14 @@ export default function AdminParametersPage() {
                   max="12000"
                   value={governmentFloorPrice}
                   onChange={(e) => setGovernmentFloorPrice(Number(e.target.value))}
-                  className="pr-14 text-sm font-mono font-bold"
+                  className="pr-14 text-sm tabular-nums font-bold"
                   required
                 />
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground">
                   Rp/kg
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground">Acuan Bapanas terkini: Rp6.000/kg.</p>
+              <p className="text-xs text-muted-foreground">Acuan Bapanas terkini: Rp6.000/kg.</p>
             </div>
           </Card>
 

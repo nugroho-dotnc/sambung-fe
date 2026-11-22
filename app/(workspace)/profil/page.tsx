@@ -40,7 +40,7 @@ export default function ProfilePage() {
           <CardContent className="p-6 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-xl border border-border/70 bg-card space-y-1">
-                <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-primary" />
                   Nama Lengkap Penanggung Jawab
                 </span>
@@ -48,15 +48,15 @@ export default function ProfilePage() {
               </div>
 
               <div className="p-3.5 rounded-xl border border-border/70 bg-card space-y-1">
-                <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-primary" />
                   Nomor Ponsel Terverifikasi
                 </span>
-                <p className="text-sm font-bold font-mono text-foreground">{user?.phone || "-"}</p>
+                <p className="text-sm font-bold tabular-nums text-foreground">{user?.phone || "-"}</p>
               </div>
 
               <div className="p-3.5 rounded-xl border border-border/70 bg-card space-y-1">
-                <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
                   <Building2 className="w-3.5 h-3.5 text-primary" />
                   Nama Kelompok Tani / Usaha
                 </span>
@@ -64,7 +64,7 @@ export default function ProfilePage() {
               </div>
 
               <div className="p-3.5 rounded-xl border border-border/70 bg-card space-y-1">
-                <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-primary" />
                   Wilayah Domisili Usaha
                 </span>
@@ -116,7 +116,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => alert("Permintaan penutupan akun Anda telah dicatat. Sesuai ketentuan perlindungan transaksi, seluruh kesepakatan pasokan aktif harus tuntas terlebih dahulu sebelum data kontak dan akun ditutup secara permanen.")}
-                  className="text-[11px] text-muted-foreground hover:text-destructive hover:underline cursor-pointer"
+                  className="text-xs text-muted-foreground hover:text-destructive hover:underline cursor-pointer"
                 >
                   Ajukan Permintaan Penutupan Akun
                 </button>

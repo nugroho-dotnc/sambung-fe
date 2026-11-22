@@ -26,7 +26,7 @@ export function OfferSummary({ input }: { input: OfferInput }) {
           <dt className="text-muted-foreground text-xs">{label}</dt>
           <dd
             className={`font-semibold text-foreground text-right ${
-              isMono ? "font-mono tabular-nums" : ""
+              isMono ? "tabular-nums" : ""
             } ${isHighlight ? "text-base text-emerald-700 dark:text-emerald-400 font-bold" : ""}`}
           >
             {value}

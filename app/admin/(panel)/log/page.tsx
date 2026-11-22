@@ -75,14 +75,14 @@ export default function AdminAuditLogPage() {
           <CardTitle className="text-base font-bold text-foreground">
             Daftar Aktivitas Sistem Terlacak
           </CardTitle>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             {filteredLogs.length} peristiwa
           </span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">Waktu Terjadi</th>
                 <th className="py-3 px-5">Pelaku (Peran)</th>
                 <th className="py-3 px-5">Aksi Bisnis</th>
@@ -106,14 +106,14 @@ export default function AdminAuditLogPage() {
               ) : (
                 filteredLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap text-[11px] tabular-nums">
+                    <td className="py-3.5 px-5 text-muted-foreground whitespace-nowrap text-xs tabular-nums">
                       {new Date(log.timestamp).toLocaleString("id-ID")}
                     </td>
                     <td className="py-3.5 px-5 font-semibold text-foreground whitespace-nowrap">
                       {log.actorName}{" "}
                       <Badge
                         variant="secondary"
-                        className="text-[10px] uppercase font-bold ml-1"
+                        className="text-xs uppercase font-bold ml-1"
                       >
                         {log.actorRole}
                       </Badge>
@@ -121,7 +121,7 @@ export default function AdminAuditLogPage() {
                     <td className="py-3.5 px-5 font-bold text-primary whitespace-nowrap">
                       {log.action}
                     </td>
-                    <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap">
+                    <td className="py-3.5 px-5 tabular-nums text-muted-foreground whitespace-nowrap">
                       {log.targetType}: #{log.targetId}
                     </td>
                     <td className="py-3.5 px-5 text-foreground leading-relaxed max-w-md">

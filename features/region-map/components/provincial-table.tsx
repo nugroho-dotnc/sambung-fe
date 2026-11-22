@@ -114,7 +114,7 @@ export function ProvincialTable({
             <Download className="w-3.5 h-3.5 text-primary" />
             <span>Unduh CSV</span>
           </Button>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             {filteredAndSortedData.length} provinsi
           </span>
         </div>
@@ -124,7 +124,7 @@ export function ProvincialTable({
       <div className="overflow-x-auto border border-border/80 rounded-2xl bg-card shadow-xs">
         <table className="w-full text-left text-xs">
           <thead className="bg-muted/60 border-b border-border/80">
-            <tr className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            <tr className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               <th className="p-3.5 w-12 text-center">No</th>
               <th
                 className="p-3.5 cursor-pointer hover:text-foreground select-none"
@@ -187,7 +187,7 @@ export function ProvincialTable({
                         : ""
                     }`}
                   >
-                    <td className="p-3.5 text-center font-mono text-[11px] text-muted-foreground tabular-nums">
+                    <td className="p-3.5 text-center text-xs text-muted-foreground tabular-nums">
                       {index + 1}
                     </td>
                     <td className="p-3.5 font-bold text-foreground">
@@ -198,13 +198,13 @@ export function ProvincialTable({
                         <span>{item.province}</span>
                       </div>
                     </td>
-                    <td className="p-3.5 text-right font-mono font-bold text-foreground tabular-nums">
+                    <td className="p-3.5 text-right font-bold text-foreground tabular-nums">
                       {formatRupiah(item.price)}
-                      <span className="text-[10px] font-normal text-muted-foreground">
+                      <span className="text-xs font-normal text-muted-foreground">
                         /kg
                       </span>
                     </td>
-                    <td className="p-3.5 text-right font-mono font-bold tabular-nums">
+                    <td className="p-3.5 text-right font-bold tabular-nums">
                       <span
                         className={
                           item.percentageDiff < 0
@@ -221,7 +221,7 @@ export function ProvincialTable({
                     </td>
                     <td className="p-3.5 text-center">
                       <span
-                        className={`inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold ${
+                        className={`inline-block px-2.5 py-0.5 rounded-md text-xs font-bold ${
                           item.percentageDiff < -3.5
                             ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                             : item.percentageDiff > 5.0
@@ -240,7 +240,7 @@ export function ProvincialTable({
                           : "Seimbang / Normal"}
                       </span>
                     </td>
-                    <td className="p-3.5 text-right font-mono text-muted-foreground tabular-nums hidden md:table-cell">
+                    <td className="p-3.5 text-right text-muted-foreground tabular-nums hidden md:table-cell">
                       {item.sampleCount} titik
                     </td>
                   </tr>

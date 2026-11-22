@@ -84,7 +84,7 @@ export default function TopBar() {
                 <span className="text-xs font-bold text-foreground leading-tight">
                   {user?.name || "Pengguna"}
                 </span>
-                <span className="text-[10px] text-muted-foreground leading-tight">
+                <span className="text-xs text-muted-foreground leading-tight">
                   {user?.businessName || user?.role || "SAMBUNG"}
                 </span>
               </div>
@@ -95,7 +95,7 @@ export default function TopBar() {
                 <DropdownMenuLabel className="font-normal p-2">
                   <div className="flex flex-col space-y-1">
                     <p className="text-xs font-bold leading-none text-foreground">{user?.name || "Pengguna"}</p>
-                    <p className="text-[11px] leading-none text-muted-foreground">{user?.phone || user?.email || "-"}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.phone || user?.email || "-"}</p>
                     <div className="pt-1.5">{getRoleBadge(user?.role)}</div>
                   </div>
                 </DropdownMenuLabel>

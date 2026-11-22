@@ -253,7 +253,7 @@ export function OfferWizard({
             }`}
           >
             <span
-              className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+              className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                 step === item.num
                   ? "bg-emerald-600 text-white shadow-xs"
                   : step > item.num
@@ -318,9 +318,9 @@ export function OfferWizard({
                       value={fields.totalVolumeKg}
                       onChange={(e) => updateField("totalVolumeKg", e.target.value)}
                       placeholder="Contoh: 5000"
-                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono tabular-nums focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <span className="text-[11px] text-muted-foreground block">
+                    <span className="text-xs text-muted-foreground block">
                       ≈ {(volumeNum / 1000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} ton
                     </span>
                   </label>
@@ -335,9 +335,9 @@ export function OfferWizard({
                       value={fields.quality}
                       onChange={(e) => updateField("quality", e.target.value)}
                       placeholder="Contoh: 22.5"
-                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm font-mono tabular-nums focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full h-11 rounded-xl border border-input bg-background px-3 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <span className="text-[11px] text-muted-foreground block">
+                    <span className="text-xs text-muted-foreground block">
                       Deklaratif petani (opsional)
                     </span>
                   </label>
@@ -398,10 +398,10 @@ export function OfferWizard({
 
                 <div className="rounded-xl bg-muted/40 p-4 border border-border/60">
                   <p className="text-xs text-muted-foreground">Perkiraan Nilai Kotor Pasokan</p>
-                  <p className="mt-1 text-2xl font-bold font-mono tabular-nums text-foreground">
+                  <p className="mt-1 text-2xl font-bold tabular-nums text-foreground">
                     {estimatedTotal > 0 ? formatRupiah(estimatedTotal) : "Rp0"}
                   </p>
-                  <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
                     Dihitung dari {volumeNum.toLocaleString("id-ID")} kg × Rp{numericPrice.toLocaleString("id-ID")}/kg.
                   </p>
                 </div>
@@ -466,7 +466,7 @@ export function OfferWizard({
           <div className="grid items-start gap-6 lg:grid-cols-12">
             <section className="lg:col-span-7 rounded-2xl border border-border/80 bg-card p-6 sm:p-7 space-y-5">
               <div className="border-b border-border/60 pb-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   Tinjauan Akhir
                 </span>
                 <h2 className="text-lg font-bold text-foreground mt-0.5">

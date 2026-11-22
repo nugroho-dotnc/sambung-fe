@@ -55,7 +55,7 @@ export function FairPriceSimulator() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Komoditas Gabah
             </label>
             <select
@@ -73,7 +73,7 @@ export function FairPriceSimulator() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Wilayah Pengamatan
             </label>
             <select
@@ -89,7 +89,7 @@ export function FairPriceSimulator() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Harga Beras Produsen (Rp/kg)
             </label>
             <input
@@ -98,16 +98,16 @@ export function FairPriceSimulator() {
               onChange={(e) => setRicePrice(Number(e.target.value))}
               step={100}
               min={8000}
-              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs font-mono tabular-nums font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
+              className="w-full h-11 rounded-xl border border-input bg-background px-3 text-xs tabular-nums font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Kadar Air Gabah (%)
               </label>
-              <span className="font-mono text-xs font-bold text-foreground">{moisture}%</span>
+              <span className="tabular-nums text-xs font-bold text-foreground">{moisture}%</span>
             </div>
             <input
               type="range"
@@ -127,11 +127,11 @@ export function FairPriceSimulator() {
         {/* Left Column: Fair Price Range Display */}
         <Card className="lg:col-span-7 p-6 sm:p-7 space-y-6 rounded-2xl border border-border/80 bg-card shadow-xs">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
               Rentang Harga Wajar Rekomendasi
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-3xl sm:text-4xl font-extrabold font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+              <p className="text-3xl sm:text-4xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
                 Rp{result.lowerBound.toLocaleString("id-ID")} – Rp{result.upperBound.toLocaleString("id-ID")}
               </p>
               <span className="text-sm font-normal text-muted-foreground">/ kg</span>
@@ -158,12 +158,12 @@ export function FairPriceSimulator() {
           {/* Government HPP Floor Reference */}
           <div className="p-4 rounded-xl bg-muted/40 border border-border/60 flex items-center justify-between text-xs">
             <div>
-              <span className="text-muted-foreground block text-[11px]">Batas Pengaman HPP Pemerintah</span>
+              <span className="text-muted-foreground block text-xs">Batas Pengaman HPP Pemerintah</span>
               <span className="font-bold text-foreground">
                 Rp{result.hppGovernment.toLocaleString("id-ID")} / kg ({result.grainType})
               </span>
             </div>
-            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-900">
+            <span className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-900">
               Harga Pasar di Atas HPP
             </span>
           </div>
@@ -172,7 +172,7 @@ export function FairPriceSimulator() {
         {/* Right Column: Mathematical Step-by-Step Breakdown */}
         <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs">
           <div className="border-b border-border/60 pb-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">
               Rincian Perhitungan
             </span>
             <h3 className="text-base font-bold text-foreground mt-0.5">
@@ -185,7 +185,7 @@ export function FairPriceSimulator() {
               <span className="text-muted-foreground">
                 1. Nilai Beras Ekuivalen ({Math.round(result.rendemen * 100)}%)
               </span>
-              <span className="font-mono tabular-nums font-semibold text-foreground">
+              <span className="tabular-nums font-semibold text-foreground">
                 {formatRupiah(result.explanation.grossValue)}
               </span>
             </div>
@@ -194,7 +194,7 @@ export function FairPriceSimulator() {
               <span className="text-muted-foreground">
                 2. Pengurangan Biaya Susut/Jemur
               </span>
-              <span className="font-mono tabular-nums font-semibold text-amber-700 dark:text-amber-400">
+              <span className="tabular-nums font-semibold text-amber-700 dark:text-amber-400">
                 - {formatRupiah(result.explanation.dryingAdjustment)}
               </span>
             </div>
@@ -203,20 +203,20 @@ export function FairPriceSimulator() {
               <span className="text-muted-foreground">
                 3. Alokasi Biaya Giling Pabrik
               </span>
-              <span className="font-mono tabular-nums font-semibold text-muted-foreground">
+              <span className="tabular-nums font-semibold text-muted-foreground">
                 - {formatRupiah(result.millingMarginAmount)}
               </span>
             </div>
 
             <div className="flex justify-between items-baseline pt-2">
               <span className="font-bold text-foreground">Nilai Bersih Wajar</span>
-              <span className="font-mono tabular-nums text-base font-extrabold text-emerald-700 dark:text-emerald-400">
+              <span className="tabular-nums text-base font-extrabold text-emerald-700 dark:text-emerald-400">
                 {formatRupiah(result.medianPrice)} / kg
               </span>
             </div>
           </div>
 
-          <div className="rounded-xl bg-muted/30 p-3.5 text-[11px] text-muted-foreground leading-relaxed border border-border/50">
+          <div className="rounded-xl bg-muted/30 p-3.5 text-xs text-muted-foreground leading-relaxed border border-border/50">
             <p>
               Dengan rendemen konversi {Math.round(result.rendemen * 100)}%, setiap 1 kg gabah menghasilkan sekitar {result.rendemen.toFixed(2)} kg beras. Formula ini menjamin keuntungan petani terlindungi tanpa memberatkan biaya pengolahan penggilingan.
             </p>

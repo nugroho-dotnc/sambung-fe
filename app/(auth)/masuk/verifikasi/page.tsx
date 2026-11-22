@@ -165,7 +165,7 @@ function VerificationContent() {
           Petunjuk Verifikasi Cepat Sandbox:
         </p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Sistem saat ini dalam tahap integrasi. Masukkan kode <strong className="text-foreground font-mono">1234</strong> untuk verifikasi instan.
+          Sistem saat ini dalam tahap integrasi. Masukkan kode <strong className="text-foreground tabular-nums">1234</strong> untuk verifikasi instan.
         </p>
       </div>
     </div>

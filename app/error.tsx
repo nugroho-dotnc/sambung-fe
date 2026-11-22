@@ -17,7 +17,7 @@ export default function GlobalError({
         <AlertCircle className="w-8 h-8" />
       </div>
 
-      <span className="font-mono text-sm font-bold tracking-widest text-destructive uppercase mb-2">
+      <span className="tabular-nums text-sm font-bold tracking-widest text-destructive uppercase mb-2">
         Kendala Aplikasi
       </span>
 

@@ -66,18 +66,18 @@ export default function PriceMapSection() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
               <TrendingDown className="w-4 h-4" />
-              <p className="text-[11px] font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold uppercase tracking-wider">
                 Harga Terendah (Sentra Surplus)
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               {minPriceItem.province}
             </p>
-            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-display tabular-nums">
               {formatRupiah(minPriceItem.price)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Deviasi: {minPriceItem.percentageDiff.toFixed(1)}% di bawah median
             </p>
           </div>
@@ -85,18 +85,18 @@ export default function PriceMapSection() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
               <TrendingUp className="w-4 h-4" />
-              <p className="text-[11px] font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold uppercase tracking-wider">
                 Harga Tertinggi (Wilayah Konsumen)
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               {maxPriceItem.province}
             </p>
-            <p className="text-2xl font-black text-amber-700 dark:text-amber-400 font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-amber-700 dark:text-amber-400 font-display tabular-nums">
               {formatRupiah(maxPriceItem.price)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Deviasi: +{maxPriceItem.percentageDiff.toFixed(1)}% di atas median
             </p>
           </div>
@@ -104,17 +104,17 @@ export default function PriceMapSection() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-foreground">
               <Scale className="w-4 h-4 text-primary" />
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Rentang Disparitas Nasional
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               Selisih Wilayah Antarpulau
             </p>
-            <p className="text-2xl font-black text-foreground font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-foreground font-display tabular-nums">
               {disparityPercent}%
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Dipengaruhi jarak angkut & anomali iklim
             </p>
           </div>

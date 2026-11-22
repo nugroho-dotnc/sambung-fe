@@ -130,14 +130,14 @@ export default function AdminPriceDataPage() {
           <CardTitle className="text-base font-bold text-foreground">
             Daftar Catatan Observasi
           </CardTitle>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             {filteredRecords.length} rekaman data
           </span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">ID & Periode</th>
                 <th className="py-3 px-5">Provinsi</th>
                 <th className="py-3 px-5">Komoditas</th>
@@ -163,9 +163,9 @@ export default function AdminPriceDataPage() {
               ) : (
                 filteredRecords.map((item) => (
                   <tr key={item.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
+                    <td className="py-3.5 px-5 tabular-nums text-muted-foreground whitespace-nowrap text-xs">
                       <span className="font-bold text-foreground">#{item.id}</span>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{item.period}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.period}</p>
                     </td>
                     <td className="py-3.5 px-5 font-semibold text-foreground whitespace-nowrap">
                       {item.province}
@@ -173,7 +173,7 @@ export default function AdminPriceDataPage() {
                     <td className="py-3.5 px-5 text-muted-foreground whitespace-nowrap">
                       {item.commodity}
                     </td>
-                    <td className="py-3.5 px-5 text-right font-mono font-bold whitespace-nowrap tabular-nums">
+                    <td className="py-3.5 px-5 text-right font-bold whitespace-nowrap tabular-nums">
                       <span
                         className={
                           item.price <= 0
@@ -187,7 +187,7 @@ export default function AdminPriceDataPage() {
                       </span>
                     </td>
                     <td className="py-3.5 px-5 whitespace-nowrap">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
                         {item.source}
                       </span>
                     </td>
@@ -200,12 +200,12 @@ export default function AdminPriceDataPage() {
                             ? "secondary"
                             : "destructive"
                         }
-                        className="text-[10px] font-bold uppercase"
+                        className="text-xs font-bold uppercase"
                       >
                         {item.status}
                       </Badge>
                     </td>
-                    <td className="py-3.5 px-5 text-muted-foreground text-[11px] leading-relaxed max-w-xs">
+                    <td className="py-3.5 px-5 text-muted-foreground text-xs leading-relaxed max-w-xs">
                       {item.reason || "Lolos verifikasi ambang kewajaran & non-negatif."}
                     </td>
                   </tr>

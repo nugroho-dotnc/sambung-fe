@@ -125,7 +125,7 @@ export default function BuyerCatalogPage() {
             <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
               Total Pasokan Siap Dipesan
             </span>
-            <p className="text-2xl font-bold font-mono tabular-nums text-foreground">
+            <p className="text-2xl font-bold tabular-nums text-foreground">
               {totalAvailableKg.toLocaleString("id-ID")}{" "}
               <span className="text-sm font-normal text-muted-foreground font-sans">
                 kg ({(totalAvailableKg / 1000).toLocaleString("id-ID", { maximumFractionDigits: 1 })} ton)
@@ -149,13 +149,13 @@ export default function BuyerCatalogPage() {
             className="w-full sm:w-auto"
           >
             <TabsList className="bg-muted/80 p-1 rounded-xl h-auto flex flex-wrap gap-1">
-              <TabsTrigger value="ALL" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="ALL" className="px-3 text-xs rounded-lg">
                 Semua Komoditas
               </TabsTrigger>
-              <TabsTrigger value="GKP" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="GKP" className="px-3 text-xs rounded-lg">
                 Gabah Kering Panen (GKP)
               </TabsTrigger>
-              <TabsTrigger value="GKG" className="min-h-9 px-3 text-xs rounded-lg">
+              <TabsTrigger value="GKG" className="px-3 text-xs rounded-lg">
                 Gabah Kering Giling (GKG)
               </TabsTrigger>
             </TabsList>
@@ -228,13 +228,13 @@ export default function BuyerCatalogPage() {
                 <div className="space-y-3">
                   {/* Top Badges */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
                       Gabah {item.grainType}
                     </span>
 
                     {/* Friendly Copywriting Badge with Tooltip Notice */}
                     <div
-                      className="group relative flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full cursor-help"
+                      className="group relative flex items-center gap-1 text-xs text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full cursor-help"
                       title="Data pasokan ini dicatat langsung oleh petani berdasarkan hasil panen di lapangan, bukan stok fisik di gudang aplikasi."
                     >
                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
@@ -258,8 +258,8 @@ export default function BuyerCatalogPage() {
                   {/* Price & Value Details */}
                   <div className="p-3.5 rounded-xl bg-muted/30 border border-border/50 space-y-1">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-[11px] text-muted-foreground">Harga Minta</span>
-                      <p className="text-lg font-bold font-mono tabular-nums text-foreground">
+                      <span className="text-xs text-muted-foreground">Harga Minta</span>
+                      <p className="text-lg font-bold tabular-nums text-foreground">
                         {formatRupiah(item.askPrice)}{" "}
                         <span className="text-xs font-normal text-muted-foreground font-sans">
                           / kg
@@ -267,7 +267,7 @@ export default function BuyerCatalogPage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] pt-1">
+                    <div className="flex items-center justify-between text-xs pt-1">
                       <span className="text-muted-foreground">Status Harga:</span>
                       <span
                         className={`font-semibold ${
@@ -283,14 +283,14 @@ export default function BuyerCatalogPage() {
 
                   {/* Volume Availability */}
                   <div className="space-y-1 text-xs">
-                    <div className="flex justify-between font-mono tabular-nums">
+                    <div className="flex justify-between tabular-nums">
                       <span className="text-muted-foreground">Tersedia untuk dipesan:</span>
                       <strong className="text-foreground">
                         {item.availableVolumeKg.toLocaleString("id-ID")} kg
                       </strong>
                     </div>
                     {item.availableOn && (
-                      <div className="flex justify-between text-muted-foreground text-[11px]">
+                      <div className="flex justify-between text-muted-foreground text-xs">
                         <span>Perkiraan panen:</span>
                         <span>
                           {new Date(item.availableOn).toLocaleDateString("id-ID", {

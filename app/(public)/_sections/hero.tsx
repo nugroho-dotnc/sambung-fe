@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
     return (
-        <section className="min-h-screen flex items-center justify-center">
+        <section className="min-h-[80vh] flex items-center justify-center">
             <div className="max-w-6xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
                 <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground max-w-4xl mx-auto leading-[1.15]">
                     Transparansi Nilai Gabah,{" "}

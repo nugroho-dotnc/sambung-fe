@@ -98,7 +98,7 @@ export function PriceRangeSlider({
                 onChange={handleInputChange}
                 placeholder="0"
                 aria-label="Ketik langsung nominal harga per kg"
-                className="w-36 h-10 rounded-xl border border-input bg-background pl-9 pr-3 text-right text-base font-bold font-mono tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                className="w-36 h-10 rounded-xl border border-input bg-background pl-9 pr-3 text-right text-base font-bold tabular-nums text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
               />
             </div>
             <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
@@ -180,13 +180,13 @@ export function PriceRangeSlider({
       </div>
 
       {/* Marker Subtitles / Bounds */}
-      <div className="grid grid-cols-3 items-start text-[11px] font-mono tabular-nums text-muted-foreground pt-1">
+      <div className="grid grid-cols-3 items-start text-xs tabular-nums text-muted-foreground pt-1">
         <span>Rp{min.toLocaleString("id-ID")}</span>
         <div className="text-center font-sans">
-          <span className="text-[10px] uppercase font-semibold tracking-wider text-muted-foreground block">
+          <span className="text-xs uppercase font-semibold tracking-wider text-muted-foreground block">
             Acuan Rentang Wajar
           </span>
-          <span className="font-mono tabular-nums font-semibold text-emerald-700 dark:text-emerald-400">
+          <span className="tabular-nums font-semibold text-emerald-700 dark:text-emerald-400">
             Rp{lowerBound.toLocaleString("id-ID")} – Rp{upperBound.toLocaleString("id-ID")}
           </span>
         </div>

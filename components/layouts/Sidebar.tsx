@@ -46,7 +46,7 @@ export default function AppSidebar({ role }: { role: string }) {
             <span className="font-display font-extrabold text-base text-foreground tracking-tight leading-tight">
               SAMBUNG
             </span>
-            <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">
+            <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">
               {role === "petani" ? "Ruang Petani" : role === "pembeli" ? "Ruang Pembeli" : "Pengawas Sistem"}
             </span>
           </div>
@@ -56,7 +56,7 @@ export default function AppSidebar({ role }: { role: string }) {
       <SidebarContent className="px-2 py-4 space-y-4">
         {navGroups.map((group, groupIndex) => (
           <SidebarGroup key={groupIndex} className="p-0">
-            <SidebarGroupLabel className="px-3 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+            <SidebarGroupLabel className="px-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
               {group.groupLabel}
             </SidebarGroupLabel>
             <SidebarMenu className="space-y-1 mt-1">

@@ -111,7 +111,7 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
             <Card className="rounded-2xl border-border/80 bg-card p-6 space-y-4">
               <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
                 <div>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
                     Gabah {item.grainType}
                   </span>
                   <h3 className="font-bold text-lg text-foreground mt-1.5">
@@ -126,8 +126,8 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[11px] text-muted-foreground block">Harga Minta Petani</span>
-                  <span className="text-xl font-bold font-mono tabular-nums text-foreground">
+                  <span className="text-xs text-muted-foreground block">Harga Minta Petani</span>
+                  <span className="text-xl font-bold tabular-nums text-foreground">
                     {formatRupiah(item.askPrice)}{" "}
                     <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
                   </span>
@@ -136,13 +136,13 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
 
               <div className="grid grid-cols-2 gap-3 text-xs pt-1">
                 <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                  <span className="text-muted-foreground text-[11px] block">Total Pasokan Tersedia</span>
-                  <span className="text-base font-bold font-mono tabular-nums text-foreground">
+                  <span className="text-muted-foreground text-xs block">Total Pasokan Tersedia</span>
+                  <span className="text-base font-bold tabular-nums text-foreground">
                     {item.availableVolumeKg.toLocaleString("id-ID")} kg
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                  <span className="text-muted-foreground text-[11px] block">Kadar Air / Mutu</span>
+                  <span className="text-muted-foreground text-xs block">Kadar Air / Mutu</span>
                   <span className="text-base font-bold text-foreground">
                     {item.quality !== null ? `${item.quality}% (Deklarasi)` : "Belum diukur"}
                   </span>
@@ -169,7 +169,7 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
                     required
                     value={volumeKg}
                     onChange={(e) => setVolumeKg(e.target.value.replace(/\D/g, ""))}
-                    className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base font-mono tabular-nums font-bold focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-12 rounded-xl border border-input bg-background px-4 text-base tabular-nums font-bold focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Masukkan jumlah kg..."
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
@@ -235,25 +235,25 @@ export function PartialOrderForm({ item }: { item: CatalogItem }) {
               <div className="space-y-3 text-xs">
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Volume Dipesan</span>
-                  <span className="font-semibold font-mono tabular-nums text-foreground">
+                  <span className="font-semibold tabular-nums text-foreground">
                     {numVolume.toLocaleString("id-ID")} kg ({(numVolume / 1000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} ton)
                   </span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Harga Penawaran</span>
-                  <span className="font-semibold font-mono tabular-nums text-foreground">
+                  <span className="font-semibold tabular-nums text-foreground">
                     {formatRupiah(proposedPrice)} / kg
                   </span>
                 </div>
                 <div className="pt-2 border-t border-border/60 flex justify-between items-baseline">
                   <span className="text-sm font-bold text-foreground">Total Nilai Pesanan</span>
-                  <span className="text-xl font-extrabold font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+                  <span className="text-xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
                     {formatRupiah(estimatedTotal)}
                   </span>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-muted/40 p-3.5 text-[11px] text-muted-foreground space-y-2 border border-border/60">
+              <div className="rounded-xl bg-muted/40 p-3.5 text-xs text-muted-foreground space-y-2 border border-border/60">
                 <p className="flex items-start gap-1.5">
                   <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                   <span>

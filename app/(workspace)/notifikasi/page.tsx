@@ -236,7 +236,7 @@ export default function NotificationsPage() {
                           {n.title}
                         </h3>
                       </div>
-                      <span className="text-[11px] font-mono text-muted-foreground shrink-0 tabular-nums">
+                      <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
                         {n.time}
                       </span>
                     </div>
@@ -263,7 +263,7 @@ export default function NotificationsPage() {
                       <button
                         type="button"
                         onClick={() => handleToggleRead(n.id)}
-                        className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+                        className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
                       >
                         {n.isRead ? "Tandai belum dibaca" : "Tandai sudah dibaca"}
                       </button>

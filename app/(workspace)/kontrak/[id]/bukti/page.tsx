@@ -74,19 +74,19 @@ export default function DigitalContractProofPage({
                 SAMBUNG
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Platform Intelijen Harga & Komitmen Pasokan Gabah Digital
             </p>
           </div>
 
           <div className="text-left sm:text-right space-y-0.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Nomor Surat Kesepakatan
             </span>
-            <span className="font-mono font-bold text-sm text-foreground">
+            <span className="font-bold text-sm text-foreground">
               {contract.id.toUpperCase()}
             </span>
-            <span className="text-[11px] text-muted-foreground block">
+            <span className="text-xs text-muted-foreground block">
               Diterbitkan: {new Date(contract.updatedAt).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
@@ -109,7 +109,7 @@ export default function DigitalContractProofPage({
         {/* Parties Box */}
         <div className="grid sm:grid-cols-2 gap-6 text-xs">
           <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
               Pihak Pertama (Petani / Poktan)
             </span>
             <p className="text-sm font-bold text-foreground">
@@ -118,7 +118,7 @@ export default function DigitalContractProofPage({
             <p className="text-muted-foreground">
               Penanggung Jawab: {contract.farmerName}
             </p>
-            <p className="text-muted-foreground font-mono">
+            <p className="text-muted-foreground ">
               Kontak: {contract.farmerPhone}
             </p>
             <p className="text-muted-foreground">
@@ -127,7 +127,7 @@ export default function DigitalContractProofPage({
           </div>
 
           <div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 dark:text-blue-400 block">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-800 dark:text-blue-400 block">
               Pihak Kedua (Pembeli / Penggilingan)
             </span>
             <p className="text-sm font-bold text-foreground">
@@ -136,7 +136,7 @@ export default function DigitalContractProofPage({
             <p className="text-muted-foreground">
               Penanggung Jawab: {contract.buyerName}
             </p>
-            <p className="text-muted-foreground font-mono">
+            <p className="text-muted-foreground ">
               Kontak: {contract.buyerPhone}
             </p>
             <p className="text-muted-foreground">
@@ -148,7 +148,7 @@ export default function DigitalContractProofPage({
         {/* Commodity and Agreed Value */}
         <div className="rounded-xl border border-border/80 overflow-hidden text-xs">
           <table className="w-full text-left">
-            <thead className="bg-muted/60 border-b border-border/80 text-[11px] font-semibold text-muted-foreground">
+            <thead className="bg-muted/60 border-b border-border/80 text-xs font-semibold text-muted-foreground">
               <tr>
                 <th className="p-3.5">Komoditas Gabah</th>
                 <th className="p-3.5 text-right">Volume Komitmen</th>
@@ -161,13 +161,13 @@ export default function DigitalContractProofPage({
                 <td className="p-3.5 font-semibold">
                   Gabah {contract.grainType} ({contract.grainType === "GKP" ? "Kering Panen" : "Kering Giling"})
                 </td>
-                <td className="p-3.5 text-right font-mono tabular-nums">
+                <td className="p-3.5 text-right tabular-nums">
                   {contract.volumeKg.toLocaleString("id-ID")} kg
                 </td>
-                <td className="p-3.5 text-right font-mono tabular-nums">
+                <td className="p-3.5 text-right tabular-nums">
                   {formatRupiah(contract.currentPrice)} / kg
                 </td>
-                <td className="p-3.5 text-right font-mono tabular-nums font-bold text-foreground">
+                <td className="p-3.5 text-right tabular-nums font-bold text-foreground">
                   {formatRupiah(totalValue)}
                 </td>
               </tr>
@@ -177,7 +177,7 @@ export default function DigitalContractProofPage({
                 <td colSpan={3} className="p-3.5 text-right text-xs">
                   Total Nilai Transaksi:
                 </td>
-                <td className="p-3.5 text-right font-mono tabular-nums text-sm text-emerald-700 dark:text-emerald-400">
+                <td className="p-3.5 text-right tabular-nums text-sm text-emerald-700 dark:text-emerald-400">
                   {formatRupiah(totalValue)}
                 </td>
               </tr>
@@ -186,7 +186,7 @@ export default function DigitalContractProofPage({
         </div>
 
         {/* Clauses / Legal Disclaimer */}
-        <div className="rounded-xl bg-muted/20 p-4 border border-border/60 text-[11px] text-muted-foreground space-y-1.5 leading-relaxed">
+        <div className="rounded-xl bg-muted/20 p-4 border border-border/60 text-xs text-muted-foreground space-y-1.5 leading-relaxed">
           <p className="font-semibold text-foreground">Ketentuan Komitmen:</p>
           <ol className="list-decimal pl-4 space-y-1">
             <li>
@@ -204,10 +204,10 @@ export default function DigitalContractProofPage({
         {/* Digital Signatures and QR Code Mockup */}
         <div className="pt-6 border-t border-border/60 grid grid-cols-3 gap-6 items-end text-center text-xs">
           <div className="space-y-12">
-            <span className="text-muted-foreground text-[11px]">Pihak Pertama</span>
+            <span className="text-muted-foreground text-xs">Pihak Pertama</span>
             <div className="border-t border-foreground/30 pt-1">
               <p className="font-bold">{contract.farmerName}</p>
-              <p className="text-[10px] text-muted-foreground">Petani / Poktan</p>
+              <p className="text-xs text-muted-foreground">Petani / Poktan</p>
             </div>
           </div>
 
@@ -215,16 +215,16 @@ export default function DigitalContractProofPage({
             <div className="w-16 h-16 rounded-xl border border-border/80 bg-muted/40 flex items-center justify-center text-muted-foreground">
               <QrCode className="w-10 h-10 text-foreground/80" />
             </div>
-            <span className="text-[10px] text-muted-foreground block font-mono">
+            <span className="text-xs text-muted-foreground block ">
               Terverifikasi Digital
             </span>
           </div>
 
           <div className="space-y-12">
-            <span className="text-muted-foreground text-[11px]">Pihak Kedua</span>
+            <span className="text-muted-foreground text-xs">Pihak Kedua</span>
             <div className="border-t border-foreground/30 pt-1">
               <p className="font-bold">{contract.buyerName}</p>
-              <p className="text-[10px] text-muted-foreground">Pembeli / Penggilingan</p>
+              <p className="text-xs text-muted-foreground">Pembeli / Penggilingan</p>
             </div>
           </div>
         </div>

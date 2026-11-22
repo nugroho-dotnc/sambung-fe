@@ -100,7 +100,7 @@ export default function AdminModelEvalPage() {
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">Provinsi</th>
                 <th className="py-3 px-5">Horizon Prakiraan</th>
                 <th className="py-3 px-5 text-right">Skor MASE</th>
@@ -118,7 +118,7 @@ export default function AdminModelEvalPage() {
                   <td className="py-3.5 px-5 text-muted-foreground whitespace-nowrap">
                     {row.horizon}
                   </td>
-                  <td className="py-3.5 px-5 font-mono font-bold text-right whitespace-nowrap tabular-nums">
+                  <td className="py-3.5 px-5 font-bold text-right whitespace-nowrap tabular-nums">
                     <span
                       className={
                         row.mase <= 0.9
@@ -129,13 +129,13 @@ export default function AdminModelEvalPage() {
                       {row.mase.toFixed(2)}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5 font-mono font-bold text-right whitespace-nowrap tabular-nums">
+                  <td className="py-3.5 px-5 font-bold text-right whitespace-nowrap tabular-nums">
                     {row.intervalCoverage}
                   </td>
                   <td className="py-3.5 px-5 text-center whitespace-nowrap">
                     <Badge
                       variant={row.status === "Lulus Target" ? "default" : "destructive"}
-                      className="text-[10px] font-bold uppercase"
+                      className="text-xs font-bold uppercase"
                     >
                       {row.status}
                     </Badge>
@@ -146,7 +146,7 @@ export default function AdminModelEvalPage() {
                         {row.activeMethod}
                       </span>
                       {row.isFallback && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
                           Fallback Otomatis
                         </span>
                       )}

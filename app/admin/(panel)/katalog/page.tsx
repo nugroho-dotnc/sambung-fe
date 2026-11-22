@@ -65,7 +65,7 @@ export default function AdminCatalogPage() {
 
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-primary/10 text-xs font-semibold text-primary border border-primary/20 shrink-0">
             <ShoppingBag className="w-4 h-4 shrink-0" />
-            <span className="font-mono tabular-nums font-bold">
+            <span className="tabular-nums font-bold">
               {filteredOffers.length} Tawaran Aktif
             </span>
           </div>
@@ -104,14 +104,14 @@ export default function AdminCatalogPage() {
           <CardTitle className="text-base font-bold text-foreground">
             Daftar Pasokan Gabah Terdaftar
           </CardTitle>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             Total {filteredOffers.length} entri
           </span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">ID & Tanggal</th>
                 <th className="py-3 px-5">Petani / Poktan</th>
                 <th className="py-3 px-5">Lokasi Panen</th>
@@ -139,9 +139,9 @@ export default function AdminCatalogPage() {
               ) : (
                 filteredOffers.map((offer) => (
                   <tr key={offer.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
+                    <td className="py-3.5 px-5 tabular-nums text-muted-foreground whitespace-nowrap text-xs">
                       <span className="font-bold text-foreground">#{offer.id}</span>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {offer.availableOn}
                       </p>
                     </td>
@@ -152,26 +152,26 @@ export default function AdminCatalogPage() {
                       Kec. {offer.district}, Kab. {offer.regency}
                     </td>
                     <td className="py-3.5 px-5 whitespace-nowrap">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
                         {offer.grainType} ({offer.quality}%)
                       </span>
                     </td>
-                    <td className="py-3.5 px-5 text-right font-mono font-bold text-foreground whitespace-nowrap tabular-nums">
+                    <td className="py-3.5 px-5 text-right font-bold text-foreground whitespace-nowrap tabular-nums">
                       {(offer.totalVolumeKg || 0).toLocaleString("id-ID")} kg
                     </td>
-                    <td className="py-3.5 px-5 text-right font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap tabular-nums">
+                    <td className="py-3.5 px-5 text-right font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap tabular-nums">
                       {(offer.availableVolumeKg || 0).toLocaleString("id-ID")} kg
                     </td>
-                    <td className="py-3.5 px-5 text-right font-mono font-bold text-amber-700 dark:text-amber-400 whitespace-nowrap tabular-nums">
+                    <td className="py-3.5 px-5 text-right font-bold text-amber-700 dark:text-amber-400 whitespace-nowrap tabular-nums">
                       {(offer.reservedVolumeKg || 0).toLocaleString("id-ID")} kg
                     </td>
-                    <td className="py-3.5 px-5 text-right font-mono font-bold text-primary whitespace-nowrap tabular-nums">
+                    <td className="py-3.5 px-5 text-right font-bold text-primary whitespace-nowrap tabular-nums">
                       {formatRupiah(offer.askPrice)}
                     </td>
                     <td className="py-3.5 px-5 text-center whitespace-nowrap">
                       <Badge
                         variant={offer.status === "published" ? "default" : "secondary"}
-                        className="text-[10px] font-bold uppercase"
+                        className="text-xs font-bold uppercase"
                       >
                         {offer.status === "published" ? "Terbit" : offer.status}
                       </Badge>

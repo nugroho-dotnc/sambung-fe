@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
               placeholder="admin@sambung.id"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="pl-10 min-h-11 text-sm font-mono"
+              className="pl-10 min-h-11 text-sm tabular-nums"
               disabled={adminLoginMutation.isPending}
               required
             />
@@ -114,8 +114,8 @@ export default function AdminLoginPage() {
         <div className="pt-3">
           <div className="rounded-xl border border-border/60 bg-muted/40 px-3 py-4 text-xs space-y-1.5">
             <p className="font-semibold text-foreground">Kredensial Evaluasi Pitching:</p>
-            <p className="text-muted-foreground font-mono text-[11px]">Email: admin@sambung.id</p>
-            <p className="text-muted-foreground font-mono text-[11px]">Sandi: admin123</p>
+            <p className="text-muted-foreground text-xs">Email: admin@sambung.id</p>
+            <p className="text-muted-foreground tabular-nums text-xs">Sandi: admin123</p>
           </div>
         </div>
       </form>

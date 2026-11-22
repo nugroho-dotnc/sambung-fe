@@ -42,15 +42,15 @@ export function ConfirmRedLightDialog({
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground leading-relaxed pt-1">
             Harga yang Anda tetapkan (
-            <strong className="text-foreground font-mono">
+            <strong className="text-foreground ">
               Rp{price.toLocaleString("id-ID")}/kg
             </strong>
             ) berada di bawah batas aman toleransi pasar setempat (
-            <strong className="text-foreground font-mono">
+            <strong className="text-foreground ">
               Rp{redThreshold.toLocaleString("id-ID")}/kg
             </strong>
             ), sedangkan rentang acuan wajar adalah{" "}
-            <span className="font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
+            <span className="tabular-nums text-emerald-700 dark:text-emerald-400 font-semibold">
               Rp{lowerBound.toLocaleString("id-ID")} – Rp{upperBound.toLocaleString("id-ID")}/kg
             </span>
             .

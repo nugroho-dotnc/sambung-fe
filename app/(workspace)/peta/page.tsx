@@ -241,18 +241,18 @@ export default function PetaDisparitasPage() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
               <TrendingDown className="w-4 h-4" />
-              <p className="text-[11px] font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold uppercase tracking-wider">
                 Harga Terendah (Sentra Surplus)
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               {minPriceItem?.province}
             </p>
-            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-display tabular-nums">
               {formatRupiah(minPriceItem?.price || 0)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Deviasi: {minPriceItem?.percentageDiff.toFixed(1)}% di bawah median
             </p>
           </div>
@@ -260,18 +260,18 @@ export default function PetaDisparitasPage() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
               <TrendingUp className="w-4 h-4" />
-              <p className="text-[11px] font-bold uppercase tracking-wider">
+              <p className="text-xs font-bold uppercase tracking-wider">
                 Harga Tertinggi (Wilayah Konsumen)
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               {maxPriceItem?.province}
             </p>
-            <p className="text-2xl font-black text-amber-700 dark:text-amber-400 font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-amber-700 dark:text-amber-400 font-display tabular-nums">
               {formatRupiah(maxPriceItem?.price || 0)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Deviasi: +{maxPriceItem?.percentageDiff.toFixed(1)}% di atas median
             </p>
           </div>
@@ -279,17 +279,17 @@ export default function PetaDisparitasPage() {
           <div className="p-4 rounded-xl bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-foreground">
               <Scale className="w-4 h-4 text-primary" />
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Rentang Disparitas Nasional
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
               Selisih Titik Terendah vs Tertinggi
             </p>
-            <p className="text-2xl font-black text-foreground font-display tabular-nums font-mono">
+            <p className="text-2xl font-black text-foreground font-display tabular-nums">
               {disparityPercent}%
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Dipengaruhi jarak logistik, masa panen, & curah hujan
             </p>
           </div>
@@ -331,7 +331,7 @@ export default function PetaDisparitasPage() {
             <div className="overflow-x-auto border border-border/80 rounded-xl bg-background">
               <table className="w-full text-left text-xs">
                 <thead className="bg-muted/60">
-                  <tr className="border-b border-border/80 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <tr className="border-b border-border/80 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     <th className="p-3">Variabel Pengaruh</th>
                     <th className="p-3">Kondisi Lapangan</th>
                     <th className="p-3 text-right">Arah Pengaruh Terhadap Harga</th>
@@ -342,10 +342,10 @@ export default function PetaDisparitasPage() {
                     <td className="p-3 font-semibold text-foreground">
                       Jarak & Aksesibilitas Logistik Distribusi
                     </td>
-                    <td className="p-3 text-muted-foreground font-mono text-[11px]">
+                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
                       Jalur distribusi antarpulau
                     </td>
-                    <td className="p-3 text-right font-mono font-bold tabular-nums text-amber-700 dark:text-amber-400">
+                    <td className="p-3 text-right font-bold tabular-nums text-amber-700 dark:text-amber-400">
                       + Rp85 s/d Rp120/kg (Menaikkan)
                     </td>
                   </tr>
@@ -353,10 +353,10 @@ export default function PetaDisparitasPage() {
                     <td className="p-3 font-semibold text-foreground">
                       Curah Hujan & Kondisi Iklim Pertanian
                     </td>
-                    <td className="p-3 text-muted-foreground font-mono text-[11px]">
+                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
                       Curah hujan normal musiman
                     </td>
-                    <td className="p-3 text-right font-mono font-bold tabular-nums text-amber-700 dark:text-amber-400">
+                    <td className="p-3 text-right font-bold tabular-nums text-amber-700 dark:text-amber-400">
                       + Rp40 s/d Rp60/kg (Kering lambat)
                     </td>
                   </tr>
@@ -364,12 +364,12 @@ export default function PetaDisparitasPage() {
                     <td className="p-3 font-semibold text-foreground">
                       Volume Surplus Panen Gabah Lokal
                     </td>
-                    <td className="p-3 text-muted-foreground font-mono text-[11px]">
+                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
                       {activeProvinceItem.percentageDiff < 0
                         ? "Masa panen raya aktif"
                         : "Panen normal/selang"}
                     </td>
-                    <td className="p-3 text-right font-mono font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+                    <td className="p-3 text-right font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
                       - Rp70 s/d Rp95/kg (Meredam)
                     </td>
                   </tr>
@@ -377,7 +377,7 @@ export default function PetaDisparitasPage() {
               </table>
             </div>
 
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
               <span>
                 Faktor penjelas dihitung untuk memetakan dinamika pasar dan mempermudah
@@ -395,20 +395,20 @@ export default function PetaDisparitasPage() {
             <div className="space-y-3 text-xs">
               <div className="flex justify-between items-center py-1.5 border-b border-border/70">
                 <span className="text-muted-foreground">Harga Acuan Rata-rata:</span>
-                <span className="font-mono font-bold text-foreground text-sm tabular-nums">
+                <span className="font-bold text-foreground text-sm tabular-nums">
                   {formatRupiah(activeProvinceItem.price)}/kg
                 </span>
               </div>
               <div className="flex justify-between items-center py-1.5 border-b border-border/70">
                 <span className="text-muted-foreground">Median Acuan Nasional:</span>
-                <span className="font-mono font-bold text-foreground text-sm tabular-nums">
+                <span className="font-bold text-foreground text-sm tabular-nums">
                   {formatRupiah(activeProvinceItem.medianPrice)}/kg
                 </span>
               </div>
               <div className="flex justify-between items-center py-1.5 border-b border-border/70">
                 <span className="text-muted-foreground">Deviasi vs Median:</span>
                 <span
-                  className={`font-mono font-black text-sm tabular-nums ${
+                  className={`font-black text-sm tabular-nums ${
                     activeProvinceItem.percentageDiff < 0
                       ? "text-emerald-700 dark:text-emerald-400"
                       : "text-amber-700 dark:text-amber-400"
@@ -421,7 +421,7 @@ export default function PetaDisparitasPage() {
               </div>
               <div className="flex justify-between items-center py-1.5">
                 <span className="text-muted-foreground">Jumlah Titik Sampel:</span>
-                <span className="font-mono font-semibold text-foreground text-xs tabular-nums">
+                <span className="font-semibold text-foreground text-xs tabular-nums">
                   {activeProvinceItem.sampleCount} titik pengamatan
                 </span>
               </div>

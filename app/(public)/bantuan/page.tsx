@@ -123,7 +123,7 @@ export default function BantuanPage() {
                 Glosarium Istilah Gabah & Pasar
               </h2>
             </div>
-            <span className="text-xs text-muted-foreground font-mono tabular-nums">
+            <span className="text-xs text-muted-foreground tabular-nums">
               {filteredGlossary.length} istilah
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function BantuanPage() {
                     <h3 className="font-display font-bold text-sm text-foreground">
                       {g.term}
                     </h3>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                    <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
                       {g.category}
                     </span>
                   </div>
@@ -257,7 +257,7 @@ export default function BantuanPage() {
                 </h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Petugas operasional dan pengawas platform hanya dapat melihat kontak dalam
-                  format tersamar (contoh: <code className="font-mono text-[11px] bg-muted px-1.5 py-0.5 rounded">0812-****-7890</code>).
+                  format tersamar (contoh: <code className="tabular-nums text-xs bg-muted px-1.5 py-0.5 rounded">0812-****-7890</code>).
                   Pengawas tidak memiliki akses membuka data nomor telepon pribadi pengguna.
                 </p>
               </div>

@@ -166,7 +166,6 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
       {contract.status === "approved" && (
         <div className="rounded-2xl border border-emerald-300/70 bg-emerald-50/80 dark:border-emerald-900/60 dark:bg-emerald-950/30 p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-emerald-950 dark:text-emerald-200">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>
               <strong>Kesepakatan Sah & Terikat:</strong> Harga telah disetujui bersama. Silakan hubungi mitra melalui nomor kontak yang telah terbuka di bawah ini.
             </span>
@@ -218,20 +217,20 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 text-xs">
               <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                <span className="text-muted-foreground text-[11px] block">Jenis Gabah</span>
+                <span className="text-muted-foreground text-xs block">Jenis Gabah</span>
                 <span className="text-base font-bold text-foreground">
                   Gabah {contract.grainType}
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                <span className="text-muted-foreground text-[11px] block">Volume Kesepakatan</span>
-                <span className="text-base font-bold font-mono tabular-nums text-foreground">
+                <span className="text-muted-foreground text-xs block">Volume Kesepakatan</span>
+                <span className="text-base font-bold tabular-nums text-foreground">
                   {contract.volumeKg.toLocaleString("id-ID")} kg
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-muted/40 border border-border/60 col-span-2 sm:col-span-1">
-                <span className="text-muted-foreground text-[11px] block">Harga Terkini</span>
-                <span className="text-base font-bold font-mono tabular-nums text-foreground">
+                <span className="text-muted-foreground text-xs block">Harga Terkini</span>
+                <span className="text-base font-bold tabular-nums text-foreground">
                   {formatRupiah(contract.currentPrice)} / kg
                 </span>
               </div>
@@ -241,7 +240,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
               <span className="text-xs font-semibold text-foreground">
                 Estimasi Total Transaksi:
               </span>
-              <span className="text-xl font-extrabold font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+              <span className="text-xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
                 {formatRupiah(totalValue)}
               </span>
             </div>
@@ -271,7 +270,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                           : "bg-muted/70 text-foreground border border-border/60 rounded-bl-xs"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-4 text-[11px] opacity-80">
+                      <div className="flex items-center justify-between gap-4 text-xs opacity-80">
                         <span className="font-semibold">{hist.authorName}</span>
                         <span>
                           {new Date(hist.timestamp).toLocaleTimeString("id-ID", {
@@ -282,7 +281,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                       </div>
 
                       <div className="pt-0.5">
-                        <span className="text-sm font-bold font-mono tabular-nums block">
+                        <span className="text-sm font-bold tabular-nums block">
                           Tawaran Harga: {formatRupiah(hist.price)} / kg
                         </span>
                       </div>
@@ -313,20 +312,6 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                   Pihak {partnerRole} dalam kesepakatan ini.
                 </p>
               </div>
-              {!contactRevealed ? (
-                <div
-                  className="flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-900"
-                  title="Kontak terkunci hingga harga disetujui"
-                >
-                  <Lock className="w-3 h-3" />
-                  <span>Kontak Terkunci</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-900">
-                  <CheckCircle2 className="w-3 h-3" />
-                  <span>Kontak Terbuka</span>
-                </div>
-              )}
             </div>
 
             {!contactRevealed ? (
@@ -338,7 +323,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                   <p className="text-xs font-semibold text-foreground">
                     Kontak Dilindungi oleh SAMBUNG
                   </p>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     Nomor WhatsApp dan alamat lengkap mitra akan terbuka otomatis saat kedua pihak telah menyepakati harga pasokan.
                   </p>
                 </div>
@@ -346,14 +331,14 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
             ) : (
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="text-muted-foreground text-[11px] block">Nama / Poktan</span>
+                  <span className="text-muted-foreground text-xs block">Nama / Poktan</span>
                   <span className="text-sm font-bold text-foreground">{partnerName}</span>
                 </div>
 
                 <div>
-                  <span className="text-muted-foreground text-[11px] block">Nomor Telepon / WhatsApp</span>
+                  <span className="text-muted-foreground text-xs block">Nomor Telepon / WhatsApp</span>
                   <div className="flex items-center justify-between gap-2 mt-0.5">
-                    <span className="font-mono text-sm font-bold text-foreground">
+                    <span className="text-sm font-bold text-foreground">
                       {partnerPhone}
                     </span>
                     <Button
@@ -432,7 +417,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                     <p className="text-xs font-medium text-foreground">
                       Menunggu Tanggapan dari {partnerRole}
                     </p>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
                       Mitra sedang meninjau penawaran harga. Anda akan menerima pembaruan begitu ada respons.
                     </p>
                     <Button
@@ -451,7 +436,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
             {/* When Approved: Dual Party Physical Confirmation */}
             {contract.status === "approved" && (
               <div className="space-y-3.5">
-                <div className="rounded-xl bg-muted/40 p-3.5 border border-border/60 text-xs space-y-2">
+                <div className="rounded-xl text-xs mb-6 space-y-2">
                   <div className="flex justify-between font-semibold text-foreground">
                     <span>Status Serah Terima Gabah:</span>
                     <span className="text-emerald-700 dark:text-emerald-400">
@@ -462,11 +447,10 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                         : "Belum Dikonfirmasi (0/2)"}
                     </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     Setelah gabah fisik diangkut dan pembayaran diselesaikan secara mandiri di lapangan, kedua pihak wajib menekan tombol konfirmasi.
                   </p>
                 </div>
-
                 {!hasUserConfirmed ? (
                   <Button
                     className="w-full min-h-11 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -494,6 +478,22 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
                     </Link>
                   }
                 />
+
+                <div className="pt-2 border-t border-border/60">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full min-h-8 text-xs text-muted-foreground hover:text-destructive cursor-pointer"
+                    onClick={() => {
+                      setCancelReason("");
+                      setCancelModalOpen(true);
+                    }}
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+                    Kendala Lapangan / Batalkan Kesepakatan
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -502,7 +502,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
               <div className="space-y-3">
                 <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-300 text-xs text-blue-900 dark:text-blue-200 text-center space-y-1">
                   <p className="font-bold">Transaksi Tuntas</p>
-                  <p className="text-[11px] opacity-90">
+                  <p className="text-xs opacity-90">
                     Kedua belah pihak telah menyelesaikan komitmen pasokan ini dengan sukses.
                   </p>
                 </div>
@@ -524,7 +524,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
               <div className="p-4 rounded-xl bg-muted/60 border border-border/80 text-xs text-muted-foreground space-y-1">
                 <p className="font-semibold text-foreground">Kesepakatan Berakhir</p>
                 {contract.cancelReason && (
-                  <p className="text-[11px] italic">
+                  <p className="text-xs italic">
                     Alasan: &ldquo;{contract.cancelReason}&rdquo;
                   </p>
                 )}
@@ -599,10 +599,12 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-foreground">
-              Batalkan Kesepakatan
+              {contract.status === "approved" ? "Batalkan Kesepakatan Terikat" : "Batalkan Pesanan Pasokan"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Volume yang sebelumnya dicadangkan akan dikembalikan ke katalog pasokan.
+              {contract.status === "approved"
+                ? "Kesepakatan yang telah disetujui akan dihentikan. Volume gabah (tonase) akan otomatis dikembalikan ke status tersedia di katalog."
+                : "Volume yang sebelumnya dicadangkan akan dikembalikan ke katalog pasokan."}
             </DialogDescription>
           </DialogHeader>
 
@@ -610,13 +612,45 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
             <label htmlFor="cancelReason" className="text-xs font-semibold text-foreground block">
               Alasan Pembatalan <span className="text-destructive">*</span>
             </label>
+
+            {/* Quick reason chips */}
+            <div className="flex flex-wrap gap-1.5">
+              {(contract.status === "approved"
+                ? [
+                    "Armada angkut terkendala",
+                    "Mutu gabah tidak sesuai saat inspeksi",
+                    "Kondisi cuaca ekstrem / darurat",
+                    "Kesepakatan bersama kedua belah pihak",
+                  ]
+                : [
+                    "Kesepakatan harga tidak tercapai",
+                    "Kapasitas gudang penuh",
+                    "Perubahan jadwal panen",
+                    "Alasan operasional lainnya",
+                  ]
+              ).map((chip) => (
+                <button
+                  key={chip}
+                  type="button"
+                  onClick={() => setCancelReason(chip)}
+                  className="px-2.5 py-1 rounded-lg border border-border/70 bg-muted/40 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+
             <textarea
               id="cancelReason"
               rows={3}
               required
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
-              placeholder="Contoh: Kesepakatan harga tidak tercapai, atau kapasitas gudang penuh..."
+              placeholder={
+                contract.status === "approved"
+                  ? "Tuliskan rincian kendala lapangan yang menyebabkan transaksi ini batal..."
+                  : "Contoh: Kesepakatan harga tidak tercapai, atau kapasitas gudang penuh..."
+              }
               className="w-full rounded-xl border border-input bg-background p-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -637,7 +671,7 @@ export function NegotiationRoom({ contract }: { contract: Contract }) {
               disabled={cancelContract.isPending || !cancelReason.trim()}
               onClick={() => void handleCancelSubmit()}
             >
-              {cancelContract.isPending ? "Membatalkan…" : "Ya, Batalkan Pesanan"}
+              {cancelContract.isPending ? "Membatalkan…" : "Ya, Batalkan Kesepakatan"}
             </Button>
           </DialogFooter>
         </DialogContent>

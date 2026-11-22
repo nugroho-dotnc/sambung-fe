@@ -112,7 +112,7 @@ export default function PriceBoardSection() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-muted/60 border-b border-border/80">
-                <tr className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <tr className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   <th className="p-3.5">Tingkat Rantai Pasok</th>
                   <th className="p-3.5 text-right">Harga Acuan</th>
                   <th className="p-3.5 text-right">Margin Penambahan</th>
@@ -129,11 +129,11 @@ export default function PriceBoardSection() {
                       <td className="p-3.5 font-bold text-foreground">
                         {item.level}
                       </td>
-                      <td className="p-3.5 text-right font-mono font-bold text-foreground tabular-nums">
+                      <td className="p-3.5 text-right font-bold text-foreground tabular-nums">
                         {formatRupiah(item.price)}
-                        <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
+                        <span className="text-xs font-normal text-muted-foreground">/kg</span>
                       </td>
-                      <td className="p-3.5 text-right font-mono font-semibold tabular-nums">
+                      <td className="p-3.5 text-right font-semibold tabular-nums">
                         {diff > 0 ? (
                           <span className="text-amber-700 dark:text-amber-400">
                             +{formatRupiah(diff)}
@@ -142,7 +142,7 @@ export default function PriceBoardSection() {
                           <span className="text-muted-foreground">Dasar</span>
                         )}
                       </td>
-                      <td className="p-3.5 text-muted-foreground text-[11px]">
+                      <td className="p-3.5 text-muted-foreground text-xs">
                         {item.note}
                       </td>
                     </tr>
@@ -155,11 +155,11 @@ export default function PriceBoardSection() {
 
         <div className="lg:col-span-4 space-y-4">
           <Card className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs space-y-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Bagian Petani (Farmer&apos;s Share)
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-extrabold font-mono text-emerald-700 dark:text-emerald-400 tabular-nums font-display">
+              <span className="text-4xl font-extrabold text-emerald-700 dark:text-emerald-400 tabular-nums font-display">
                 {comparison.farmerSharePercent.toFixed(1)}%
               </span>
               <span className="text-xs text-muted-foreground font-semibold">
@@ -168,21 +168,21 @@ export default function PriceBoardSection() {
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Dari setiap Rp1.000 yang dibayarkan konsumen di pasar eceran, petani menerima sekitar{" "}
-              <strong className="text-foreground font-mono">
+              <strong className="text-foreground ">
                 Rp{Math.round(comparison.farmerSharePercent * 10)}
               </strong>.
             </p>
           </Card>
 
           <Card className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs space-y-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Total Margin Distribusi
             </span>
-            <p className="text-2xl font-black font-mono text-foreground tabular-nums">
+            <p className="text-2xl font-black text-foreground tabular-nums">
               {formatRupiah(comparison.marginAmount)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Mencakup biaya penggilingan, susut bobot, logistik, dan margin pedagang.
             </p>
           </Card>

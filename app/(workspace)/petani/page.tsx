@@ -55,17 +55,17 @@ export default function FarmerDashboardPage() {
           <CardHeader className="p-5 pb-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">Tawaran Panen Aktif</span>
-              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
+              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs">
                 {offers.filter((o) => o.status === "published").length} Terbit di Pasar
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="p-5 pt-0">
-            <div className="text-2xl sm:text-3xl font-extrabold font-display text-foreground font-mono tabular-nums">
+            <div className="text-2xl sm:text-3xl font-extrabold font-display text-foreground tabular-nums">
               {metrics.totalVolume.toLocaleString("id-ID")}{" "}
               <span className="text-base font-normal text-muted-foreground font-sans">kg</span>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1 font-mono tabular-nums">
+            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 tabular-nums">
               <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0 font-sans" />
               Tersedia {metrics.availableVolume.toLocaleString("id-ID")} kg · Tertahan {metrics.reservedVolume.toLocaleString("id-ID")} kg
             </p>
@@ -77,13 +77,13 @@ export default function FarmerDashboardPage() {
             <span className="text-xs font-semibold text-muted-foreground">Acuan Wajar Subang (GKP)</span>
           </CardHeader>
           <CardContent className="p-5 pt-0">
-            <div className="text-2xl sm:text-3xl font-extrabold font-display text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
+            <div className="text-2xl sm:text-3xl font-extrabold font-display text-emerald-700 dark:text-emerald-400 tabular-nums">
               Rp{priceRef.lowerBound.toLocaleString("id-ID")}{" "}
               <span className="text-sm font-normal text-muted-foreground">
                 - Rp{priceRef.upperBound.toLocaleString("id-ID")}
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Berdasarkan pantauan pasar berkala setempat
             </p>
           </CardContent>
@@ -94,11 +94,11 @@ export default function FarmerDashboardPage() {
             <span className="text-xs font-semibold text-muted-foreground">Pesanan Perlu Respons</span>
           </CardHeader>
           <CardContent className="p-5 pt-0">
-            <div className="text-2xl sm:text-3xl font-extrabold font-display text-foreground font-mono tabular-nums">
+            <div className="text-2xl sm:text-3xl font-extrabold font-display text-foreground tabular-nums">
               {metrics.pendingMyTurn}{" "}
               <span className="text-base font-normal text-muted-foreground font-sans">pesanan</span>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {metrics.pendingMyTurn > 0
                 ? "Ada negosiasi harga menunggu tanggapan Anda"
                 : "Tidak ada negosiasi perlu respons saat ini"}

@@ -37,14 +37,14 @@ export function ShapWaterfall({ factors }: { factors: ShapFactor[] }) {
                   <h4 className="text-xs font-bold text-foreground">
                     {factor.feature}
                   </h4>
-                  <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">
+                  <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">
                     Kategori: {factor.category}
                   </span>
                 </div>
               </div>
 
               <span
-                className={`font-mono text-xs font-bold px-2.5 py-1 rounded-lg border whitespace-nowrap tabular-nums ${
+                className={`text-xs font-bold px-2.5 py-1 rounded-lg border whitespace-nowrap tabular-nums ${
                   isPushUp
                     ? "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800"
                     : "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800"

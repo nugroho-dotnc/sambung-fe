@@ -109,7 +109,7 @@ export function IndonesiaSvgMap({
           </span>
           {activeItem && (
             <span
-              className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-md ${
+              className={`text-xs tabular-nums font-bold px-2 py-0.5 rounded-md ${
                 activeItem.percentageDiff > 0
                   ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
                   : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
@@ -124,7 +124,7 @@ export function IndonesiaSvgMap({
         </div>
 
         {activeItem && (
-          <div className="text-xs text-muted-foreground font-mono tabular-nums">
+          <div className="text-xs text-muted-foreground tabular-nums">
             Rata-rata Gabah: <strong className="text-foreground">{formatRupiah(activeItem.price)}/kg</strong> (Sampel: {activeItem.sampleCount} titik)
           </div>
         )}
@@ -167,32 +167,32 @@ export function IndonesiaSvgMap({
       {/* Map Legend */}
       <div className="mt-4 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-4 text-xs">
         <div className="flex items-center gap-4 flex-wrap">
-          <span className="text-muted-foreground text-[11px] font-semibold uppercase tracking-wider">
+          <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
             Deviasi vs Median Nasional:
           </span>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#059669]" />
-            <span className="text-[11px] text-muted-foreground">&lt; -3.5% (Surplus)</span>
+            <span className="text-xs text-muted-foreground">&lt; -3.5% (Surplus)</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#10b981]" />
-            <span className="text-[11px] text-muted-foreground">-3.5% s/d -1.0%</span>
+            <span className="text-xs text-muted-foreground">-3.5% s/d -1.0%</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#64748b]" />
-            <span className="text-[11px] text-muted-foreground">Normal (±1.5%)</span>
+            <span className="text-xs text-muted-foreground">Normal (±1.5%)</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#f59e0b]" />
-            <span className="text-[11px] text-muted-foreground">+1.5% s/d +5.0%</span>
+            <span className="text-xs text-muted-foreground">+1.5% s/d +5.0%</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#ea580c]" />
-            <span className="text-[11px] text-muted-foreground">&gt; +5.0% (Defisit)</span>
+            <span className="text-xs text-muted-foreground">&gt; +5.0% (Defisit)</span>
           </div>
         </div>
 
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Klik provinsi pada peta untuk melihat rincian acuan daerah.
         </p>
       </div>

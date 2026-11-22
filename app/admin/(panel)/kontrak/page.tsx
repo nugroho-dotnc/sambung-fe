@@ -119,14 +119,14 @@ export default function AdminContractsPage() {
           <CardTitle className="text-base font-bold text-foreground">
             Daftar Kesepakatan Berjalan
           </CardTitle>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             {filteredContracts.length} kesepakatan
           </span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">ID Kontrak</th>
                 <th className="py-3 px-5">Petani (Penjual)</th>
                 <th className="py-3 px-5">Pembeli (Mitra)</th>
@@ -158,36 +158,36 @@ export default function AdminContractsPage() {
 
                   return (
                     <tr key={contract.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
+                      <td className="py-3.5 px-5 tabular-nums text-muted-foreground whitespace-nowrap text-xs">
                         <span className="font-bold text-foreground">#{contract.id}</span>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           Tawaran #{contract.offerId}
                         </p>
                       </td>
                       <td className="py-3.5 px-5 whitespace-nowrap">
                         <p className="font-semibold text-foreground">{contract.farmerName}</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {maskPhone(contract.farmerPhone)}
                         </p>
                       </td>
                       <td className="py-3.5 px-5 whitespace-nowrap">
                         <p className="font-semibold text-foreground">{contract.buyerName}</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {maskPhone(contract.buyerPhone)}
                         </p>
                       </td>
                       <td className="py-3.5 px-5 whitespace-nowrap">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
                           {contract.grainType}
                         </span>
-                        <span className="ml-2 font-mono font-bold text-foreground tabular-nums">
+                        <span className="ml-2 font-bold text-foreground tabular-nums">
                           {(contract.volumeKg || 0).toLocaleString("id-ID")} kg
                         </span>
                       </td>
-                      <td className="py-3.5 px-5 text-right font-mono font-bold text-primary whitespace-nowrap tabular-nums">
+                      <td className="py-3.5 px-5 text-right font-bold text-primary whitespace-nowrap tabular-nums">
                         {formatRupiah(contract.currentPrice)}/kg
                       </td>
-                      <td className="py-3.5 px-5 text-right font-mono font-bold text-foreground whitespace-nowrap tabular-nums">
+                      <td className="py-3.5 px-5 text-right font-bold text-foreground whitespace-nowrap tabular-nums">
                         {formatRupiah(totalAmount)}
                       </td>
                       <td className="py-3.5 px-5 text-center whitespace-nowrap">
@@ -201,7 +201,7 @@ export default function AdminContractsPage() {
                               ? "secondary"
                               : "destructive"
                           }
-                          className="text-[10px] font-bold uppercase"
+                          className="text-xs font-bold uppercase"
                         >
                           {contract.status === "pending"
                             ? "Menunggu"
@@ -216,7 +216,7 @@ export default function AdminContractsPage() {
                       </td>
                       <td className="py-3.5 px-5 text-center whitespace-nowrap">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold font-mono tabular-nums ${
+                          className={`inline-block px-2 py-0.5 rounded-md text-xs font-bold tabular-nums ${
                             deliveryCount === 2
                               ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                               : deliveryCount === 1

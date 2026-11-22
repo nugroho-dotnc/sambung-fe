@@ -119,7 +119,7 @@ export default function AdminModerasiPage() {
                 <CardContent className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="space-y-2.5 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold bg-muted/60 border border-border/80 px-2 py-0.5 rounded-md text-foreground">
+                      <span className="tabular-nums text-xs font-bold bg-muted/60 border border-border/80 px-2 py-0.5 rounded-md text-foreground">
                         #{offer.id}
                       </span>
                       <Badge
@@ -131,7 +131,7 @@ export default function AdminModerasiPage() {
                       <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border/60">
                         {offer.grainType} · {(offer.totalVolumeKg || 0).toLocaleString("id-ID")} kg
                       </span>
-                      <span className="text-xs text-muted-foreground font-mono">
+                      <span className="text-xs text-muted-foreground ">
                         Kec. {offer.district}, Kab. {offer.regency}
                       </span>
                     </div>
@@ -139,7 +139,7 @@ export default function AdminModerasiPage() {
                     <div>
                       <h3 className="font-display font-bold text-foreground text-base">
                         {offer.farmerName} ·{" "}
-                        <span className="font-mono text-primary font-bold tabular-nums">
+                        <span className="text-primary font-bold tabular-nums">
                           {formatRupiah(offer.askPrice)} /kg
                         </span>
                       </h3>

@@ -99,7 +99,7 @@ export default function LoginPage() {
       </form>
 
       <div className="rounded-xl border border-border/60 bg-muted/40 px-3 py-4 space-y-3">
-        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
           <UserCheck className="w-3.5 h-3.5 text-primary" />
           Nomor Akun Terdaftar untuk Uji Coba:
         </p>
@@ -110,8 +110,8 @@ export default function LoginPage() {
             className="text-left px-2 py-3 flex flex-col gap-0.5 rounded-lg bg-background border border-border/70 hover:border-primary transition-colors cursor-pointer"
           >
             <p className="font-semibold text-foreground">Pak Subur</p>
-            <p className="text-[11px] text-muted-foreground">Role Petani (Subang)</p>
-            <span className="text-[11px] font-mono text-primary">081234567890</span>
+            <p className="text-xs text-muted-foreground">Role Petani (Subang)</p>
+            <span className="text-xs tabular-nums text-primary">081234567890</span>
           </button>
           <button
             type="button"
@@ -119,11 +119,11 @@ export default function LoginPage() {
             className="text-left px-2 py-3 flex flex-col gap-0.5 rounded-lg bg-background border border-border/70 hover:border-primary transition-colors cursor-pointer"
           >
             <p className="font-semibold text-foreground">H. Hendra</p>
-            <p className="text-[11px] text-muted-foreground">Role Pembeli (Karawang)</p>
-            <span className="text-[11px] font-mono text-primary">081398765432</span>
+            <p className="text-xs text-muted-foreground">Role Pembeli (Karawang)</p>
+            <span className="text-xs tabular-nums text-primary">081398765432</span>
           </button>
         </div>
-        <p className="text-[10px] text-muted-foreground italic">
+        <p className="text-xs text-muted-foreground italic">
           *Atau masukkan nomor baru untuk mencoba alur pendaftaran profil baru.
         </p>
       </div>

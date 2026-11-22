@@ -65,14 +65,14 @@ export default function AdminUsersPage() {
           <CardTitle className="text-base font-bold text-foreground">
             Pengguna Terdaftar di Platform
           </CardTitle>
-          <span className="text-xs text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs text-muted-foreground tabular-nums">
             {users?.length || 0} akun
           </span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-border/80 bg-muted/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+              <tr className="border-b border-border/80 bg-muted/40 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 <th className="py-3 px-5">ID Pengguna</th>
                 <th className="py-3 px-5">Nama Lengkap</th>
                 <th className="py-3 px-5">Peran</th>
@@ -102,7 +102,7 @@ export default function AdminUsersPage() {
 
                   return (
                     <tr key={u.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
+                      <td className="py-3.5 px-5 tabular-nums text-muted-foreground whitespace-nowrap text-xs">
                         #{u.id}
                       </td>
                       <td className="py-3.5 px-5 font-bold text-foreground whitespace-nowrap">
@@ -117,13 +117,13 @@ export default function AdminUsersPage() {
                               ? "default"
                               : "secondary"
                           }
-                          className="text-[10px] font-bold uppercase"
+                          className="text-xs font-bold uppercase"
                         >
                           {u.role}
                         </Badge>
                       </td>
-                      <td className="py-3.5 px-5 font-mono text-muted-foreground whitespace-nowrap tabular-nums">
-                        <span className="bg-muted px-2 py-0.5 rounded text-[11px] font-semibold">
+                      <td className="py-3.5 px-5 text-muted-foreground whitespace-nowrap tabular-nums">
+                        <span className="bg-muted px-2 py-0.5 rounded text-xs font-semibold">
                           {u.phone}
                         </span>
                       </td>
@@ -135,7 +135,7 @@ export default function AdminUsersPage() {
                       </td>
                       <td className="py-3.5 px-5 text-center whitespace-nowrap">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                          className={`inline-block px-2 py-0.5 rounded-md text-xs font-bold ${
                             isPendingClosure
                               ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
                               : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
@@ -150,7 +150,7 @@ export default function AdminUsersPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleToggleClosureRequest(u.id)}
-                            className="text-[11px] h-7 px-2 font-semibold text-muted-foreground hover:text-destructive cursor-pointer"
+                            className="text-xs h-7 px-2 font-semibold text-muted-foreground hover:text-destructive cursor-pointer"
                           >
                             <UserX className="w-3.5 h-3.5 mr-1" />
                             <span>{isPendingClosure ? "Batalkan Tutup" : "Minta Tutup"}</span>

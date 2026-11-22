@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
             <div className="text-2xl font-bold font-display text-foreground">
               {stats?.dataFreshnessStatus ? "Aktif & Valid" : "Memuat..."}
             </div>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Agregasi Bapanas Produsen, PIHPS & BPS
             </p>
           </CardContent>
@@ -67,10 +67,10 @@ export default function AdminDashboardPage() {
             <ShoppingBag className="w-4 h-4 text-primary" />
           </CardHeader>
           <CardContent className="p-5 pt-0 space-y-1">
-            <div className="text-2xl font-bold font-display text-foreground tabular-nums font-mono">
+            <div className="text-2xl font-bold font-display text-foreground tabular-nums">
               {statsLoading ? "..." : `${stats?.totalOffers || 0} Tawaran`}
             </div>
-            <p className="text-[11px] text-muted-foreground font-mono tabular-nums">
+            <p className="text-xs text-muted-foreground tabular-nums">
               {(stats?.totalVolumeKg || 0).toLocaleString("id-ID")} kg pasokan gabah
             </p>
           </CardContent>
@@ -84,10 +84,10 @@ export default function AdminDashboardPage() {
             <ScrollText className="w-4 h-4 text-amber-600" />
           </CardHeader>
           <CardContent className="p-5 pt-0 space-y-1">
-            <div className="text-2xl font-bold font-display text-foreground tabular-nums font-mono">
+            <div className="text-2xl font-bold font-display text-foreground tabular-nums">
               {statsLoading ? "..." : `${stats?.activeContracts || 0} Berjalan`}
             </div>
-            <p className="text-[11px] text-muted-foreground font-mono tabular-nums">
+            <p className="text-xs text-muted-foreground tabular-nums">
               {stats?.approvedContracts || 0} kesepakatan disepakati
             </p>
           </CardContent>
@@ -105,10 +105,10 @@ export default function AdminDashboardPage() {
             />
           </CardHeader>
           <CardContent className="p-5 pt-0 space-y-1">
-            <div className="text-2xl font-bold font-display text-foreground tabular-nums font-mono">
+            <div className="text-2xl font-bold font-display text-foreground tabular-nums">
               {statsLoading ? "..." : `${stats?.flaggedOffers || 0} Perlu Perbaikan`}
             </div>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {(stats?.flaggedOffers || 0) > 0
                 ? "Terdapat penawaran anomali"
                 : "Semua penawaran dalam batas wajar"}
@@ -285,13 +285,13 @@ export default function AdminDashboardPage() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-foreground">{log.action}</span>
-                    <Badge variant="outline" className="text-[10px] uppercase font-bold">
+                    <Badge variant="outline" className="text-xs uppercase font-bold">
                       {log.actorRole}
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground text-[11px]">{log.details}</p>
+                  <p className="text-muted-foreground text-xs">{log.details}</p>
                 </div>
-                <span className="text-[11px] font-mono text-muted-foreground shrink-0 tabular-nums">
+                <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
                   {new Date(log.timestamp).toLocaleTimeString("id-ID", {
                     hour: "2-digit",
                     minute: "2-digit",

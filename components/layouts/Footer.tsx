@@ -7,14 +7,14 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
         <div className="space-y-1">
           <div className="flex items-center justify-center sm:justify-start gap-2">
-            <div className="w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-[10px]">
+            <div className="w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-xs">
               <Sprout className="w-3.5 h-3.5" />
             </div>
             <p className="font-bold text-foreground text-sm">
               SAMBUNG
             </p>
           </div>
-          <p className="text-[11px] text-muted-foreground max-w-md leading-relaxed">
+          <p className="text-xs text-muted-foreground max-w-md leading-relaxed">
             Sistem Agrikultur Modern Berbasis Unggulan Nilai Gabah. Mendorong transparansi rantai pasok dan memperkuat posisi tawar petani Indonesia.
           </p>
         </div>

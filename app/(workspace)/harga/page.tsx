@@ -81,7 +81,7 @@ export default function PriceBoardPage() {
       <Card className="p-4 sm:p-5 bg-card border border-border/80 rounded-2xl shadow-xs mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Komoditas Acuan
             </label>
             <select
@@ -96,7 +96,7 @@ export default function PriceBoardPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Wilayah Pembanding
             </label>
             <select
@@ -112,7 +112,7 @@ export default function PriceBoardPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
               Rentang Pengamatan
             </label>
             <select
@@ -133,7 +133,7 @@ export default function PriceBoardPage() {
         {/* Left Column: Dari Petani ke Pembeli */}
         <Card className="lg:col-span-7 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs">
           <div className="border-b border-border/60 pb-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">
               Struktur Rantai Pasok Gabah & Beras
             </span>
             <h2 className="text-lg font-bold text-foreground mt-0.5">
@@ -146,7 +146,7 @@ export default function PriceBoardPage() {
 
           <div className="overflow-x-auto rounded-xl border border-border/80">
             <table className="w-full text-left text-xs">
-              <thead className="bg-muted/60 border-b border-border/80 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <thead className="bg-muted/60 border-b border-border/80 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="py-3 px-4">Tingkat Rantai</th>
                   <th className="py-3 px-4">Keterangan Biaya</th>
@@ -165,16 +165,16 @@ export default function PriceBoardPage() {
                           </div>
                           <div>
                             <span className="block font-bold">{item.level}</span>
-                            <span className="text-[10px] text-muted-foreground font-normal sm:hidden">
+                            <span className="text-xs text-muted-foreground font-normal sm:hidden">
                               {item.note}
                             </span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-muted-foreground text-[11px] hidden sm:table-cell">
+                      <td className="py-3.5 px-4 text-muted-foreground text-xs hidden sm:table-cell">
                         {item.note}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-bold font-mono tabular-nums text-foreground">
+                      <td className="py-3.5 px-4 text-right font-bold tabular-nums text-foreground">
                         {formatRupiah(item.price)} / kg
                       </td>
                     </tr>
@@ -188,7 +188,7 @@ export default function PriceBoardPage() {
         {/* Right Column: Indikator Farmer's Share */}
         <Card className="lg:col-span-5 p-6 sm:p-7 space-y-5 rounded-2xl border border-border/80 bg-card shadow-xs">
           <div className="border-b border-border/60 pb-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">
               Indikator Keadilan Distribusi
             </span>
             <h2 className="text-lg font-bold text-foreground mt-0.5">
@@ -205,7 +205,7 @@ export default function PriceBoardPage() {
               <p className="text-xs font-bold text-emerald-950 dark:text-emerald-200">
                 Bagian Petani (Farmer&apos;s Share)
               </p>
-              <p className="text-2xl font-extrabold font-mono tabular-nums text-emerald-700 dark:text-emerald-400">
+              <p className="text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-400">
                 {comparison.farmerSharePercent}%
               </p>
             </div>
@@ -216,7 +216,7 @@ export default function PriceBoardPage() {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Total Selisih (Petani → Konsumen)
             </p>
-            <p className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-foreground">
+            <p className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground">
               {formatRupiah(comparison.marginAmount)}{" "}
               <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
             </p>
@@ -229,7 +229,7 @@ export default function PriceBoardPage() {
             <p>
               Selisih nilai sebesar {formatRupiah(comparison.marginAmount)}/kg mencakup biaya pengeringan padi, penggilingan, susut mutu alami, transportasi antarkabupaten, dan kemasan ritel.
             </p>
-            <p className="font-mono text-[11px] text-foreground/80 font-medium">
+            <p className="tabular-nums text-xs text-foreground/80 font-medium">
               Formula: Farmer&apos;s Share = (Harga Tingkat Petani ÷ Harga Eceran) × 100%
             </p>
           </div>
@@ -247,7 +247,7 @@ export default function PriceBoardPage() {
               Transmisi pergerakan harga dari tingkat petani, penggilingan padi, hingga pasar konsumen di {region}.
             </p>
           </div>
-          <span className="text-[11px] px-3 py-1 rounded-full bg-muted text-muted-foreground font-mono self-start sm:self-auto font-semibold">
+          <span className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground tabular-nums self-start sm:self-auto font-semibold">
             Satuan: Rp/kg
           </span>
         </div>
