@@ -15,7 +15,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
 import { AsyncBoundary } from "@/components/shared/async-boundary";
@@ -29,6 +36,17 @@ export default function ContractsListPage() {
   const { data: user } = useCurrentUser();
   const [activeTab, setActiveTab] = useState<string>("all");
   const { data: contracts = [], isLoading, isError, error, refetch } = useContracts(activeTab);
+
+  const contractTabOptions = useMemo(
+    () => [
+      { value: "all", label: `Semua Kesepakatan (${contracts.length})` },
+      { value: "pending", label: "Menunggu Kesepakatan" },
+      { value: "approved", label: "Disetujui" },
+      { value: "completed", label: "Selesai" },
+      { value: "cancelled", label: "Dibatalkan / Berakhir" },
+    ],
+    [contracts.length]
+  );
 
   const filteredContracts = useMemo(() => {
     if (activeTab === "all") return contracts;
@@ -51,7 +69,30 @@ export default function ContractsListPage() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-muted/80 p-1 rounded-xl h-auto flex flex-wrap gap-1">
+        {/* Mobile Filter: Select Dropdown */}
+        <div className="sm:hidden">
+          <Select
+            items={contractTabOptions}
+            value={activeTab}
+            onValueChange={(val) => {
+              if (val) setActiveTab(val);
+            }}
+          >
+            <SelectTrigger className="w-full h-10 rounded-xl border border-input bg-background px-3 text-xs font-medium shadow-2xs">
+              <SelectValue placeholder="Pilih status kesepakatan" />
+            </SelectTrigger>
+            <SelectContent>
+              {contractTabOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Tablet & Desktop: TabsList */}
+        <TabsList className="hidden sm:flex bg-muted/80 p-1 rounded-xl h-auto flex-wrap gap-1">
           <TabsTrigger value="all" className="px-3 text-xs rounded-lg cursor-pointer">
             Semua Kesepakatan ({contracts.length})
           </TabsTrigger>

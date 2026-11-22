@@ -21,6 +21,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
 import { AsyncBoundary } from "@/components/shared/async-boundary";
@@ -41,6 +48,25 @@ export function OffersWorkspace({
   const [searchQuery, setSearchQuery] = useState("");
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [publishingId, setPublishingId] = useState<string | null>(null);
+
+  const offerTabOptions = useMemo(
+    () => [
+      { value: "all", label: `Semua (${offers.length})` },
+      {
+        value: "published",
+        label: `Terbit (${offers.filter((o) => o.status === "published").length})`,
+      },
+      {
+        value: "draft",
+        label: `Draf (${offers.filter((o) => o.status === "draft").length})`,
+      },
+      {
+        value: "withdrawn",
+        label: `Ditarik (${offers.filter((o) => o.status === "withdrawn").length})`,
+      },
+    ],
+    [offers]
+  );
 
   // Aggregate metrics (5 Volume Statuses)
   const metrics = useMemo(() => {
@@ -187,7 +213,30 @@ export function OffersWorkspace({
       {/* Tabs & Search Filter Header */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+          {/* Mobile Filter: Select Dropdown */}
+          <div className="sm:hidden w-full">
+            <Select
+              items={offerTabOptions}
+              value={activeTab}
+              onValueChange={(val) => {
+                if (val) setActiveTab(val);
+              }}
+            >
+              <SelectTrigger className="w-full h-10 rounded-xl border border-input bg-background px-3 text-xs font-medium shadow-2xs">
+                <SelectValue placeholder="Pilih status tawaran" />
+              </SelectTrigger>
+              <SelectContent>
+                {offerTabOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop & Tablet: TabsList */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden sm:block w-auto">
             <TabsList className="bg-muted/80 p-1 rounded-xl h-auto flex flex-wrap gap-1">
               <TabsTrigger value="all" className=" px-3 text-xs rounded-lg">
                 Semua ({offers.length})

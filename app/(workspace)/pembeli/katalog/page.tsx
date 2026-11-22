@@ -39,6 +39,12 @@ const REGENCY_OPTIONS = [
   { value: "Indramayu", label: "Kabupaten Indramayu" },
 ];
 
+const GRAIN_TAB_OPTIONS = [
+  { value: "ALL", label: "Semua Komoditas" },
+  { value: "GKP", label: "Gabah Kering Panen (GKP)" },
+  { value: "GKG", label: "Gabah Kering Giling (GKG)" },
+];
+
 export default function BuyerCatalogPage() {
   const [selectedGrain, setSelectedGrain] = useState<"ALL" | "GKP" | "GKG">("ALL");
   const [selectedRegency, setSelectedRegency] = useState<string>("Semua");
@@ -157,10 +163,33 @@ export default function BuyerCatalogPage() {
       {/* Filter and Search Bar */}
       <div className="space-y-4 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Mobile Filter: Select Dropdown */}
+          <div className="sm:hidden w-full">
+            <Select
+              items={GRAIN_TAB_OPTIONS}
+              value={selectedGrain}
+              onValueChange={(val) => {
+                if (val) setSelectedGrain(val as "ALL" | "GKP" | "GKG");
+              }}
+            >
+              <SelectTrigger className="w-full h-10 rounded-xl border border-input bg-background px-3 text-xs font-medium shadow-2xs">
+                <SelectValue placeholder="Pilih komoditas" />
+              </SelectTrigger>
+              <SelectContent>
+                {GRAIN_TAB_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tablet & Desktop: Tabs */}
           <Tabs
             value={selectedGrain}
             onValueChange={(val) => setSelectedGrain(val as "ALL" | "GKP" | "GKG")}
-            className="w-full sm:w-auto"
+            className="hidden sm:block w-full sm:w-auto"
           >
             <TabsList className="bg-muted/80 p-1 rounded-xl h-auto flex flex-wrap gap-1">
               <TabsTrigger value="ALL" className="px-3 text-xs rounded-lg">
@@ -175,7 +204,7 @@ export default function BuyerCatalogPage() {
             </TabsList>
           </Tabs>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <Select
               items={REGENCY_OPTIONS}
               value={selectedRegency}
@@ -183,7 +212,7 @@ export default function BuyerCatalogPage() {
                 if (val) setSelectedRegency(val);
               }}
             >
-              <SelectTrigger className="h-10 min-w-44 rounded-xl border border-input bg-background px-3 text-xs shadow-2xs">
+              <SelectTrigger className="w-full sm:w-auto h-10 min-w-44 rounded-xl border border-input bg-background px-3 text-xs shadow-2xs">
                 <SelectValue placeholder="Pilih kabupaten" />
               </SelectTrigger>
               <SelectContent>
