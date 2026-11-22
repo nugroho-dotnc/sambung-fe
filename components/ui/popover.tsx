@@ -68,11 +68,13 @@ function PopoverTitle({ className, ...props }: PopoverPrimitive.Title.Props) {
 
 function PopoverDescription({
   className,
+  render = <div />,
   ...props
 }: PopoverPrimitive.Description.Props) {
   return (
     <PopoverPrimitive.Description
       data-slot="popover-description"
+      render={render}
       className={cn("text-muted-foreground", className)}
       {...props}
     />
