@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   Scale,
   Calculator,
@@ -9,6 +10,7 @@ import {
   CheckCircle2,
   ArrowRight,
   TrendingUp,
+  ShoppingBag,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -223,6 +225,45 @@ export function FairPriceSimulator() {
           </div>
         </Card>
       </div>
+
+      {/* Jembatan Aksi: Hubungkan Simulasi ke Transaksi Nyata */}
+      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/30 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
+              Langkah Berikutnya
+            </span>
+            <h4 className="text-base font-bold text-foreground flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              Gunakan Acuan Rp{result.medianPrice.toLocaleString("id-ID")} / kg untuk Transaksi Anda
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+              Nilai rekomendasi ini telah mempertimbangkan mutu gabah {result.grainType} dan kadar air {result.moisturePercent}%. Anda dapat langsung menggunakannya sebagai harga penawaran panen baru atau membandingkannya dengan stok di katalog pasar.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            <Button
+              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial"
+              render={
+                <Link href={`/petani/jual?grainType=${result.grainType}&askPrice=${result.medianPrice}&quality=${result.moisturePercent}`}>
+                  Jual Gabah dengan Harga Ini
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              }
+            />
+            <Button
+              variant="outline"
+              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial"
+              render={
+                <Link href="/pembeli/katalog">
+                  <ShoppingBag className="w-3.5 h-3.5 text-muted-foreground" />
+                  Bandingkan di Katalog
+                </Link>
+              }
+            />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   Calendar,
   Sparkles,
@@ -8,6 +9,9 @@ import {
   ShieldCheck,
   TrendingUp,
   Cpu,
+  ArrowRight,
+  ShoppingBag,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -192,6 +196,45 @@ export default function ForecastPage() {
           </Card>
         </div>
       </div>
+
+      {/* Jembatan Aksi: Hubungkan Prakiraan ke Rencana Transaksi */}
+      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/30 shadow-xs mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
+              Tindakan Berdasarkan Tren
+            </span>
+            <h4 className="text-base font-bold text-foreground flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              Manfaatkan Prakiraan Harga untuk Perencanaan Panen
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+              Harga di {activeForecast.province} diproyeksikan berkisar antara {formatRupiah(activeForecast.confidenceInterval80[0])} – {formatRupiah(activeForecast.confidenceInterval80[1])} per kg pada {activeForecast.targetDate}. Amankan kesepakatan pasokan sejak dini sebelum masa panen raya tiba.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+            <Button
+              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial"
+              render={
+                <Link href="/petani/jual">
+                  Daftarkan Rencana Panen
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              }
+            />
+            <Button
+              variant="outline"
+              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial"
+              render={
+                <Link href="/pembeli/katalog">
+                  <ShoppingBag className="w-3.5 h-3.5 text-muted-foreground" />
+                  Jelajahi Katalog Pembeli
+                </Link>
+              }
+            />
+          </div>
+        </div>
+      </Card>
     </PageContainer>
   );
 }

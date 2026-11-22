@@ -113,11 +113,10 @@ export default function PetaDisparitasPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-              Disparitas Harga Antarprovinsi
+              Peta Sebaran & Perbedaan Harga Gabah
             </h1>
             <p className="mt-1 text-sm text-muted-foreground leading-relaxed max-w-3xl">
-              Pantau sebaran harga gabah di 34 provinsi dan pahami disparitas antarwilayah
-              berdasarkan pasokan hasil panen, biaya logistik antarpulau, dan acuan pasar nasional.
+              Bandingkan rata-rata harga gabah di berbagai provinsi untuk menemukan wilayah dengan pasokan melimpah atau peluang harga jual terbaik secara transparan.
             </p>
           </div>
 
@@ -431,20 +430,29 @@ export default function PetaDisparitasPage() {
               <Button
                 size="sm"
                 className="w-full text-xs font-bold justify-between cursor-pointer"
-                render={<Link href="/harga" />}
+                render={<Link href="/pembeli/katalog" />}
               >
-                <span>Lihat Papan Rantai Harga</span>
+                <span>Cari Pasokan di {activeProvinceItem.province}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 className="w-full text-xs font-semibold justify-between cursor-pointer"
-                render={<Link href="/prakiraan" />}
+                render={<Link href="/petani/jual" />}
               >
-                <span>Buka Prakiraan Tren AI</span>
+                <span>Jual Gabah di Wilayah Ini</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Button>
+              <div className="pt-1 flex items-center justify-between text-xs text-muted-foreground border-t border-border/60">
+                <Link href="/harga-wajar" className="hover:text-primary transition-colors flex items-center gap-1 font-medium">
+                  <Scale className="w-3 h-3" />
+                  Kalkulator Harga Wajar
+                </Link>
+                <Link href="/prakiraan" className="hover:text-primary transition-colors flex items-center gap-1 font-medium">
+                  Prakiraan AI →
+                </Link>
+              </div>
             </div>
           </div>
         </div>

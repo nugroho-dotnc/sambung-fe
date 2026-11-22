@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { CheckCircle2, ChevronRight, ArrowLeft, ShieldCheck, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,13 +48,18 @@ export function OfferWizard({
   onBack?: () => void;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paramGrainType = searchParams.get("grainType") as "GKP" | "GKG" | null;
+  const paramAskPrice = searchParams.get("askPrice");
+  const paramQuality = searchParams.get("quality");
   const { data: user } = useCurrentUser();
+
   const [fields, setFields] = useState({
-    grainType: (initialOffer?.grainType as "GKP" | "GKG") || emptyFields.grainType,
+    grainType: paramGrainType || (initialOffer?.grainType as "GKP" | "GKG") || emptyFields.grainType,
     districtId: initialOffer?.districtId || user?.district || emptyFields.districtId,
     totalVolumeKg: initialOffer ? String(initialOffer.totalVolumeKg) : emptyFields.totalVolumeKg,
-    askPrice: initialOffer ? String(initialOffer.askPrice) : emptyFields.askPrice,
-    quality: initialOffer?.quality !== null && initialOffer?.quality !== undefined ? String(initialOffer.quality) : emptyFields.quality,
+    askPrice: paramAskPrice || (initialOffer ? String(initialOffer.askPrice) : emptyFields.askPrice),
+    quality: paramQuality || (initialOffer?.quality !== null && initialOffer?.quality !== undefined ? String(initialOffer.quality) : emptyFields.quality),
     availableOn: initialOffer?.availableOn || emptyFields.availableOn,
     notes: initialOffer?.notes || emptyFields.notes,
   });
