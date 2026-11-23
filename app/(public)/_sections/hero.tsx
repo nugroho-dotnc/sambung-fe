@@ -1,25 +1,42 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function HeroSection() {
     return (
-        <section className="min-h-[80vh] flex items-center justify-center">
-            <div className="max-w-6xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
-                <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground max-w-4xl mx-auto leading-[1.15]">
-                    Transparansi Nilai Gabah,{" "}
+        <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+            {/* Background Image Placeholder */}
+            <div className="absolute inset-0 z-0 bg-muted/30">
+                <Image
+                    src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80"
+                    alt="Lahan Pertanian"
+                    fill
+                    priority
+                    unoptimized
+                    className="object-cover object-right md:object-center"
+                />
+                {/* Color overlay that fades to transparent from left to right */}
+                <div
+                    className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent"
+                    aria-hidden="true"
+                />
+            </div>
+
+            <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-left space-y-6">
+                <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.15]">
+                    Panen Anda,{" "}
                     <span className="text-primary underline decoration-primary/30 decoration-wavy">
-                        Keadilan bagi Petani
+                        Harga yang Jelas
                     </span>
                 </h1>
 
-                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
                     Platform transaksi digital yang mempertemukan Kelompok Tani dengan Pabrik Penggilingan melalui
                     acuan rentang harga wajar, lampu indikator harga, dan komitmen pasokan digital bebas komisi.
                 </p>
 
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <div className="flex flex-wrap items-center justify-start gap-3 pt-2">
                     <Button
                         size="lg"
                         className="min-h-12 px-6 text-base font-semibold shadow-md cursor-pointer"
@@ -32,7 +49,7 @@ export default function HeroSection() {
                     <Button
                         variant="outline"
                         size="lg"
-                        className="min-h-12 px-6 text-base font-medium cursor-pointer"
+                        className="min-h-12 px-6 text-base font-medium cursor-pointer bg-background/60 backdrop-blur-xs"
                         render={<Link href="/#rantai-harga" />}
                     >
                         Jelajahi Papan Rantai Harga
@@ -40,5 +57,5 @@ export default function HeroSection() {
                 </div>
             </div>
         </section>
-    )
+    );
 }
