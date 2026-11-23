@@ -14,29 +14,29 @@ export default function HeroSection() {
                     fill
                     priority
                     unoptimized
-                    className="object-cover object-right md:object-center"
+                    className="object-cover object-top sm:object-right md:object-center"
                 />
-                {/* Color overlay that fades to transparent from left to right */}
+                {/* Color overlay that fades to transparent from bottom to top on mobile, and from left to right on desktop */}
                 <div
-                    className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-background via-background/90 to-transparent"
                     aria-hidden="true"
                 />
             </div>
 
-            <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-left space-y-6">
-                <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.15]">
+            <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center sm:text-left space-y-6">
+                <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl mx-auto sm:mx-0 leading-[1.15]">
                     Panen Anda,{" "}
                     <span className="text-primary underline decoration-primary/30 decoration-wavy">
                         Harga yang Jelas
                     </span>
                 </h1>
 
-                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto sm:mx-0 leading-relaxed">
                     Platform transaksi digital yang mempertemukan Kelompok Tani dengan Pabrik Penggilingan melalui
                     acuan rentang harga wajar dan komitmen pasokan digital bebas komisi.
                 </p>
 
-                <div className="flex flex-wrap items-center justify-start gap-3 pt-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-2">
                     <Button
                         size="lg"
                         className="min-h-12 px-6 text-base font-semibold shadow-md cursor-pointer"
