@@ -20,20 +20,20 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-          <Link href="/#rantai-harga" className="hover:text-foreground hover:underline">
-            Papan Rantai Harga
+          <Link href="/" className="hover:text-foreground hover:underline">
+            Beranda
           </Link>
           <span>·</span>
-          <Link href="/#peta-sebaran" className="hover:text-foreground hover:underline">
-            Peta Sebaran Harga
+          <Link href="/peta-harga" className="hover:text-foreground hover:underline">
+            Peta & Papan Harga
           </Link>
           <span>·</span>
-          <Link href="/#harga-wajar" className="hover:text-foreground hover:underline">
-            Acuan Harga Wajar
+          <Link href="/kalkulator" className="hover:text-foreground hover:underline">
+            Kalkulator Harga Wajar
           </Link>
           <span>·</span>
           <Link href="/bantuan" className="hover:text-foreground hover:underline">
-            Bantuan & Ketentuan
+            Bantuan
           </Link>
           <span>·</span>
           <Link href="/admin/masuk" className="hover:text-foreground hover:underline text-muted-foreground/70">

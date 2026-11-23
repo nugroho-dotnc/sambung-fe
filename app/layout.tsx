@@ -30,14 +30,14 @@ export default function RootLayout({
     <html lang="id" className={`${inter.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <body className="font-sans">
         <ThemeProvider
-          attribute="class" 
+          attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           <QueryProvider>{children}</QueryProvider>
           <Toaster/>
-        </ThemeProvider>        
+        </ThemeProvider>
         </body>
     </html>
   );
