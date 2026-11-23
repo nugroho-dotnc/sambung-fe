@@ -5,14 +5,19 @@ import { Calculator, TrendingUp, Sprout, ArrowRight } from "lucide-react";
 
 export default function FeatureSection() {
   return (
-    <section id="fitur" className="min-h-[calc(100vh-4rem)] min-h-[620px] flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 scroll-mt-20">
-      <div className="text-center max-w-2xl mx-auto">
-        <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+    <section id="fitur" className="min-h-[calc(100vh-4rem)] min-h-[620px] flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 sm:space-y-12 scroll-mt-20">
+      {/* Header Centered Top-to-Bottom */}
+      <div className="text-center max-w-3xl mx-auto space-y-4 sm:space-y-6">
+        <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
           Instrumen Digital untuk Perdagangan Gabah Modern
         </h2>
+        <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+          Dari kalkulasi harga wajar sebelum panen hingga peta sebaran spasial nasional dan komitmen transaksi digital, semua dirancang untuk efisiensi dan transparansi perdagangan gabah.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Cards berjejer dari Left to Right */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         {/* Card 1: Cek Harga Wajar */}
         <Card className="rounded-3xl border-border/80 bg-card p-6 sm:p-7 flex flex-col justify-between space-y-6 shadow-xs hover:border-primary/40 transition-colors">
           <div className="space-y-4">
