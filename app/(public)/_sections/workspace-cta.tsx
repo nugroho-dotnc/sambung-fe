@@ -4,53 +4,68 @@ import { Button } from "@/components/ui/button";
 
 export default function WorkspaceCtaSection() {
   return (
-    <section className="min-h-[calc(100vh-4rem)] min-h-[500px] flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <section className="min-h-[calc(100vh-4rem)] min-h-[500px] flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-10">
+      <div className="space-y-3 sm:space-y-4 max-w-3xl text-left">
+        <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
+          Panen Sudah Siap, Harga Sudah Jelas
+        </h2>
+        <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+          Tinggal pilih dari sisi mana Anda ingin memulai.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="rounded-3xl border border-emerald-500/20 bg-card p-6 sm:p-8 space-y-4 shadow-xs flex flex-col justify-between">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
-              <Sprout className="w-4 h-4" />
-              Untuk Petani & Kelompok Tani
+        {/* Kartu Petani */}
+        <div className="rounded-3xl border border-emerald-500/20 bg-card p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between hover:border-emerald-500/40 transition-colors">
+          <div className="space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <Sprout className="w-6 h-6" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold font-display text-foreground">
-              Jual Hasil Panen dengan Posisi Tawar Kuat
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Ketahui rentang harga wajar sebelum menjual. Gunakan indikator lampu harga spektrum untuk memastikan gabah Anda tidak dihargai terlalu rendah.
-            </p>
+            <div className="space-y-2">
+              <h3 className="text-xl sm:text-2xl font-bold font-display text-foreground">
+                Saya Petani atau Kelompok Tani
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Ketahui harga wajar sebelum menjual dan pastikan gabah Anda dihargai pantas.
+              </p>
+            </div>
           </div>
           <div className="pt-2">
             <Button
               variant="outline"
-              className="min-h-11 border-emerald-600/40 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-500/10 cursor-pointer"
+              size="lg"
+              className="min-h-11 border-emerald-600/40 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-500/10 cursor-pointer font-semibold"
               render={<Link href="/masuk" />}
             >
-              Masuk sebagai Petani
+              Mulai Menjual
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-amber-500/20 bg-card p-6 sm:p-8 space-y-4 shadow-xs flex flex-col justify-between">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold text-xs uppercase tracking-wider">
-              <Building2 className="w-4 h-4" />
-              Untuk Penggilingan & Pembeli
+        {/* Kartu Pembeli */}
+        <div className="rounded-3xl border border-amber-500/20 bg-card p-6 sm:p-8 space-y-6 shadow-xs flex flex-col justify-between hover:border-amber-500/40 transition-colors">
+          <div className="space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <Building2 className="w-6 h-6" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold font-display text-foreground">
-              Akses Pasokan Gabah Terbuka & Pasti
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Jelajahi tawaran gabah dari kelompok tani di berbagai kecamatan. Lakukan pemesanan parsial dan sepakati komitmen pasokan tanpa perantara spekulan.
-            </p>
+            <div className="space-y-2">
+              <h3 className="text-xl sm:text-2xl font-bold font-display text-foreground">
+                Saya Penggilingan atau Pembeli
+              </h3>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Temukan pasokan gabah dari kelompok tani dan sepakati jumlahnya langsung.
+              </p>
+            </div>
           </div>
           <div className="pt-2">
             <Button
               variant="outline"
-              className="min-h-11 border-amber-600/40 text-amber-800 dark:text-amber-400 hover:bg-amber-500/10 cursor-pointer"
+              size="lg"
+              className="min-h-11 border-amber-600/40 text-amber-800 dark:text-amber-400 hover:bg-amber-500/10 cursor-pointer font-semibold"
               render={<Link href="/masuk" />}
             >
-              Masuk sebagai Pembeli
+              Mulai Mencari Gabah
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
