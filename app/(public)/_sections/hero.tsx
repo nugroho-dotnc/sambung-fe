@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
     return (
-        <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+        <section className="relative min-h-screen flex items-center overflow-hidden">
             {/* Background Image Placeholder */}
             <div className="absolute inset-0 z-0 bg-muted/30">
                 <Image
