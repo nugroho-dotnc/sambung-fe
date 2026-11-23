@@ -33,7 +33,7 @@ export default function HeroSection() {
 
                 <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
                     Platform transaksi digital yang mempertemukan Kelompok Tani dengan Pabrik Penggilingan melalui
-                    acuan rentang harga wajar, lampu indikator harga, dan komitmen pasokan digital bebas komisi.
+                    acuan rentang harga wajar dan komitmen pasokan digital bebas komisi.
                 </p>
 
                 <div className="flex flex-wrap items-center justify-start gap-3 pt-2">
@@ -50,9 +50,9 @@ export default function HeroSection() {
                         variant="outline"
                         size="lg"
                         className="min-h-12 px-6 text-base font-medium cursor-pointer bg-background/60 backdrop-blur-xs"
-                        render={<Link href="/#rantai-harga" />}
+                        render={<Link href="/peta-harga" />}
                     >
-                        Jelajahi Papan Rantai Harga
+                        Jelajahi Peta & Papan Harga
                     </Button>
                 </div>
             </div>
