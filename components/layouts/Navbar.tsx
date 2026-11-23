@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sprout, LogIn, Menu } from "lucide-react";
@@ -17,54 +17,19 @@ import { useMobile } from "@/hooks/use-mobile";
 
 const NAV_LINKS = [
   { href: "/", label: "Beranda" },
-  { href: "/#rantai-harga", label: "Papan Rantai Harga" },
-  { href: "/#peta-sebaran", label: "Peta Sebaran" },
-  { href: "/#harga-wajar", label: "Acuan Harga Wajar" },
-  { href: "/bantuan", label: "Bantuan & Ketentuan" },
+  { href: "/peta-harga", label: "Peta & Papan Harga" },
+  { href: "/kalkulator", label: "Kalkulator Harga Wajar" },
+  { href: "/bantuan", label: "Bantuan" },
 ];
-
-const SECTION_IDS = ["rantai-harga", "peta-sebaran", "harga-wajar"];
-const SCROLL_OFFSET = 96;
-
-function useActiveSection(enabled: boolean) {
-  const [active, setActive] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!enabled) {
-      setActive(null);
-      return;
-    }
-
-    const onScroll = () => {
-      let current: string | null = null;
-      for (const id of SECTION_IDS) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top - SCROLL_OFFSET <= 0) {
-          current = id;
-        }
-      }
-      setActive(current);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [enabled]);
-
-  return active;
-}
 
 export default function PublicNavbar() {
   const isMobile = useMobile();
   const pathname = usePathname();
-  const activeSection = useActiveSection(pathname === "/");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isLinkActive = (href: string) => {
-    const [path, hash] = href.split("#");
-    if (hash) return pathname === "/" && activeSection === hash;
-    if (href === "/") return pathname === "/" && activeSection === null;
-    return pathname === path || pathname.startsWith(`${path}/`);
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   return (
