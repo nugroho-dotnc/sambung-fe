@@ -5,7 +5,7 @@ import { Calculator, TrendingUp, Sprout, ArrowRight } from "lucide-react";
 
 export default function FeatureSection() {
   return (
-    <section id="fitur" className="min-h-screen flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8 scroll-mt-20">
+    <section id="fitur" className="min-h-[calc(100vh-4rem)] min-h-[620px] flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 scroll-mt-20">
       <div className="text-center max-w-2xl mx-auto">
         <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
           Instrumen Digital untuk Perdagangan Gabah Modern

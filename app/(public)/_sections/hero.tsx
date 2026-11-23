@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden">
+        <section className="relative min-h-[calc(100vh-4rem)] min-h-[580px] flex items-center overflow-hidden">
             {/* Background Image Placeholder */}
             <div className="absolute inset-0 z-0 bg-muted/30">
                 <Image
@@ -23,7 +23,7 @@ export default function HeroSection() {
                 />
             </div>
 
-            <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-left space-y-6">
+            <div className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-left space-y-6">
                 <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl leading-[1.15]">
                     Panen Anda,{" "}
                     <span className="text-primary underline decoration-primary/30 decoration-wavy">

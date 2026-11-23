@@ -3,7 +3,7 @@ import { Database, BadgePercent, ShieldCheck, Info } from "lucide-react";
 
 export default function AboutSection() {
   return (
-    <section id="tentang" className="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8 scroll-mt-20">
+    <section id="tentang" className="min-h-[calc(100vh-4rem)] min-h-[620px] flex flex-col justify-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6 scroll-mt-20">
       {/* Title & Description - Centered */}
       <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
         <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
