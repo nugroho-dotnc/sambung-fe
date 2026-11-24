@@ -304,7 +304,7 @@ export default function FullPriceMap() {
       const touch = e.touches[0];
       const dx = touch.clientX - dragStartRef.current.x;
       const dy = touch.clientY - dragStartRef.current.y;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      if (Math.hypot(dx, dy) > 10) {
         hasMovedRef.current = true;
       }
       setPan({
@@ -546,16 +546,35 @@ export default function FullPriceMap() {
         </div>
       )}
 
-      {/* Side Panel dari Kiri: Papan Harga Wilayah Terpilih & Filter */}
+      {/* Mobile Backdrop Overlay when panel is open */}
+      {isSidePanelOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-30 sm:hidden transition-opacity"
+          onClick={() => setIsSidePanelOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Side Panel (Desktop: dari Kiri) / Bottom Sheet (Mobile: dari Bawah ke Atas) */}
       <div
-        className={`absolute inset-y-0 left-0 z-40 w-full sm:w-[420px] lg:w-[440px] bg-background/95 dark:bg-background/95 backdrop-blur-md border-r border-border shadow-2xl flex flex-col transition-transform duration-300 ease-in-out pointer-events-auto ${
-          isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`absolute z-40 bg-background/95 dark:bg-background/95 backdrop-blur-md shadow-2xl flex flex-col transition-transform duration-300 ease-in-out pointer-events-auto
+          /* Mobile styles: bottom sheet */
+          inset-x-0 bottom-0 max-h-[85vh] rounded-t-3xl border-t border-border
+          /* Desktop styles: left side panel */
+          sm:inset-y-0 sm:left-0 sm:right-auto sm:top-0 sm:w-[420px] lg:sm:w-[440px] sm:max-h-full sm:rounded-none sm:border-t-0 sm:border-r
+          ${
+            isSidePanelOpen
+              ? "translate-y-0 sm:translate-x-0"
+              : "translate-y-full sm:translate-y-0 sm:-translate-x-full pointer-events-none invisible sm:visible"
+          }`}
         onMouseDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
       >
+        {/* Mobile Pull Indicator */}
+        <div className="w-10 h-1.5 rounded-full bg-muted-foreground/30 mx-auto mt-2.5 mb-0.5 sm:hidden shrink-0" />
+
         {/* Panel Header */}
-        <div className="p-5 border-b border-border/80 flex items-start justify-between gap-3 bg-muted/20">
+        <div className="p-4 sm:p-5 border-b border-border/80 flex items-start justify-between gap-3 bg-muted/20">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
