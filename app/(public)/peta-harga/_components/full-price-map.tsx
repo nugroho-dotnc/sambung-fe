@@ -9,7 +9,8 @@ import {
   type GeoPermissibleObjects,
 } from "d3-geo";
 import indonesiaGeoJson from "@/data/indonesia-provinces.json";
-import { SEED_PROVINCIAL_DATA } from "@/features/region-map/domain/map-types";
+import { SEED_PROVINCIAL_DATA, SPATIAL_META } from "@/features/region-map/domain/map-types";
+import { PriceBoardService } from "@/features/price-board/services/price-board.service";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,16 +59,33 @@ interface ProvincePathItem {
 }
 
 const COMMODITY_OPTIONS = [
+  { value: "Beras Medium I", label: "Beras Medium I (Pasar Tradisional)" },
   { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
   { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
-  { value: "Beras Medium", label: "Beras Medium" },
 ];
 
 const PERIOD_OPTIONS = [
   { value: "Pekan Berjalan (Terkini)", label: "Pekan Berjalan (Terkini)" },
   { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari" },
-  { value: "Rata-rata 3 Bulan", label: "Rata-rata 3 Bulan" },
 ];
+
+function computeMedian(values: Array<number | undefined>): number {
+  const valid = values
+    .filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0)
+    .sort((a, b) => a - b);
+  if (valid.length === 0) return 0;
+  const mid = Math.floor(valid.length / 2);
+  return valid.length % 2 === 1
+    ? valid[mid]
+    : Math.round((valid[mid - 1] + valid[mid]) / 2);
+}
+
+const NATIONAL_GKP_MEDIAN = computeMedian(
+  SEED_PROVINCIAL_DATA.map((d) => d.gkpDerivedPrice)
+);
+const NATIONAL_GKG_MEDIAN = computeMedian(
+  SEED_PROVINCIAL_DATA.map((d) => d.gkgDerivedPrice)
+);
 
 function normalizeProvinceName(geoName: string): string {
   const upper = (geoName || "").toUpperCase().trim();
@@ -143,7 +161,7 @@ export default function FullPriceMap() {
   }, []);
 
   // Filters inside the side panel
-  const [commodity, setCommodity] = useState<string>("Gabah Kering Panen (GKP)");
+  const [commodity, setCommodity] = useState<string>("Beras Medium I");
   const [period, setPeriod] = useState<string>("Pekan Berjalan (Terkini)");
 
   // Map Pan and Zoom state
@@ -216,44 +234,57 @@ export default function FullPriceMap() {
     );
   }, [hoveredProvince]);
 
-  // Price calculations for the side panel based on commodity and period
+  // Price calculations for the side panel based on real PIHPS & Bapanas/SKGB data
   const provincePriceData = useMemo(() => {
-    const baseGkpPrice = selectedItem.price;
+    const use30d = period.includes("30 Hari");
+    const price30d = selectedItem.price30d ?? selectedItem.price;
+    const periodScale =
+      use30d && selectedItem.price > 0 ? price30d / selectedItem.price : 1.0;
 
-    // Multiplier per commodity
-    let multiplier = 1.0;
-    let medianBenchmark = 6700;
-    if (commodity.includes("GKG")) {
-      multiplier = 1.18;
-      medianBenchmark = 7900;
-    } else if (commodity.includes("Beras")) {
-      multiplier = 1.95;
-      medianBenchmark = 13050;
+    let calculatedPrice: number = use30d ? price30d : selectedItem.price;
+    let medianBenchmark: number = use30d
+      ? SPATIAL_META.nationalMedianPrice30d
+      : SPATIAL_META.nationalMedianPrice;
+
+    const gkpBase = selectedItem.gkpDerivedPrice ?? Math.round(selectedItem.price * 0.48);
+    const gkgBase = selectedItem.gkgDerivedPrice ?? Math.round(selectedItem.price * 0.56);
+
+    if (commodity.includes("GKP")) {
+      calculatedPrice = Math.round(gkpBase * periodScale);
+      medianBenchmark = Math.round(
+        NATIONAL_GKP_MEDIAN *
+          (use30d
+            ? SPATIAL_META.nationalMedianPrice30d /
+              Math.max(1, SPATIAL_META.nationalMedianPrice)
+            : 1.0)
+      );
+    } else if (commodity.includes("GKG")) {
+      calculatedPrice = Math.round(gkgBase * periodScale);
+      medianBenchmark = Math.round(
+        NATIONAL_GKG_MEDIAN *
+          (use30d
+            ? SPATIAL_META.nationalMedianPrice30d /
+              Math.max(1, SPATIAL_META.nationalMedianPrice)
+            : 1.0)
+      );
     }
 
-    // Adjustment per period
-    let periodDelta = 0;
-    if (period.includes("30 Hari")) {
-      periodDelta = -40;
-    } else if (period.includes("3 Bulan")) {
-      periodDelta = -110;
-    }
-
-    const calculatedPrice = Math.round(baseGkpPrice * multiplier) + periodDelta;
     const diffNominal = calculatedPrice - medianBenchmark;
     const percentageDiff = Number(
-      (((calculatedPrice - medianBenchmark) / medianBenchmark) * 100).toFixed(1)
+      (((calculatedPrice - medianBenchmark) / Math.max(1, medianBenchmark)) * 100).toFixed(1)
     );
 
-    // Supply chain breakdown
-    const farmerPrice =
-      commodity === "Beras Medium"
-        ? Math.round(calculatedPrice * 0.58)
-        : Math.round(calculatedPrice * 0.94);
-    const millerPrice = Math.round(calculatedPrice * 1.06);
-    const wholesalePrice = Math.round(calculatedPrice * 1.13);
-    const retailPrice = Math.round(calculatedPrice * 1.22);
-    const farmerShare = Math.round((farmerPrice / retailPrice) * 100);
+    // Real 4-tier PIHPS supply-chain breakdown (1 kg Beras Medium I equivalent)
+    const board = PriceBoardService.getSupplyChainComparison(
+      "Beras Medium I",
+      selectedItem.province,
+      use30d ? "Rata-rata 30 Hari" : "12 Pekan Terakhir"
+    );
+    const farmerPrice = board.levels[0]?.price ?? gkpBase;
+    const millerPrice = board.levels[1]?.price ?? selectedItem.price;
+    const wholesalePrice = board.levels[2]?.price ?? selectedItem.price;
+    const retailPrice = board.levels[3]?.price ?? selectedItem.price;
+    const farmerShare = Math.round(board.farmerSharePercent);
 
     return {
       calculatedPrice,
@@ -374,10 +405,10 @@ export default function FullPriceMap() {
       {/* Top-Left Header: Judul & Deskripsi Halaman (Tanpa Card) */}
       <div className="absolute top-5 left-5 sm:top-7 sm:left-7 z-20 pointer-events-auto max-w-sm sm:max-w-md lg:max-w-lg space-y-2">
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-foreground tracking-tight leading-tight drop-shadow-xs">
-          Peta Sebaran Harga Gabah
+          Peta Sebaran Harga Beras
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
-          Pantau deviasi harga gabah terhadap median nasional. Klik wilayah pada peta untuk membuka papan harga dan transmisi rantai pasok.
+          Pantau deviasi harga beras terhadap median nasional. Klik wilayah pada peta untuk membuka papan harga dan transmisi rantai pasok.
         </p>
 
         {/* Mobile: Di bawah judul dan deskripsi (Hanya text, dapat disembunyikan ke samping) */}
@@ -557,11 +588,11 @@ export default function FullPriceMap() {
         <div className="flex items-center gap-3 pb-0.5 border-t sm:border-t-0 sm:border-l border-border/60 pt-2 sm:pt-0 sm:pl-5">
           <div className="flex flex-col">
             <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
-              Median Nasional (GKP)
+              Median Nasional (Beras)
             </span>
             <div className="flex items-baseline gap-1">
               <span className="text-base sm:text-lg font-extrabold text-foreground font-display tabular-nums">
-                Rp 6.700
+                {formatRupiah(SPATIAL_META.nationalMedianPrice)}
               </span>
               <span className="text-xs text-muted-foreground">/kg</span>
             </div>
@@ -855,9 +886,14 @@ export default function FullPriceMap() {
           {/* Transmisi Rantai Pasok Wilayah */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-primary" />
-                <span>Transmisi Rantai Pasok</span>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-primary" />
+                  <span>Transmisi Rantai Pasok</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Transmisi 1 kg setara Beras Medium I (petani → eceran)
+                </p>
               </div>
               <Badge variant="outline" className="text-[10px] font-semibold">
                 Farmer&apos;s Share: {provincePriceData.farmerShare}%
@@ -872,9 +908,9 @@ export default function FullPriceMap() {
                     <Wheat className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-foreground">Tingkat Petani</div>
+                    <div className="text-xs font-bold text-foreground">Tingkat Petani (Setara Beras)</div>
                     <div className="text-[11px] text-muted-foreground">
-                      Harga gabah di lahan / kelompok tani
+                      Nilai GKP setara 1 kg beras (rendemen 53,38%)
                     </div>
                   </div>
                 </div>
@@ -895,7 +931,7 @@ export default function FullPriceMap() {
                   <div>
                     <div className="text-xs font-bold text-foreground">Penggilingan Padi</div>
                     <div className="text-[11px] text-muted-foreground">
-                      Biaya proses pengeringan & giling
+                      Harga beras tingkat produsen (PIHPS BI)
                     </div>
                   </div>
                 </div>
@@ -916,7 +952,7 @@ export default function FullPriceMap() {
                   <div>
                     <div className="text-xs font-bold text-foreground">Pasar Grosir / Induk</div>
                     <div className="text-[11px] text-muted-foreground">
-                      Logistik & distribusi antardaerah
+                      Harga beras pedagang besar (PIHPS BI)
                     </div>
                   </div>
                 </div>
@@ -937,7 +973,7 @@ export default function FullPriceMap() {
                   <div>
                     <div className="text-xs font-bold text-foreground">Eceran Konsumen</div>
                     <div className="text-[11px] text-muted-foreground">
-                      Pasar tradisional & ritel lokal
+                      Pasar tradisional konsumen (PIHPS BI)
                     </div>
                   </div>
                 </div>
