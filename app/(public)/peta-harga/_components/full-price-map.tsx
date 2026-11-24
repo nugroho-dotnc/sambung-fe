@@ -56,15 +56,15 @@ interface ProvincePathItem {
 }
 
 const COMMODITY_OPTIONS = [
-  { value: "GKP", label: "Gabah Kering Panen (GKP)" },
-  { value: "GKG", label: "Gabah Kering Giling (GKG)" },
+  { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
+  { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
   { value: "Beras Medium", label: "Beras Medium" },
 ];
 
 const PERIOD_OPTIONS = [
-  { value: "current", label: "Pekan Berjalan (Terkini)" },
-  { value: "30days", label: "Rata-rata 30 Hari" },
-  { value: "90days", label: "Rata-rata 3 Bulan" },
+  { value: "Pekan Berjalan (Terkini)", label: "Pekan Berjalan (Terkini)" },
+  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari" },
+  { value: "Rata-rata 3 Bulan", label: "Rata-rata 3 Bulan" },
 ];
 
 function normalizeProvinceName(geoName: string): string {
@@ -112,8 +112,8 @@ export default function FullPriceMap() {
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
   // Filters inside the side panel
-  const [commodity, setCommodity] = useState<string>("GKP");
-  const [period, setPeriod] = useState<string>("current");
+  const [commodity, setCommodity] = useState<string>("Gabah Kering Panen (GKP)");
+  const [period, setPeriod] = useState<string>("Pekan Berjalan (Terkini)");
 
   // Map Pan and Zoom state
   const [zoom, setZoom] = useState<number>(1);
@@ -192,19 +192,19 @@ export default function FullPriceMap() {
     // Multiplier per commodity
     let multiplier = 1.0;
     let medianBenchmark = 6700;
-    if (commodity === "GKG") {
+    if (commodity.includes("GKG")) {
       multiplier = 1.18;
       medianBenchmark = 7900;
-    } else if (commodity === "Beras Medium") {
+    } else if (commodity.includes("Beras")) {
       multiplier = 1.95;
       medianBenchmark = 13050;
     }
 
     // Adjustment per period
     let periodDelta = 0;
-    if (period === "30days") {
+    if (period.includes("30 Hari")) {
       periodDelta = -40;
-    } else if (period === "90days") {
+    } else if (period.includes("3 Bulan")) {
       periodDelta = -110;
     }
 
@@ -617,6 +617,7 @@ export default function FullPriceMap() {
                   Komoditas Acuan
                 </label>
                 <Select
+                  items={COMMODITY_OPTIONS}
                   value={commodity}
                   onValueChange={(val) => {
                     if (val) setCommodity(val);
@@ -640,6 +641,7 @@ export default function FullPriceMap() {
                   Periode Snapshot
                 </label>
                 <Select
+                  items={PERIOD_OPTIONS}
                   value={period}
                   onValueChange={(val) => {
                     if (val) setPeriod(val);
@@ -663,7 +665,13 @@ export default function FullPriceMap() {
           {/* Rangkuman Harga Utama */}
           <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 space-y-2">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Harga Acuan Wilayah ({commodity}):</span>
+              <span>
+                Harga Acuan Wilayah (
+                {commodity.includes("(")
+                  ? commodity.split("(")[1].replace(")", "")
+                  : commodity}
+                ):
+              </span>
               <span className="font-semibold text-foreground">
                 Median: {formatRupiah(provincePriceData.medianBenchmark)}/kg
               </span>
