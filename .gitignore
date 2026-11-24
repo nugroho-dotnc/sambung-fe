@@ -45,3 +45,4 @@ docs
 package-lock.json
 
 /ai/
+pnpm-lock.yaml
