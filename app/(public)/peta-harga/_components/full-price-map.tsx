@@ -34,6 +34,8 @@ import {
   ShoppingCart,
   Wheat,
   Percent,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface ProvinceFeature {
@@ -110,6 +112,35 @@ export default function FullPriceMap() {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
+
+  // Stats visibility state (can be collapsed to the side)
+  const [isDesktopStatsOpen, setIsDesktopStatsOpen] = useState<boolean>(true);
+  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState<boolean>(true);
+
+  // Compute highest, lowest, disparity statistics (text only)
+  const stats = useMemo(() => {
+    const minItem = SEED_PROVINCIAL_DATA.reduce(
+      (prev, curr) => (curr.price < prev.price ? curr : prev),
+      SEED_PROVINCIAL_DATA[0]
+    );
+
+    const maxItem = SEED_PROVINCIAL_DATA.reduce(
+      (prev, curr) => (curr.price > prev.price ? curr : prev),
+      SEED_PROVINCIAL_DATA[0]
+    );
+
+    const disparityAmount = maxItem.price - minItem.price;
+    const disparityPercent = Number(
+      (((maxItem.price - minItem.price) / minItem.price) * 100).toFixed(1)
+    );
+
+    return {
+      minItem,
+      maxItem,
+      disparityAmount,
+      disparityPercent,
+    };
+  }, []);
 
   // Filters inside the side panel
   const [commodity, setCommodity] = useState<string>("Gabah Kering Panen (GKP)");
@@ -348,6 +379,126 @@ export default function FullPriceMap() {
         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
           Pantau deviasi harga gabah terhadap median nasional. Klik wilayah pada peta untuk membuka papan harga dan transmisi rantai pasok.
         </p>
+
+        {/* Mobile: Di bawah judul dan deskripsi (Hanya text, dapat disembunyikan ke samping) */}
+        <div className="sm:hidden pt-2 space-y-1.5">
+          <button
+            type="button"
+            onClick={() => setIsMobileStatsOpen(!isMobileStatsOpen)}
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            aria-label={isMobileStatsOpen ? "Sembunyikan statistik" : "Tampilkan statistik"}
+          >
+            <span>Ringkasan Pasar</span>
+            {isMobileStatsOpen ? (
+              <ChevronLeft className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronRight className="w-3.5 h-3.5" />
+            )}
+          </button>
+
+          <div
+            className={`flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs transition-all duration-300 ${
+              isMobileStatsOpen
+                ? "opacity-100 max-h-24 translate-x-0"
+                : "opacity-0 max-h-0 -translate-x-4 pointer-events-none overflow-hidden"
+            }`}
+          >
+            <div>
+              <span className="text-[10px] text-muted-foreground block">
+                Tertinggi ({stats.maxItem.province}):
+              </span>
+              <span className="font-extrabold text-amber-600 dark:text-amber-400 tabular-nums">
+                {formatRupiah(stats.maxItem.price)}/kg
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[10px] text-muted-foreground block">
+                Terendah ({stats.minItem.province}):
+              </span>
+              <span className="font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                {formatRupiah(stats.minItem.price)}/kg
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[10px] text-muted-foreground block">
+                Disparitas:
+              </span>
+              <span className="font-extrabold text-blue-600 dark:text-blue-400 tabular-nums">
+                {formatRupiah(stats.disparityAmount)}/kg
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Top-Right Desktop: Statistik Teks (Dapat disembunyikan ke samping) */}
+      <div className="absolute top-5 right-5 sm:top-7 sm:right-7 z-20 pointer-events-auto hidden sm:flex items-center gap-2">
+        <div
+          className={`flex items-center gap-6 text-right transition-all duration-300 ${
+            isDesktopStatsOpen
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-8 pointer-events-none select-none max-w-0 overflow-hidden"
+          }`}
+        >
+          {/* Tertinggi */}
+          <div className="space-y-0.5 whitespace-nowrap">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Tertinggi ({stats.maxItem.province})
+            </div>
+            <div className="text-sm font-extrabold text-amber-600 dark:text-amber-400 font-display tabular-nums">
+              {formatRupiah(stats.maxItem.price)}
+              <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
+              <span className="text-[10px] font-medium text-amber-600/80 dark:text-amber-400/80 ml-1">
+                (+{stats.maxItem.percentageDiff.toFixed(1)}%)
+              </span>
+            </div>
+          </div>
+
+          {/* Terendah */}
+          <div className="space-y-0.5 whitespace-nowrap">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Terendah ({stats.minItem.province})
+            </div>
+            <div className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 font-display tabular-nums">
+              {formatRupiah(stats.minItem.price)}
+              <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
+              <span className="text-[10px] font-medium text-emerald-600/80 dark:text-emerald-400/80 ml-1">
+                ({stats.minItem.percentageDiff.toFixed(1)}%)
+              </span>
+            </div>
+          </div>
+
+          {/* Disparitas */}
+          <div className="space-y-0.5 whitespace-nowrap">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Disparitas
+            </div>
+            <div className="text-sm font-extrabold text-blue-600 dark:text-blue-400 font-display tabular-nums">
+              {formatRupiah(stats.disparityAmount)}
+              <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
+              <span className="text-[10px] font-medium text-blue-600/80 dark:text-blue-400/80 ml-1">
+                ({stats.disparityPercent}%)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Toggle hide/show to the side */}
+        <button
+          type="button"
+          onClick={() => setIsDesktopStatsOpen(!isDesktopStatsOpen)}
+          className="p-1.5 rounded-lg text-muted-foreground/80 hover:text-foreground hover:bg-muted/40 transition-colors cursor-pointer"
+          title={isDesktopStatsOpen ? "Sembunyikan ke samping" : "Tampilkan statistik"}
+          aria-label={isDesktopStatsOpen ? "Sembunyikan ke samping" : "Tampilkan statistik"}
+        >
+          {isDesktopStatsOpen ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
+          )}
+        </button>
       </div>
 
       {/* Bottom-Left Legend: Bar Merah ke Hijau dengan label diatasnya & Median Nasional di sampingnya (Tanpa Card) */}
