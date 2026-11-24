@@ -11,22 +11,29 @@ import {
 import indonesiaGeoJson from "@/data/indonesia-provinces.json";
 import { SEED_PROVINCIAL_DATA } from "@/features/region-map/domain/map-types";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  TrendingUp,
-  TrendingDown,
-  Scale,
-  Calculator,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Plus,
   Minus,
   RotateCcw,
   ArrowRight,
-  Info,
-  ChevronUp,
-  ChevronDown,
   MapPin,
+  X,
+  Layers,
+  Calendar,
+  Building2,
+  Store,
+  ShoppingCart,
+  Wheat,
+  Percent,
 } from "lucide-react";
 
 interface ProvinceFeature {
@@ -47,6 +54,18 @@ interface ProvincePathItem {
   name: string;
   path: string | null;
 }
+
+const COMMODITY_OPTIONS = [
+  { value: "GKP", label: "Gabah Kering Panen (GKP)" },
+  { value: "GKG", label: "Gabah Kering Giling (GKG)" },
+  { value: "Beras Medium", label: "Beras Medium" },
+];
+
+const PERIOD_OPTIONS = [
+  { value: "current", label: "Pekan Berjalan (Terkini)" },
+  { value: "30days", label: "Rata-rata 30 Hari" },
+  { value: "90days", label: "Rata-rata 3 Bulan" },
+];
 
 function normalizeProvinceName(geoName: string): string {
   const upper = (geoName || "").toUpperCase().trim();
@@ -88,12 +107,13 @@ function normalizeProvinceName(geoName: string): string {
 
 export default function FullPriceMap() {
   const [selectedProvince, setSelectedProvince] = useState<string>("Jawa Barat");
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [hoveredProvince, setHoveredProvince] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
-  // UI Panels toggle state for mobile ergonomics
-  const [isStatsExpanded, setIsStatsExpanded] = useState<boolean>(true);
-  const [isLegendExpanded, setIsLegendExpanded] = useState<boolean>(true);
+  // Filters inside the side panel
+  const [commodity, setCommodity] = useState<string>("GKP");
+  const [period, setPeriod] = useState<string>("current");
 
   // Map Pan and Zoom state
   const [zoom, setZoom] = useState<number>(1);
@@ -132,44 +152,7 @@ export default function FullPriceMap() {
     });
   }, []);
 
-  // Compute national statistics
-  const stats = useMemo(() => {
-    const minItem = SEED_PROVINCIAL_DATA.reduce(
-      (prev, curr) => (curr.price < prev.price ? curr : prev),
-      SEED_PROVINCIAL_DATA[0]
-    );
-
-    const maxItem = SEED_PROVINCIAL_DATA.reduce(
-      (prev, curr) => (curr.price > prev.price ? curr : prev),
-      SEED_PROVINCIAL_DATA[0]
-    );
-
-    const sumPrice = SEED_PROVINCIAL_DATA.reduce((acc, curr) => acc + curr.price, 0);
-    const avgPrice = Math.round(sumPrice / SEED_PROVINCIAL_DATA.length);
-    const medianPrice = 6700; // Benchmark median price (GKP)
-
-    const disparityAmount = maxItem.price - minItem.price;
-    const disparityPercent = Number(
-      (((maxItem.price - minItem.price) / minItem.price) * 100).toFixed(1)
-    );
-
-    const avgDiffPercent = Number(
-      (((avgPrice - medianPrice) / medianPrice) * 100).toFixed(1)
-    );
-
-    return {
-      minItem,
-      maxItem,
-      avgPrice,
-      medianPrice,
-      disparityAmount,
-      disparityPercent,
-      avgDiffPercent,
-      totalProvinces: SEED_PROVINCIAL_DATA.length,
-    };
-  }, []);
-
-  // Color mapper based on deviation vs median
+  // Color mapper based on deviation vs median (Red to Green)
   const getColor = useCallback((provName: string) => {
     const item = SEED_PROVINCIAL_DATA.find(
       (d) => d.province.toLowerCase() === provName.toLowerCase()
@@ -177,21 +160,82 @@ export default function FullPriceMap() {
     if (!item) return "#94a3b8"; // Slate fallback
 
     const diff = item.percentageDiff;
-    if (diff < -3.5) return "#059669"; // Emerald 600 (Much cheaper / surplus)
-    if (diff < -1.0) return "#10b981"; // Emerald 500 (Moderate surplus)
-    if (diff <= 1.5) return "#64748b"; // Slate 500 (Balanced / Normal)
-    if (diff <= 5.0) return "#f59e0b"; // Amber 500 (Moderate deficit)
-    return "#ea580c"; // Orange 600 (High deficit)
+    if (diff > 5.0) return "#ea580c"; // Red/Orange 600 (Defisit Kuat)
+    if (diff > 1.5) return "#f59e0b"; // Amber 500 (Defisit)
+    if (diff >= -1.0) return "#64748b"; // Slate 500 (Normal / ±1.5%)
+    if (diff >= -3.5) return "#10b981"; // Emerald 500 (Surplus)
+    return "#059669"; // Emerald 600 (Surplus Kuat)
   }, []);
 
-  const activeProvinceName = hoveredProvince || selectedProvince;
-  const activeItem = useMemo(() => {
+  // Active province data for hover and side panel
+  const selectedItem = useMemo(() => {
     return (
       SEED_PROVINCIAL_DATA.find(
-        (d) => d.province.toLowerCase() === activeProvinceName.toLowerCase()
+        (d) => d.province.toLowerCase() === selectedProvince.toLowerCase()
+      ) || SEED_PROVINCIAL_DATA[0]
+    );
+  }, [selectedProvince]);
+
+  const hoveredItem = useMemo(() => {
+    if (!hoveredProvince) return null;
+    return (
+      SEED_PROVINCIAL_DATA.find(
+        (d) => d.province.toLowerCase() === hoveredProvince.toLowerCase()
       ) || null
     );
-  }, [activeProvinceName]);
+  }, [hoveredProvince]);
+
+  // Price calculations for the side panel based on commodity and period
+  const provincePriceData = useMemo(() => {
+    const baseGkpPrice = selectedItem.price;
+
+    // Multiplier per commodity
+    let multiplier = 1.0;
+    let medianBenchmark = 6700;
+    if (commodity === "GKG") {
+      multiplier = 1.18;
+      medianBenchmark = 7900;
+    } else if (commodity === "Beras Medium") {
+      multiplier = 1.95;
+      medianBenchmark = 13050;
+    }
+
+    // Adjustment per period
+    let periodDelta = 0;
+    if (period === "30days") {
+      periodDelta = -40;
+    } else if (period === "90days") {
+      periodDelta = -110;
+    }
+
+    const calculatedPrice = Math.round(baseGkpPrice * multiplier) + periodDelta;
+    const diffNominal = calculatedPrice - medianBenchmark;
+    const percentageDiff = Number(
+      (((calculatedPrice - medianBenchmark) / medianBenchmark) * 100).toFixed(1)
+    );
+
+    // Supply chain breakdown
+    const farmerPrice =
+      commodity === "Beras Medium"
+        ? Math.round(calculatedPrice * 0.58)
+        : Math.round(calculatedPrice * 0.94);
+    const millerPrice = Math.round(calculatedPrice * 1.06);
+    const wholesalePrice = Math.round(calculatedPrice * 1.13);
+    const retailPrice = Math.round(calculatedPrice * 1.22);
+    const farmerShare = Math.round((farmerPrice / retailPrice) * 100);
+
+    return {
+      calculatedPrice,
+      medianBenchmark,
+      diffNominal,
+      percentageDiff,
+      farmerPrice,
+      millerPrice,
+      wholesalePrice,
+      retailPrice,
+      farmerShare,
+    };
+  }, [selectedItem, commodity, period]);
 
   // Zoom handlers
   const handleZoomIn = () => setZoom((prev) => Math.min(Number((prev + 0.35).toFixed(2)), 3.2));
@@ -203,7 +247,6 @@ export default function FullPriceMap() {
 
   // Drag pan handlers
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Only drag with primary mouse button
     if (e.button !== 0) return;
     setIsDragging(true);
     hasMovedRef.current = false;
@@ -219,7 +262,7 @@ export default function FullPriceMap() {
     if (isDragging) {
       const dx = e.clientX - dragStartRef.current.x;
       const dy = e.clientY - dragStartRef.current.y;
-      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
         hasMovedRef.current = true;
       }
       setPan({
@@ -261,7 +304,7 @@ export default function FullPriceMap() {
       const touch = e.touches[0];
       const dx = touch.clientX - dragStartRef.current.x;
       const dy = touch.clientY - dragStartRef.current.y;
-      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
         hasMovedRef.current = true;
       }
       setPan({
@@ -297,294 +340,86 @@ export default function FullPriceMap() {
         }}
       />
 
-      {/* Top-Left Header Badge / Title */}
-      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 pointer-events-auto max-w-[280px] sm:max-w-sm">
-        <div className="bg-card/90 dark:bg-card/90 backdrop-blur-md border border-border/80 shadow-md rounded-2xl p-3 sm:p-4 space-y-1.5 transition-all">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Geospasial 34 Provinsi
-            </span>
-            <Badge variant="outline" className="text-[10px] font-bold py-0 h-4">
-              GKP Terkini
-            </Badge>
+      {/* Top-Left Header: Judul & Deskripsi Halaman (Tanpa Card) */}
+      <div className="absolute top-5 left-5 sm:top-7 sm:left-7 z-20 pointer-events-auto max-w-sm sm:max-w-md lg:max-w-lg space-y-2">
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-foreground tracking-tight leading-tight drop-shadow-xs">
+          Peta Sebaran Harga Gabah
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+          Pantau deviasi harga gabah terhadap median nasional. Klik wilayah pada peta untuk membuka papan harga dan transmisi rantai pasok.
+        </p>
+      </div>
+
+      {/* Bottom-Left Legend: Bar Merah ke Hijau dengan label diatasnya & Median Nasional di sampingnya (Tanpa Card) */}
+      <div className="absolute bottom-5 left-5 sm:bottom-7 sm:left-7 z-20 pointer-events-auto flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-6 bg-background/60 backdrop-blur-xs p-2 rounded-xl sm:bg-transparent sm:backdrop-blur-none sm:p-0">
+        {/* Horizontal Bar with Labels on Top */}
+        <div className="flex flex-col space-y-1.5">
+          <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Deviasi vs Median Nasional
           </div>
-          <h1 className="font-display font-extrabold text-base sm:text-lg text-foreground tracking-tight leading-tight">
-            Peta Sebaran & Disparitas Harga
-          </h1>
-          <p className="text-xs text-muted-foreground leading-relaxed hidden sm:block">
-            Klik atau arahkan kursor ke wilayah untuk meninjau deviasi harga gabah terhadap median nasional.
-          </p>
+
+          {/* Labels above each color segment */}
+          <div className="flex items-center text-[10px] font-bold">
+            <span className="w-14 sm:w-16 text-center text-orange-600 dark:text-orange-400">
+              &gt; +5.0%
+            </span>
+            <span className="w-14 sm:w-16 text-center text-amber-600 dark:text-amber-400">
+              +1.5% s/d +5%
+            </span>
+            <span className="w-12 sm:w-14 text-center text-slate-600 dark:text-slate-400">
+              Normal
+            </span>
+            <span className="w-14 sm:w-16 text-center text-emerald-600 dark:text-emerald-400">
+              -1% s/d -3.5%
+            </span>
+            <span className="w-14 sm:w-16 text-center text-emerald-700 dark:text-emerald-500">
+              &lt; -3.5%
+            </span>
+          </div>
+
+          {/* Color Bar: Merah ke Hijau */}
+          <div className="flex h-3.5 rounded-full overflow-hidden shadow-xs ring-1 ring-border/60">
+            <div
+              className="w-14 sm:w-16 bg-[#ea580c] transition-opacity hover:opacity-90"
+              title="Defisit Kuat (> +5.0%)"
+            />
+            <div
+              className="w-14 sm:w-16 bg-[#f59e0b] transition-opacity hover:opacity-90"
+              title="Defisit (+1.5% s/d +5.0%)"
+            />
+            <div
+              className="w-12 sm:w-14 bg-[#64748b] transition-opacity hover:opacity-90"
+              title="Normal / Berimbang (±1.5%)"
+            />
+            <div
+              className="w-14 sm:w-16 bg-[#10b981] transition-opacity hover:opacity-90"
+              title="Surplus (-1.0% s/d -3.5%)"
+            />
+            <div
+              className="w-14 sm:w-16 bg-[#059669] transition-opacity hover:opacity-90"
+              title="Surplus Kuat (< -3.5%)"
+            />
+          </div>
+        </div>
+
+        {/* Nilai Median Nasional di Samping Bar */}
+        <div className="flex items-center gap-3 pb-0.5 border-t sm:border-t-0 sm:border-l border-border/60 pt-2 sm:pt-0 sm:pl-5">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
+              Median Nasional (GKP)
+            </span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-base sm:text-lg font-extrabold text-foreground font-display tabular-nums">
+                Rp 6.700
+              </span>
+              <span className="text-xs text-muted-foreground">/kg</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Top-Right Statistics Card (Nilai Tinggi, Rendah, Disparitas, Rata-rata) */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 pointer-events-auto w-72 sm:w-88 md:w-96 max-w-[calc(100vw-2rem)]">
-        <Card className="rounded-2xl border-border/80 bg-card/92 dark:bg-card/92 backdrop-blur-md shadow-xl overflow-hidden transition-all">
-          {/* Card Title & Collapse Toggle */}
-          <div
-            className="p-4 sm:p-5 pb-3 flex items-center justify-between cursor-pointer border-b border-border/50"
-            onClick={() => setIsStatsExpanded(!isStatsExpanded)}
-          >
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <h2 className="font-display font-bold text-sm sm:text-base text-foreground tracking-tight">
-                  Statistik Pasar Nasional
-                </h2>
-                <Badge variant="secondary" className="text-[10px] font-semibold">
-                  34 Provinsi
-                </Badge>
-              </div>
-              <p className="text-[11px] text-muted-foreground">
-                Acuan Median:{" "}
-                <strong className="text-foreground">
-                  {formatRupiah(stats.medianPrice)}/kg
-                </strong>
-              </p>
-            </div>
-            <button
-              type="button"
-              className="p-1 rounded-lg text-muted-foreground hover:bg-muted/60 transition-colors"
-              aria-label={isStatsExpanded ? "Tutup statistik" : "Buka statistik"}
-            >
-              {isStatsExpanded ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-
-          {/* Expandable Body */}
-          {isStatsExpanded && (
-            <div className="p-4 sm:p-5 pt-3.5 space-y-3.5">
-              {/* 2x2 Grid of Key Statistics */}
-              <div className="grid grid-cols-2 gap-2.5">
-                {/* 1. Nilai Tertinggi */}
-                <div className="p-3 rounded-xl bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/20 space-y-1">
-                  <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
-                    <TrendingUp className="w-3.5 h-3.5 shrink-0" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Tertinggi
-                    </span>
-                  </div>
-                  <div className="text-xs font-semibold text-foreground truncate" title={stats.maxItem.province}>
-                    {stats.maxItem.province}
-                  </div>
-                  <div className="text-sm sm:text-base font-extrabold text-amber-700 dark:text-amber-400 font-display tabular-nums">
-                    {formatRupiah(stats.maxItem.price)}
-                    <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    +{stats.maxItem.percentageDiff.toFixed(1)}% vs median
-                  </div>
-                </div>
-
-                {/* 2. Nilai Terendah */}
-                <div className="p-3 rounded-xl bg-emerald-500/10 dark:bg-emerald-950/30 border border-emerald-500/20 space-y-1">
-                  <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
-                    <TrendingDown className="w-3.5 h-3.5 shrink-0" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Terendah
-                    </span>
-                  </div>
-                  <div className="text-xs font-semibold text-foreground truncate" title={stats.minItem.province}>
-                    {stats.minItem.province}
-                  </div>
-                  <div className="text-sm sm:text-base font-extrabold text-emerald-700 dark:text-emerald-400 font-display tabular-nums">
-                    {formatRupiah(stats.minItem.price)}
-                    <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {stats.minItem.percentageDiff.toFixed(1)}% vs median
-                  </div>
-                </div>
-
-                {/* 3. Rentang Disparitas */}
-                <div className="p-3 rounded-xl bg-blue-500/10 dark:bg-blue-950/30 border border-blue-500/20 space-y-1">
-                  <div className="flex items-center gap-1.5 text-blue-700 dark:text-blue-400">
-                    <Scale className="w-3.5 h-3.5 shrink-0" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Disparitas
-                    </span>
-                  </div>
-                  <div className="text-xs font-semibold text-foreground">
-                    Rentang Harga
-                  </div>
-                  <div className="text-sm sm:text-base font-extrabold text-blue-700 dark:text-blue-400 font-display tabular-nums">
-                    {formatRupiah(stats.disparityAmount)}
-                    <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    Gap {stats.disparityPercent}% antarprovinsi
-                  </div>
-                </div>
-
-                {/* 4. Rata-rata Nasional */}
-                <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 space-y-1">
-                  <div className="flex items-center gap-1.5 text-primary">
-                    <Calculator className="w-3.5 h-3.5 shrink-0" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
-                      Rata-rata
-                    </span>
-                  </div>
-                  <div className="text-xs font-semibold text-foreground">
-                    Seluruh Daerah
-                  </div>
-                  <div className="text-sm sm:text-base font-extrabold text-primary font-display tabular-nums">
-                    {formatRupiah(stats.avgPrice)}
-                    <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
-                  </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    +{stats.avgDiffPercent}% vs median
-                  </div>
-                </div>
-              </div>
-
-              {/* Selected Province Details Box */}
-              {activeItem && (
-                <div className="p-3 rounded-xl bg-muted/50 border border-border/80 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 text-foreground font-bold text-xs sm:text-sm">
-                      <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                      <span className="truncate">{activeItem.province}</span>
-                    </div>
-                    <span
-                      className={`text-[10px] tabular-nums font-bold px-2 py-0.5 rounded-md shrink-0 ${
-                        activeItem.percentageDiff > 0
-                          ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                          : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                      }`}
-                    >
-                      {activeItem.percentageDiff > 0
-                        ? `+${activeItem.percentageDiff.toFixed(1)}%`
-                        : `${activeItem.percentageDiff.toFixed(1)}%`}{" "}
-                      vs Median
-                    </span>
-                  </div>
-
-                  <div className="flex items-baseline justify-between text-xs pt-0.5">
-                    <span className="text-muted-foreground text-[11px]">Harga Lokal GKP:</span>
-                    <span className="font-extrabold text-foreground font-display tabular-nums text-sm">
-                      {formatRupiah(activeItem.price)}
-                      <span className="text-[10px] font-normal text-muted-foreground">/kg</span>
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                    <span>Titik Pantau:</span>
-                    <span className="font-semibold text-foreground">{activeItem.sampleCount} lokasi</span>
-                  </div>
-
-                  <div className="pt-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs font-semibold h-8 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary cursor-pointer transition-colors"
-                      render={<Link href="/kalkulator" />}
-                    >
-                      <span>Simulasikan Harga Wajar</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </Card>
-      </div>
-
-      {/* Bottom-Left Legend Card (Legenda Deviasi vs Median) */}
-      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 pointer-events-auto max-w-[290px] sm:max-w-xs">
-        <Card className="rounded-2xl border-border/80 bg-card/92 dark:bg-card/92 backdrop-blur-md shadow-xl overflow-hidden transition-all">
-          <div
-            className="p-3.5 sm:p-4 pb-2.5 flex items-center justify-between cursor-pointer border-b border-border/50"
-            onClick={() => setIsLegendExpanded(!isLegendExpanded)}
-          >
-            <div className="space-y-0.5">
-              <h3 className="font-display font-bold text-xs sm:text-sm text-foreground tracking-tight">
-                Legenda Deviasi vs Median
-              </h3>
-              <p className="text-[10px] text-muted-foreground">
-                Median Nasional: Rp 6.700/kg
-              </p>
-            </div>
-            <button
-              type="button"
-              className="p-1 rounded-lg text-muted-foreground hover:bg-muted/60 transition-colors"
-              aria-label={isLegendExpanded ? "Tutup legenda" : "Buka legenda"}
-            >
-              {isLegendExpanded ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronUp className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-
-          {isLegendExpanded && (
-            <div className="p-3.5 sm:p-4 pt-3 space-y-2 text-xs">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#059669] shrink-0 shadow-xs" />
-                  <span className="text-muted-foreground text-[11px]">&lt; -3.5%</span>
-                </div>
-                <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                  Surplus Kuat
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#10b981] shrink-0 shadow-xs" />
-                  <span className="text-muted-foreground text-[11px]">-3.5% s/d -1.0%</span>
-                </div>
-                <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                  Surplus Moderat
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#64748b] shrink-0 shadow-xs" />
-                  <span className="text-muted-foreground text-[11px]">±1.5%</span>
-                </div>
-                <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                  Normal / Berimbang
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#f59e0b] shrink-0 shadow-xs" />
-                  <span className="text-muted-foreground text-[11px]">+1.5% s/d +5.0%</span>
-                </div>
-                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">
-                  Defisit Moderat
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-[#ea580c] shrink-0 shadow-xs" />
-                  <span className="text-muted-foreground text-[11px]">&gt; +5.0%</span>
-                </div>
-                <span className="text-[11px] font-semibold text-orange-700 dark:text-orange-400">
-                  Defisit Kuat
-                </span>
-              </div>
-
-              <div className="pt-2 border-t border-border/50 text-[10px] text-muted-foreground flex items-center gap-1.5 leading-snug">
-                <Info className="w-3 h-3 shrink-0 text-primary" />
-                <span>Klik provinsi untuk mengunci tinjauan wilayah.</span>
-              </div>
-            </div>
-          )}
-        </Card>
-      </div>
-
       {/* Floating Zoom & Pan Controls (Bottom-Right) */}
-      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 pointer-events-auto flex flex-col gap-1.5">
+      <div className="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 z-20 pointer-events-auto flex flex-col gap-1.5">
         <Button
           variant="outline"
           size="icon"
@@ -659,6 +494,7 @@ export default function FullPriceMap() {
                     e.stopPropagation();
                     if (!hasMovedRef.current) {
                       setSelectedProvince(p.name);
+                      setIsSidePanelOpen(true);
                     }
                   }}
                 >
@@ -670,8 +506,8 @@ export default function FullPriceMap() {
         </svg>
       </div>
 
-      {/* Floating Hover Tooltip (follows cursor on desktop) */}
-      {hoveredProvince && tooltipPos && (
+      {/* Floating Hover Tooltip (follows cursor on desktop when side panel is closed) */}
+      {hoveredProvince && tooltipPos && !isSidePanelOpen && (
         <div
           className="pointer-events-none absolute z-30 hidden sm:block -translate-x-1/2 -translate-y-full mb-3"
           style={{
@@ -681,28 +517,291 @@ export default function FullPriceMap() {
         >
           <div className="bg-popover/95 text-popover-foreground backdrop-blur-md border border-border/80 shadow-lg rounded-xl px-3 py-2 text-xs space-y-1">
             <div className="font-bold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getColor(hoveredProvince) }} />
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: getColor(hoveredProvince) }}
+              />
               <span>{hoveredProvince}</span>
             </div>
-            {activeItem && (
+            {hoveredItem && (
               <div className="flex items-center gap-2 text-[11px] tabular-nums">
-                <span className="font-bold">{formatRupiah(activeItem.price)}/kg</span>
+                <span className="font-bold">{formatRupiah(hoveredItem.price)}/kg</span>
                 <span className="text-muted-foreground">·</span>
                 <span
                   className={
-                    activeItem.percentageDiff > 0
+                    hoveredItem.percentageDiff > 0
                       ? "text-amber-600 font-semibold"
                       : "text-emerald-600 font-semibold"
                   }
                 >
-                  {activeItem.percentageDiff > 0 ? "+" : ""}
-                  {activeItem.percentageDiff.toFixed(1)}% vs median
+                  {hoveredItem.percentageDiff > 0 ? "+" : ""}
+                  {hoveredItem.percentageDiff.toFixed(1)}% vs median
                 </span>
               </div>
             )}
+            <div className="text-[10px] text-muted-foreground pt-0.5">
+              Klik untuk melihat papan harga wilayah
+            </div>
           </div>
         </div>
       )}
+
+      {/* Side Panel dari Kiri: Papan Harga Wilayah Terpilih & Filter */}
+      <div
+        className={`absolute inset-y-0 left-0 z-40 w-full sm:w-[420px] lg:w-[440px] bg-background/95 dark:bg-background/95 backdrop-blur-md border-r border-border shadow-2xl flex flex-col transition-transform duration-300 ease-in-out pointer-events-auto ${
+          isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+      >
+        {/* Panel Header */}
+        <div className="p-5 border-b border-border/80 flex items-start justify-between gap-3 bg-muted/20">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <h2 className="font-display font-bold text-xl text-foreground tracking-tight">
+                {selectedItem.province}
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-muted-foreground">
+                {selectedItem.sampleCount} titik pantau
+              </span>
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground cursor-pointer"
+            onClick={() => setIsSidePanelOpen(false)}
+            aria-label="Tutup panel"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Panel Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          {/* Filters: Komoditas Acuan & Periode Snapshot */}
+          <div className="space-y-3.5 p-4 rounded-2xl bg-muted/30 border border-border/80">
+            <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-primary" />
+              <span>Filter Papan Harga</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Komoditas Acuan
+                </label>
+                <Select
+                  value={commodity}
+                  onValueChange={(val) => {
+                    if (val) setCommodity(val);
+                  }}
+                >
+                  <SelectTrigger className="w-full h-9 text-xs bg-background">
+                    <SelectValue placeholder="Pilih komoditas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COMMODITY_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Periode Snapshot
+                </label>
+                <Select
+                  value={period}
+                  onValueChange={(val) => {
+                    if (val) setPeriod(val);
+                  }}
+                >
+                  <SelectTrigger className="w-full h-9 text-xs bg-background">
+                    <SelectValue placeholder="Pilih periode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PERIOD_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          {/* Rangkuman Harga Utama */}
+          <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 space-y-2">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Harga Acuan Wilayah ({commodity}):</span>
+              <span className="font-semibold text-foreground">
+                Median: {formatRupiah(provincePriceData.medianBenchmark)}/kg
+              </span>
+            </div>
+
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-black text-foreground font-display tabular-nums tracking-tight">
+                {formatRupiah(provincePriceData.calculatedPrice)}
+              </span>
+              <span className="text-sm font-semibold text-muted-foreground">/kg</span>
+            </div>
+
+            <div className="text-xs text-muted-foreground flex items-center gap-1.5 pt-0.5">
+              <span>Deviasi:</span>
+              <strong
+                className={
+                  provincePriceData.percentageDiff > 0
+                    ? "text-amber-600 dark:text-amber-400 font-bold"
+                    : "text-emerald-600 dark:text-emerald-400 font-bold"
+                }
+              >
+                {provincePriceData.percentageDiff > 0 ? "+" : ""}
+                {provincePriceData.percentageDiff}% (
+                {provincePriceData.diffNominal > 0 ? "+" : ""}
+                {formatRupiah(provincePriceData.diffNominal)}/kg)
+              </strong>
+            </div>
+          </div>
+
+          {/* Transmisi Rantai Pasok Wilayah */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-primary" />
+                <span>Transmisi Rantai Pasok</span>
+              </div>
+              <Badge variant="outline" className="text-[10px] font-semibold">
+                Farmer&apos;s Share: {provincePriceData.farmerShare}%
+              </Badge>
+            </div>
+
+            <div className="space-y-2">
+              {/* Tingkat Petani */}
+              <div className="p-3 rounded-xl border border-border/80 bg-card flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <Wheat className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-foreground">Tingkat Petani</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      Harga gabah di lahan / kelompok tani
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-extrabold text-foreground font-display tabular-nums">
+                    {formatRupiah(provincePriceData.farmerPrice)}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">/kg</div>
+                </div>
+              </div>
+
+              {/* Tingkat Penggilingan */}
+              <div className="p-3 rounded-xl border border-border/80 bg-card flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-foreground">Penggilingan Padi</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      Biaya proses pengeringan & giling
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-extrabold text-foreground font-display tabular-nums">
+                    {formatRupiah(provincePriceData.millerPrice)}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">/kg</div>
+                </div>
+              </div>
+
+              {/* Tingkat Grosir / Pasar Induk */}
+              <div className="p-3 rounded-xl border border-border/80 bg-card flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <Store className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-foreground">Pasar Grosir / Induk</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      Logistik & distribusi antardaerah
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-extrabold text-foreground font-display tabular-nums">
+                    {formatRupiah(provincePriceData.wholesalePrice)}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">/kg</div>
+                </div>
+              </div>
+
+              {/* Tingkat Konsumen Eceran */}
+              <div className="p-3 rounded-xl border border-border/80 bg-card flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-700 dark:text-purple-400 flex items-center justify-center shrink-0">
+                    <ShoppingCart className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-foreground">Eceran Konsumen</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      Pasar tradisional & ritel lokal
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-extrabold text-foreground font-display tabular-nums">
+                    {formatRupiah(provincePriceData.retailPrice)}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">/kg</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Indikator Marjin Petani */}
+          <div className="p-3.5 rounded-xl bg-muted/40 border border-border/80 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <Percent className="w-4 h-4 text-primary" />
+              <span className="text-muted-foreground">Porsi Nilai Petani:</span>
+            </div>
+            <span className="font-bold text-foreground font-display">
+              {provincePriceData.farmerShare}% dari harga konsumen
+            </span>
+          </div>
+        </div>
+
+        {/* Panel Footer Action */}
+        <div className="p-4 border-t border-border/80 bg-background/90">
+          <Button
+            className="w-full gap-2 font-semibold text-xs h-10 cursor-pointer"
+            render={
+              <Link
+                href={`/kalkulator?province=${encodeURIComponent(
+                  selectedItem.province
+                )}`}
+              />
+            }
+          >
+            <span>Hitung Simulasi Harga Wajar</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
