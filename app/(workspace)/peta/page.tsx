@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   SEED_PROVINCIAL_DATA,
+  SPATIAL_META,
   type ProvincialPriceComparison,
 } from "@/features/region-map/domain/map-types";
 import { IndonesiaSvgMap } from "@/features/region-map/components/indonesia-svg-map";
@@ -31,20 +32,14 @@ import {
 import {
   Map as MapIcon,
   Table as TableIcon,
-  ChevronDown,
-  TrendingDown,
-  TrendingUp,
-  Scale,
-  Sparkles,
   ArrowRight,
-  ShieldCheck,
   Info,
 } from "lucide-react";
 
 const COMMODITY_OPTIONS = [
-  { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
-  { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
-  { value: "Beras Medium", label: "Beras Medium" },
+  { value: "Beras Medium I", label: "Beras Medium I (Pasar Tradisional PIHPS)" },
+  { value: "Gabah Kering Panen (GKP - Turunan)", label: "GKP (Estimasi Turunan SKGB)" },
+  { value: "Gabah Kering Giling (GKG - Turunan)", label: "GKG (Estimasi Turunan SKGB)" },
 ];
 
 const COVERAGE_OPTIONS = [
@@ -54,78 +49,100 @@ const COVERAGE_OPTIONS = [
 ];
 
 const TIME_OPTIONS = [
-  { value: "Snapshot Terkini", label: "Snapshot Terkini (Pekan Berjalan)" },
-  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari Terakhir" },
+  { value: "Snapshot Terkini", label: `Snapshot Terkini (${SPATIAL_META.snapshotLabel})` },
+  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari Terakhir (4 Pekan)" },
 ];
+
+const JAVA_PROVINCES = new Set([
+  "DKI Jakarta",
+  "Jawa Barat",
+  "Jawa Tengah",
+  "DI Yogyakarta",
+  "Jawa Timur",
+  "Banten",
+]);
+
+function computeMedian(values: number[]): number {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
+}
 
 export default function PetaDisparitasPage() {
   const isMobile = useMobile();
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
-  const [selectedCommodity, setSelectedCommodity] = useState("Gabah Kering Panen (GKP)");
+  const [selectedCommodity, setSelectedCommodity] = useState("Beras Medium I");
   const [selectedCoverage, setSelectedCoverage] = useState("Seluruh Indonesia");
   const [selectedTime, setSelectedTime] = useState("Snapshot Terkini");
-  const [selectedProvince, setSelectedProvince] = useState<string>("Jawa Barat");
+  const [selectedProvince, setSelectedProvince] = useState<string>("Jawa Timur");
 
-  // Filter data based on coverage
+  const fullCommodityData = useMemo<ProvincialPriceComparison[]>(() => {
+    const is30d = selectedTime === "Rata-rata 30 Hari";
+    const baseList = SEED_PROVINCIAL_DATA.map((item) => {
+      let price = is30d && item.price30d ? item.price30d : item.price;
+      let grainLabel = "Beras Medium I";
+      if (selectedCommodity.includes("GKP") && item.gkpDerivedPrice) {
+        price = item.gkpDerivedPrice;
+        grainLabel = "GKP (Turunan)";
+      } else if (selectedCommodity.includes("GKG") && item.gkgDerivedPrice) {
+        price = item.gkgDerivedPrice;
+        grainLabel = "GKG (Turunan)";
+      }
+      return { ...item, price, grainType: grainLabel };
+    });
+
+    const natMedian = computeMedian(baseList.map((i) => i.price));
+    return baseList.map((item) => {
+      const pct = natMedian > 0 ? Math.round(((item.price - natMedian) / natMedian) * 10000) / 100 : 0;
+      const status: "above" | "below" | "normal" = pct > 1.5 ? "above" : pct < -1.5 ? "below" : "normal";
+      return {
+        ...item,
+        medianPrice: natMedian,
+        percentageDiff: pct,
+        status,
+      };
+    });
+  }, [selectedCommodity, selectedTime]);
+
   const displayData = useMemo(() => {
-    let list = [...SEED_PROVINCIAL_DATA];
-
     if (selectedCoverage === "Pulau Jawa") {
-      const javaProvinces = [
-        "DKI Jakarta",
-        "Jawa Barat",
-        "Jawa Tengah",
-        "DI Yogyakarta",
-        "Jawa Timur",
-        "Banten",
-      ];
-      list = list.filter((p) => javaProvinces.includes(p.province));
-    } else if (selectedCoverage === "Luar Jawa") {
-      const javaProvinces = [
-        "DKI Jakarta",
-        "Jawa Barat",
-        "Jawa Tengah",
-        "DI Yogyakarta",
-        "Jawa Timur",
-        "Banten",
-      ];
-      list = list.filter((p) => !javaProvinces.includes(p.province));
+      return fullCommodityData.filter((p) => JAVA_PROVINCES.has(p.province));
     }
+    if (selectedCoverage === "Luar Jawa") {
+      return fullCommodityData.filter((p) => !JAVA_PROVINCES.has(p.province));
+    }
+    return fullCommodityData;
+  }, [fullCommodityData, selectedCoverage]);
 
-    return list;
-  }, [selectedCoverage]);
-
-  // Calculations for summary metrics
   const minPriceItem = useMemo(() => {
     return displayData.reduce(
       (prev, curr) => (curr.price < prev.price ? curr : prev),
-      displayData[0] || SEED_PROVINCIAL_DATA[0]
+      displayData[0] || fullCommodityData[0]
     );
-  }, [displayData]);
+  }, [displayData, fullCommodityData]);
 
   const maxPriceItem = useMemo(() => {
     return displayData.reduce(
       (prev, curr) => (curr.price > prev.price ? curr : prev),
-      displayData[0] || SEED_PROVINCIAL_DATA[0]
+      displayData[0] || fullCommodityData[0]
     );
-  }, [displayData]);
+  }, [displayData, fullCommodityData]);
 
   const disparityPercent = useMemo(() => {
-    if (!minPriceItem || !maxPriceItem || minPriceItem.price === 0) return 0;
+    if (!minPriceItem || !maxPriceItem || minPriceItem.price === 0) return "0.0";
     return (((maxPriceItem.price - minPriceItem.price) / minPriceItem.price) * 100).toFixed(1);
   }, [minPriceItem, maxPriceItem]);
 
   const activeProvinceItem = useMemo(() => {
     return (
-      displayData.find(
-        (p) => p.province.toLowerCase() === selectedProvince.toLowerCase()
-      ) ||
-      SEED_PROVINCIAL_DATA.find(
-        (p) => p.province.toLowerCase() === selectedProvince.toLowerCase()
-      ) ||
+      displayData.find((p) => p.province.toLowerCase() === selectedProvince.toLowerCase()) ||
+      fullCommodityData.find((p) => p.province.toLowerCase() === selectedProvince.toLowerCase()) ||
       displayData[0]
     );
-  }, [displayData, selectedProvince]);
+  }, [displayData, fullCommodityData, selectedProvince]);
+
+  const activeFactors = activeProvinceItem?.spatialFactors || [];
 
   return (
     <PageContainer>
@@ -147,10 +164,11 @@ export default function PetaDisparitasPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-              Peta Sebaran & Perbedaan Harga Gabah
+              Peta Sebaran &amp; Perbedaan Harga di 34 Provinsi
             </h1>
             <p className="mt-1 text-sm text-muted-foreground leading-relaxed max-w-3xl">
-              Bandingkan rata-rata harga gabah di berbagai provinsi untuk menemukan wilayah dengan pasokan melimpah atau peluang harga jual terbaik secara transparan.
+              Bandingkan harga Pasar Tradisional Beras Medium I (PIHPS BI) per{" "}
+              <strong>{SPATIAL_META.snapshotLabel}</strong> terhadap harga tengah nasional beserta faktor pendorong harga di tiap wilayah.
             </p>
           </div>
 
@@ -264,7 +282,7 @@ export default function PetaDisparitasPage() {
                 : "Tabel Peringkat Harga Antarwilayah"}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Data terintegrasi dari pusat agregasi pasar gabah SAMBUNG dan survei pengamatan harga daerah.
+              Sumber resmi PIHPS Bank Indonesia (Pasar Tradisional Medium I) di 34 provinsi.
             </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
@@ -284,7 +302,7 @@ export default function PetaDisparitasPage() {
                   Metodologi Sebaran Wilayah
                 </PopoverTitle>
                 <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
-                  Menampilkan sebaran disparitas harga antarwilayah dari titik pengamatan pasar daerah dan pusat agregasi SAMBUNG terhadap median nasional untuk mendeteksi sentra surplus dan defisit.
+                  Menampilkan perbandingan harga antarprovinsi terhadap harga tengah nasional menggunakan gradasi warna berpusat di 0%.
                 </PopoverDescription>
               </PopoverContent>
             </Popover>
@@ -311,8 +329,8 @@ export default function PetaDisparitasPage() {
         <div className="pt-4 border-t border-border/80 grid grid-cols-1 sm:grid-cols-3 gap-5">
           <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
-              <p className="text-xs font-bold  tracking-wider">
-                Harga Terendah (Sentra Surplus)
+              <p className="text-xs font-bold tracking-wider">
+                Harga Terendah ({minPriceItem?.grainType})
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
@@ -323,14 +341,14 @@ export default function PetaDisparitasPage() {
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              Deviasi: {minPriceItem?.percentageDiff.toFixed(1)}% di bawah median
+              Deviasi: {minPriceItem?.percentageDiff.toFixed(2)}% dari median nasional
             </p>
           </div>
 
           <div className="p-4 rounded-lg bg-muted/40 border border-border/80 space-y-1">
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
               <p className="text-xs font-bold tracking-wider">
-                Harga Tertinggi (Wilayah Konsumen)
+                Harga Tertinggi ({maxPriceItem?.grainType})
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
@@ -341,7 +359,7 @@ export default function PetaDisparitasPage() {
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              Deviasi: +{maxPriceItem?.percentageDiff.toFixed(1)}% di atas median
+              Deviasi: +{maxPriceItem?.percentageDiff.toFixed(2)}% di atas median
             </p>
           </div>
 
@@ -358,13 +376,13 @@ export default function PetaDisparitasPage() {
               {disparityPercent}%
             </p>
             <p className="text-xs text-muted-foreground">
-              Dipengaruhi jarak logistik, masa panen, & curah hujan
+              Berasosiasi dengan neraca pasokan, struktur pasar grosir, &amp; kondisi cuaca daerah
             </p>
           </div>
         </div>
       </Card>
 
-      {/* Selected Province Context & Factors */}
+      {/* Selected Province Context & Dynamic Regional Price Factors */}
       <Card className="p-6 sm:p-7 space-y-6 rounded-2xl bg-card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/80">
           <div>
@@ -377,7 +395,7 @@ export default function PetaDisparitasPage() {
               </Badge>
             </div>
             <h3 className="font-display text-xl font-bold text-foreground mt-1">
-              Konteks Harga & Analisis Penentu Disparitas di {activeProvinceItem.province}
+              Konteks Harga &amp; Faktor Pendorong di {activeProvinceItem.province}
             </h3>
           </div>
           <Popover>
@@ -390,14 +408,14 @@ export default function PetaDisparitasPage() {
             <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
               <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5 text-primary shrink-0" />
-                Faktor Penjelas Disparitas
+                Faktor Penjelas Perbedaan Harga
               </PopoverTitle>
               <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
                 <p>
-                  Faktor penjelas dihitung untuk memetakan dinamika pasar dan mempermudah perencanaan pasokan lokal, bukan sebagai dasar klaim legal.
+                  Nilai dampak dihitung dinamis dari data pasokan daerah BPS, selisih harga pasar grosir, kondisi cuaca, serta acuan HPP terhadap perbedaan harga dari nilai tengah nasional.
                 </p>
                 <p className="pt-1.5 border-t border-border/50 text-[11px]">
-                  Variabel mencakup estimasi jarak logistik antarpulau, iklim penjemuran gabah, dan volume surplus lokal.
+                  Hasil mencerminkan gambaran keterkaitan data pasar, bukan bukti sebab-akibat mutlak.
                 </p>
               </PopoverDescription>
             </PopoverContent>
@@ -405,15 +423,14 @@ export default function PetaDisparitasPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Plain Indonesian factor explanations */}
+          {/* Dynamic Price Drivers Table */}
           <div className="lg:col-span-8 space-y-4">
             <div>
               <h4 className="font-bold text-sm text-foreground flex items-center gap-2 font-display">
-                <span>Faktor Penjelas Deviasi Harga Regional</span>
+                <span>Faktor Penjelas Perbedaan Harga Regional</span>
               </h4>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Estimasi pengaruh logistik antarpulau, iklim, dan ketersediaan pasokan panen
-                lokal terhadap selisih harga dari median nasional.
+                Kontribusi neraca pasokan daerah, pasar grosir, kondisi cuaca, dan sentra produsen terhadap selisih harga di {activeProvinceItem.province} dibanding harga tengah nasional.
               </p>
             </div>
 
@@ -421,47 +438,40 @@ export default function PetaDisparitasPage() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-muted/60">
                   <tr className="border-b border-border/80 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    <th className="p-3">Variabel Pengaruh</th>
-                    <th className="p-3">Kondisi Lapangan</th>
-                    <th className="p-3 text-right">Arah Pengaruh Terhadap Harga</th>
+                    <th className="p-3">Faktor Pengaruh</th>
+                    <th className="p-3">Kondisi Data Terkini</th>
+                    <th className="p-3 text-right">Pengaruh Terhadap Harga</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
-                  <tr>
-                    <td className="p-3 font-semibold text-foreground">
-                      Jarak & Aksesibilitas Logistik Distribusi
-                    </td>
-                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
-                      Jalur distribusi antarpulau
-                    </td>
-                    <td className="p-3 text-right font-bold tabular-nums text-amber-700 dark:text-amber-400">
-                      + Rp85 s/d Rp120/kg (Menaikkan)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-semibold text-foreground">
-                      Curah Hujan & Kondisi Iklim Pertanian
-                    </td>
-                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
-                      Curah hujan normal musiman
-                    </td>
-                    <td className="p-3 text-right font-bold tabular-nums text-amber-700 dark:text-amber-400">
-                      + Rp40 s/d Rp60/kg (Kering lambat)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-semibold text-foreground">
-                      Volume Surplus Panen Gabah Lokal
-                    </td>
-                    <td className="p-3 text-muted-foreground tabular-nums text-xs">
-                      {activeProvinceItem.percentageDiff < 0
-                        ? "Masa panen raya aktif"
-                        : "Panen normal/selang"}
-                    </td>
-                    <td className="p-3 text-right font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
-                      - Rp70 s/d Rp95/kg (Meredam)
-                    </td>
-                  </tr>
+                  {activeFactors.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="p-4 text-center text-muted-foreground">
+                        Rincian faktor penjelas belum tersedia untuk wilayah ini.
+                      </td>
+                    </tr>
+                  ) : (
+                    activeFactors.map((sf, idx) => {
+                      const isUp = sf.impactRp > 0;
+                      return (
+                        <tr key={idx}>
+                          <td className="p-3 font-semibold text-foreground">{sf.variable}</td>
+                          <td className="p-3 text-muted-foreground tabular-nums text-xs">
+                            {sf.condition}
+                          </td>
+                          <td
+                            className={`p-3 text-right font-bold tabular-nums ${
+                              isUp
+                                ? "text-amber-700 dark:text-amber-400"
+                                : "text-emerald-700 dark:text-emerald-400"
+                            }`}
+                          >
+                            {isUp ? `+Rp${sf.impactRp}` : `-Rp${Math.abs(sf.impactRp)}`}/kg ({sf.direction})
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -480,7 +490,7 @@ export default function PetaDisparitasPage() {
 
             <div className="space-y-3 text-xs">
               <div className="flex justify-between items-center py-1.5 border-b border-border/40">
-                <span className="text-muted-foreground">Harga Acuan Rata-rata:</span>
+                <span className="text-muted-foreground">Harga Acuan ({activeProvinceItem.grainType}):</span>
                 <span className="font-bold text-foreground text-sm tabular-nums">
                   {formatRupiah(activeProvinceItem.price)}/kg
                 </span>
@@ -505,10 +515,18 @@ export default function PetaDisparitasPage() {
                     : `${activeProvinceItem.percentageDiff.toFixed(2)}%`}
                 </span>
               </div>
+              {activeProvinceItem.surplusRatio !== undefined && (
+                <div className="flex justify-between items-center py-1.5 border-b border-border/40">
+                  <span className="text-muted-foreground">Neraca Surplus/Defisit BPS:</span>
+                  <span className="font-semibold text-foreground text-xs tabular-nums">
+                    {activeProvinceItem.surplusRatio.toFixed(2)}x konsumsi
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between items-center py-1.5">
-                <span className="text-muted-foreground">Jumlah Titik Sampel:</span>
+                <span className="text-muted-foreground">Pekan Observasi PIHPS:</span>
                 <span className="font-semibold text-foreground text-xs tabular-nums">
-                  {activeProvinceItem.sampleCount} titik pengamatan
+                  {activeProvinceItem.sampleCount} pekan
                 </span>
               </div>
             </div>

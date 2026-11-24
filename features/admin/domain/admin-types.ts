@@ -18,8 +18,8 @@ export interface SystemParameters {
   orderExpiryHours: number;
   fairPriceToleranceDelta: number; // e.g. 0.03 (3%)
   rendemenGKP: number; // e.g. 0.5338 (53.38%)
-  rendemenGKG: number; // e.g. 0.63 (63%)
-  governmentFloorPriceGKP: number; // HPP, e.g. 6000
+  rendemenGKG: number; // e.g. 0.6274 (62.74%)
+  governmentFloorPriceGKP: number; // HPP, e.g. 6500
   lastUpdated: string;
 }
 
@@ -37,10 +37,15 @@ export interface AuditLogEntry {
 export interface ModelEvaluationRecord {
   province: string;
   horizon: "2 Pekan" | "4 Pekan";
+  horizonWeeks?: number;
   mase: number;
+  mae?: number;
+  mapePct?: number;
   intervalCoverage: string;
-  status: "Lulus Target" | "Gagal Ambang Target";
-  activeMethod: "Model AI (Ensemble)" | "Prakiraan Baseline";
+  cov80Pct?: number;
+  nEval?: number;
+  status: "Lulus Target" | "Fallback Baseline" | "Gagal Ambang Target";
+  activeMethod: string;
   isFallback: boolean;
 }
 

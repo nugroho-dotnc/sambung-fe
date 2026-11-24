@@ -11,31 +11,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
-import { PriceBoardService } from "@/features/price-board/services/price-board.service";
+import {
+  PriceBoardService,
+  AVAILABLE_BOARD_REGIONS,
+  PRICE_BOARD_META,
+} from "@/features/price-board/services/price-board.service";
 import type { SupplyChainLevel } from "@/features/price-board/domain/price-chain";
 
 const COMMODITY_OPTIONS = [
+  { value: "Beras Medium I", label: "Beras Medium I (Standar PIHPS)" },
+  { value: "Beras Premium", label: "Beras Premium (Estimasi)" },
   { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
-  { value: "Gabah Kering Giling (GKG)", label: "Gabah Kering Giling (GKG)" },
-  { value: "Beras Medium", label: "Beras Medium" },
 ];
 
-const REGION_OPTIONS = [
-  { value: "Jawa Barat", label: "Jawa Barat (Sentra Utama)" },
-  { value: "Jawa Tengah", label: "Jawa Tengah" },
-  { value: "Jawa Timur", label: "Jawa Timur" },
-  { value: "Sulawesi Selatan", label: "Sulawesi Selatan" },
-  { value: "Sumatera Utara", label: "Sumatera Utara" },
-];
+const REGION_OPTIONS = AVAILABLE_BOARD_REGIONS.map((prov) => ({
+  value: prov,
+  label: prov === "Nasional" ? "Rata-rata Nasional (PIHPS)" : prov,
+}));
 
 const PERIOD_OPTIONS = [
-  { value: "Pekan Berjalan", label: "Pekan Berjalan (Terkini)" },
-  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari" },
+  { value: "Pekan Berjalan", label: `Pekan Berjalan (${PRICE_BOARD_META.updatedAt})` },
+  { value: "Rata-rata 30 Hari", label: "Rata-rata 30 Hari Terakhir" },
 ];
 
 export default function PriceBoardSection() {
-  const [commodity, setCommodity] = useState("Gabah Kering Panen (GKP)");
-  const [region, setRegion] = useState("Jawa Barat");
+  const [commodity, setCommodity] = useState("Beras Medium I");
+  const [region, setRegion] = useState("Jawa Timur");
   const [period, setPeriod] = useState("Pekan Berjalan");
 
   const comparison = useMemo(() => {
@@ -51,14 +52,14 @@ export default function PriceBoardSection() {
               Transparansi Rantai Pasok
             </span>
             <Badge variant="outline" className="text-xs font-bold">
-              Papan Rantai Harga
+              PIHPS {PRICE_BOARD_META.updatedAt}
             </Badge>
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-1">
             Transmisi Harga dari Petani hingga Eceran
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Pantau pembagian nilai tambah (<em>farmer&apos;s share</em>) dan margin distribusi antar mata rantai gabah dan beras.
+            Pantau pembagian nilai tambah (<em>farmer&apos;s share</em>) dan marjin antar mata rantai gabah dan beras.
           </p>
         </div>
       </div>
@@ -148,7 +149,7 @@ export default function PriceBoardSection() {
               Rincian Transmisi Harga 4 Tingkat di {region}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Nilai acuan pasar per kilogram komoditas ekuivalen beras.
+              Nilai acuan PIHPS BI per kilogram komoditas.
             </p>
           </div>
           <div className="overflow-x-auto">
@@ -157,7 +158,7 @@ export default function PriceBoardSection() {
                 <tr className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   <th className="p-3.5">Tingkat Rantai Pasok</th>
                   <th className="p-3.5 text-right">Harga Acuan</th>
-                  <th className="p-3.5 text-right">Margin Penambahan</th>
+                  <th className="p-3.5 text-right">Selisih Penambahan</th>
                   <th className="p-3.5">Catatan Teknis</th>
                 </tr>
               </thead>
@@ -209,8 +210,8 @@ export default function PriceBoardSection() {
               </span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Dari setiap Rp1.000 yang dibayarkan konsumen di pasar eceran, petani menerima sekitar{" "}
-              <strong className="text-foreground ">
+              Dari setiap Rp1.000 yang dibayarkan konsumen di pasar eceran, nilai setara petani adalah sekitar{" "}
+              <strong className="text-foreground">
                 Rp{Math.round(comparison.farmerSharePercent * 10)}
               </strong>.
             </p>
@@ -218,14 +219,14 @@ export default function PriceBoardSection() {
 
           <Card className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Total Margin Distribusi
+              Total Selisih Rantai Pasok
             </span>
             <p className="text-2xl font-black text-foreground tabular-nums">
               {formatRupiah(comparison.marginAmount)}
               <span className="text-xs font-normal text-muted-foreground">/kg</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              Mencakup biaya penggilingan, susut bobot, logistik, dan margin pedagang.
+              Mencakup biaya penggilingan, susut bobot alami, dan marjin perdagangan grosir hingga eceran.
             </p>
           </Card>
         </div>

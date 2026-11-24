@@ -1,20 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import {
-  Calendar,
-  Sparkles,
-  Info,
-  ShieldCheck,
-  TrendingUp,
-  Cpu,
-  ArrowRight,
-  ShoppingBag,
-  CheckCircle2,
-} from "lucide-react";
+import { Calendar, Info, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -22,16 +12,40 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
-import { SEED_FORECASTS, ForecastRecord } from "@/features/forecast/domain/forecast-data";
+import {
+  SEED_FORECASTS,
+  ACTIVE_AI_PROVINCES,
+  ALL_FORECAST_PROVINCES,
+  FORECAST_META,
+  ForecastRecord,
+} from "@/features/forecast/domain/forecast-data";
 import { ForecastChart } from "@/features/forecast/components/forecast-chart";
 import { ShapWaterfall } from "@/features/forecast/components/shap-waterfall";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 
+const QUICK_PROVINCES =
+  ACTIVE_AI_PROVINCES.length > 0 ? ACTIVE_AI_PROVINCES : ["Jawa Timur", "Jawa Tengah"];
+
 export default function ForecastPage() {
   const [horizon, setHorizon] = useState<2 | 4>(2);
-  const [province, setProvince] = useState<string>("Jawa Barat");
+  const [province, setProvince] = useState<string>(QUICK_PROVINCES[0] || "Jawa Timur");
+
+  const provinceOptions = useMemo(() => {
+    const activeSet = new Set(ACTIVE_AI_PROVINCES);
+    return ALL_FORECAST_PROVINCES.map((prov) => ({
+      value: prov,
+      label: activeSet.has(prov) ? `${prov} (Prakiraan AI Aktif)` : `${prov} (Acuan Pekan Terakhir)`,
+    }));
+  }, []);
 
   const activeForecast = useMemo<ForecastRecord>(() => {
     const found = SEED_FORECASTS.find(
@@ -40,11 +54,14 @@ export default function ForecastPage() {
     return found || SEED_FORECASTS[0];
   }, [horizon, province]);
 
+  const rGkpPct = (FORECAST_META.derivedConversion.rGkp * 100).toFixed(2);
+  const rGkgPct = (FORECAST_META.derivedConversion.rGkg * 100).toFixed(2);
+
   return (
     <PageContainer>
       <PageHeader
         title="Prakiraan Tren Harga & Analisis Pasar AI"
-        description="Proyeksi harga beras produsen dan estimasi turunan gabah untuk 2 hingga 4 pekan ke depan, dilengkapi transparansi faktor pendorong pasar."
+        description={`Proyeksi harga beras produsen (Medium I) dan estimasi turunan gabah untuk 2 hingga 4 pekan ke depan berbasis data resmi pasar dan cuaca (pembaruan: ${FORECAST_META.latestObservationWeek}).`}
         actions={
           <div className="flex items-center bg-muted/80 p-1 rounded-lg border border-border/80 shadow-2xs">
             <Button
@@ -69,35 +86,66 @@ export default function ForecastPage() {
         }
       />
 
-      {/* Province Picker Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0 mr-1">
-          Wilayah Sasaran:
-        </span>
-        {["Jawa Barat", "Jawa Tengah"].map((prov) => (
-          <Button
-            key={prov}
-            size="sm"
-            variant={province === prov ? "default" : "outline"}
-            onClick={() => setProvince(prov)}
-            className="min-h-8 text-xs font-semibold rounded-lg"
+      {/* Province Picker: Quick Chips + Full 25-Province Dropdown */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 mb-6">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0 mr-1">
+            Sentra AI Aktif:
+          </span>
+          {QUICK_PROVINCES.map((prov) => (
+            <Button
+              key={prov}
+              size="sm"
+              variant={province === prov ? "default" : "outline"}
+              onClick={() => setProvince(prov)}
+              className="min-h-8 text-xs font-semibold rounded-lg shrink-0"
+            >
+              {prov}
+            </Button>
+          ))}
+        </div>
+
+        <div className="w-full md:w-72 shrink-0">
+          <Select
+            items={provinceOptions}
+            value={province}
+            onValueChange={(val) => {
+              if (val) setProvince(val);
+            }}
           >
-            {prov}
-          </Button>
-        ))}
+            <SelectTrigger className="w-full h-9 rounded-lg border border-input bg-background px-3 text-xs font-semibold text-foreground shadow-2xs">
+              <SelectValue placeholder="Pilih dari 25 Provinsi" />
+            </SelectTrigger>
+            <SelectContent>
+              {provinceOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Main Grid: Forecast Metric & Chart vs SHAP Factors */}
+      {/* Main Grid: Forecast Metric & Chart vs Factors */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
         {/* Left Column: AI Prediction & Interactive Chart */}
         <div className="lg:col-span-7">
-          <Card className="p-6 sm:p-7 rounded-2xl bg-card">
+          <Card className="p-6 sm:p-7 rounded-2xl bg-card space-y-5">
             <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3.5">
-              <div>
-                <span className="text-xs font-semibold text-primary">
-                  Sasaran: {activeForecast.province} • {activeForecast.targetDate}
-                </span>
-                <h2 className="type-subheading text-foreground font-bold mt-0.5">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-primary">
+                    Sasaran: {activeForecast.province} • {activeForecast.targetDate}
+                  </span>
+                  <Badge
+                    variant={activeForecast.isFallback ? "secondary" : "default"}
+                    className="text-[11px] font-bold"
+                  >
+                    {activeForecast.isFallback ? "Acuan Pekan Terakhir" : "Prakiraan AI"}
+                  </Badge>
+                </div>
+                <h2 className="type-subheading text-foreground font-bold">
                   Estimasi Nilai Beras Produsen
                 </h2>
               </div>
@@ -115,22 +163,26 @@ export default function ForecastPage() {
                   </PopoverTitle>
                   <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
                     <p>
-                      Proyeksi dihitung menggunakan model ensemble machine learning berbasis tren musiman, data historis Bapanas & BPS, serta anomali iklim BMKG.
+                      Proyeksi disusun dari tren harga mingguan PIHPS Bank Indonesia, pasokan panen BPS, data Bapanas, dan kondisi cuaca daerah.
                     </p>
                     <p className="pt-1.5 border-t border-border/50 text-[11px]">
-                      Rentang keyakinan 80% menunjukkan batas wajar kemungkinan deviasi harga di pasar produsen.
+                      {activeForecast.isFallback
+                        ? "Karena harga wilayah ini cenderung datar dan belum lolos syarat kelayakan AI, sistem menampilkan acuan harga pekan terakhir agar tetap aman bagi pengguna."
+                        : "Rentang perkiraan wajar (80%) menunjukkan batas kisaran deviasi harga yang paling mungkin terjadi di pasar produsen."}
                     </p>
                   </PopoverDescription>
                 </PopoverContent>
               </Popover>
             </div>
 
-            {/* Main Predicted Number with Confidence Interval */}
+            {/* Main Predicted Number with Prediction Interval */}
             <div className="p-5 rounded-lg bg-muted/30 border border-border/50 space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground font-medium">Prediksi Rata-rata</span>
+                <span className="text-muted-foreground font-medium">
+                  {activeForecast.isFallback ? "Acuan Harga Pekan Terakhir" : "Perkiraan Harga Utama"}
+                </span>
                 <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
-                  Rentang Keyakinan 80%
+                  Rentang Perkiraan Wajar (80%)
                 </span>
               </div>
 
@@ -148,133 +200,119 @@ export default function ForecastPage() {
             </div>
 
             {/* Derived Grain Estimates (GKP & GKG) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-foreground">Estimasi Turunan GKP</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
-                    Rendemen 52%
-                  </span>
+            <div className="space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-foreground">Estimasi Turunan GKP</span>
+                    <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
+                      Rendemen {rGkpPct}%
+                    </span>
+                  </div>
+                  <p className="text-2xl font-bold font-display tabular-nums text-foreground">
+                    {formatRupiah(activeForecast.gkpEstimate)}{" "}
+                    <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Estimasi turunan gabah panen dari perkiraan harga beras (bukan ramalan terpisah).
+                  </p>
                 </div>
-                <p className="text-2xl font-bold font-display tabular-nums text-foreground">
-                  {formatRupiah(activeForecast.gkpEstimate)}{" "}
-                  <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Taksiran harga wajar gabah panen segar di sawah.
-                </p>
-              </div>
 
-              <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-foreground">Estimasi Turunan GKG</span>
-                  <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
-                    Rendemen 63%
-                  </span>
+                <div className="p-4.5 rounded-lg border border-border/70 bg-card space-y-1.5 hover:shadow-2xs transition-shadow">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-foreground">Estimasi Turunan GKG</span>
+                    <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums font-semibold">
+                      Rendemen {rGkgPct}%
+                    </span>
+                  </div>
+                  <p className="text-2xl font-bold font-display tabular-nums text-foreground">
+                    {formatRupiah(activeForecast.gkgEstimate)}{" "}
+                    <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Estimasi turunan gabah siap giling memakai rasio konversi resmi BPS &amp; Bapanas.
+                  </p>
                 </div>
-                <p className="text-2xl font-bold font-display tabular-nums text-foreground">
-                  {formatRupiah(activeForecast.gkgEstimate)}{" "}
-                  <span className="text-xs font-normal text-muted-foreground font-sans">/ kg</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Taksiran harga gabah siap giling (kadar air ~14%).
-                </p>
               </div>
+              <p className="text-[11px] text-muted-foreground px-1">
+                Catatan: Angka GKP dan GKG di atas merupakan taksiran turunan dari perkiraan harga beras produsen menggunakan rasio konversi resmi, bukan hasil peramalan terpisah.
+              </p>
             </div>
 
             {/* Trend Chart */}
             <div className="pt-2">
               <p className="text-xs font-semibold text-muted-foreground mb-2">
-                Lintasan Tren Historis & Proyeksi ({horizon} Pekan ke Depan)
+                Lintasan Tren Historis Aktual &amp; Proyeksi ({horizon} Pekan ke Depan)
               </p>
               <ForecastChart series={activeForecast.historicalSeries} />
             </div>
           </Card>
         </div>
 
-        {/* Right Column: Explainable AI Factors (SHAP) */}
+        {/* Right Column: Explanatory Price Drivers */}
         <div className="lg:col-span-5">
-          <Card className="p-6 sm:p-7 rounded-2xl bg-card">
+          <Card className="p-6 sm:p-7 rounded-2xl bg-card space-y-4">
             <div className="border-b border-border/60 pb-3.5 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
                   <span>Transparansi AI Pasar</span>
                 </div>
                 <h3 className="type-subheading text-foreground font-bold mt-0.5">
-                  Faktor Pembentuk Harga
+                  Faktor Penggerak Harga
                 </h3>
               </div>
               <Popover>
                 <PopoverTrigger
                   className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer shrink-0"
-                  aria-label="Penjelasan Faktor SHAP"
+                  aria-label="Penjelasan Faktor Penggerak"
                 >
                   <Info className="w-4 h-4" />
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-80 text-xs space-y-2 p-3.5">
                   <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
                     <Info className="w-3.5 h-3.5 text-primary shrink-0" />
-                    Catatan Pemodelan Pasar
+                    Tentang Faktor Penggerak
                   </PopoverTitle>
                   <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
                     <p>
-                      Analisis SHAP menguraikan variabel iklim, biaya logistik, dan pasokan yang berkontribusi menaikkan (+) atau menahan (-) harga pasar.
+                      Rincian ini menguraikan bagaimana kondisi cuaca, musim panen &amp; pasokan daerah, acuan HPP, pergerakan sentra produsen, dan tren pasar berkontribusi pada prakiraan harga beras.
                     </p>
                     <p className="pt-1.5 border-t border-border/50 text-[11px]">
-                      Prediksi diperbarui berkala menggunakan model terlatih dengan data historis BMKG, BPS, dan Bapanas untuk perencanaan panen.
+                      Angka ini merupakan gambaran keterkaitan data statistik, bukan jaminan kepastian kondisi di lapangan.
                     </p>
                   </PopoverDescription>
                 </PopoverContent>
               </Popover>
             </div>
 
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Analisis ini menguraikan faktor lingkungan, iklim, dan pasokan yang paling berkontribusi mendorong kenaikan (+) atau menahan penurunan (-) harga pasar.
-            </p>
-
-            <ShapWaterfall factors={activeForecast.shapContributions} />
+            {activeForecast.isFallback ? (
+              <div className="p-5 rounded-xl border border-amber-300/70 bg-amber-50/70 dark:bg-amber-950/30 dark:border-amber-800 space-y-2.5">
+                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>Rincian Faktor Belum Tersedia</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Untuk menjaga keakuratan informasi, uraian faktor pendorong tidak ditampilkan karena wilayah {activeForecast.province} saat ini memakai <strong>Acuan Pekan Terakhir</strong> (harga pasar cenderung datar atau belum lolos uji kelayakan AI).
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Pilih provinsi sentra AI aktif seperti <strong>Jawa Timur</strong>, <strong>Jawa Tengah</strong>, <strong>Gorontalo</strong>, <strong>Sulawesi Tengah</strong>, atau <strong>Sumatera Barat</strong> di atas untuk melihat uraian lengkapnya.
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Faktor yang paling memengaruhi prakiraan harga beras produsen: nilai bertanda (+) mendorong perkiraan naik, sedangkan (-) menahan kenaikan.
+                </p>
+                <ShapWaterfall factors={activeForecast.shapContributions} />
+                <div className="pt-2 border-t border-border/50 flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Sumber: Data resmi PIHPS BI, BPS, Bapanas, dan catatan cuaca ERA5.</span>
+                </div>
+              </>
+            )}
           </Card>
         </div>
       </div>
-
-      {/* Jembatan Aksi: Hubungkan Prakiraan ke Rencana Transaksi
-      <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
-              Tindakan Berdasarkan Tren
-            </span>
-            <h4 className="text-base font-bold text-foreground flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              Manfaatkan Prakiraan Harga untuk Perencanaan Panen
-            </h4>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-              Harga di {activeForecast.province} diproyeksikan berkisar antara {formatRupiah(activeForecast.confidenceInterval80[0])} – {formatRupiah(activeForecast.confidenceInterval80[1])} per kg pada {activeForecast.targetDate}. Amankan kesepakatan pasokan sejak dini sebelum masa panen raya tiba.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
-            <Button
-              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial rounded-lg"
-              render={
-                <Link href="/petani/jual">
-                  Daftarkan Rencana Panen
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              }
-            />
-            <Button
-              variant="outline"
-              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
-              render={
-                <Link href="/pembeli/katalog">
-                  <ShoppingBag className="w-3.5 h-3.5 text-muted-foreground" />
-                  Jelajahi Katalog Pembeli
-                </Link>
-              }
-            />
-          </div>
-        </div>
-      </Card> */}
     </PageContainer>
   );
 }

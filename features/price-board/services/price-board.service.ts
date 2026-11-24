@@ -1,3 +1,4 @@
+import priceBoardJson from "@/data/ai/price_board_4tier.json";
 import {
   SupplyChainComparison,
   HistoricalTrendPoint,
@@ -5,27 +6,49 @@ import {
   calculateMargin,
 } from "../domain/price-chain";
 
-const REGIONAL_CHAIN_DATA: Record<string, { farmer: number; miller: number; wholesale: number; retail: number }> = {
-  "Jawa Barat": { farmer: 12850, miller: 14420, wholesale: 14650, retail: 15400 },
-  "Jawa Tengah": { farmer: 12600, miller: 14200, wholesale: 14450, retail: 15200 },
-  "Jawa Timur": { farmer: 12730, miller: 14380, wholesale: 14590, retail: 15350 },
-  "Nasional": { farmer: 12700, miller: 14300, wholesale: 14550, retail: 15300 },
+interface RawTrendPoint {
+  week: string;
+  weekStart: string;
+  farmerPrice: number;
+  millerPrice: number;
+  wholesalePrice: number;
+  retailPrice: number;
+}
+
+interface RawBoardProvince {
+  province: string;
+  farmerEquivPrice: number;
+  millerPrice: number;
+  wholesalePrice: number;
+  retailPrice: number;
+  modernPrice: number;
+  isDirectProducer: boolean;
+  trend12w: RawTrendPoint[];
+}
+
+const BOARD_PROVINCES = priceBoardJson.provinces as Record<string, RawBoardProvince>;
+
+export const PRICE_BOARD_META = {
+  generatedAtUtc: priceBoardJson.generatedAtUtc,
+  updatedAt: priceBoardJson.updatedAt,
+  primaryCommodity: priceBoardJson.primaryCommodity,
 };
 
-const BASE_TREND_WEEKS: HistoricalTrendPoint[] = [
-  { week: "Pekan 1", farmerPrice: 12400, millerPrice: 13950, retailPrice: 14900 },
-  { week: "Pekan 2", farmerPrice: 12450, millerPrice: 14000, retailPrice: 14950 },
-  { week: "Pekan 3", farmerPrice: 12500, millerPrice: 14100, retailPrice: 15000 },
-  { week: "Pekan 4", farmerPrice: 12520, millerPrice: 14150, retailPrice: 15050 },
-  { week: "Pekan 5", farmerPrice: 12580, millerPrice: 14200, retailPrice: 15100 },
-  { week: "Pekan 6", farmerPrice: 12600, millerPrice: 14250, retailPrice: 15150 },
-  { week: "Pekan 7", farmerPrice: 12650, millerPrice: 14280, retailPrice: 15200 },
-  { week: "Pekan 8", farmerPrice: 12680, millerPrice: 14320, retailPrice: 15250 },
-  { week: "Pekan 9", farmerPrice: 12700, millerPrice: 14350, retailPrice: 15280 },
-  { week: "Pekan 10", farmerPrice: 12710, millerPrice: 14360, retailPrice: 15300 },
-  { week: "Pekan 11", farmerPrice: 12720, millerPrice: 14370, retailPrice: 15320 },
-  { week: "Pekan 12", farmerPrice: 12730, millerPrice: 14380, retailPrice: 15350 },
-];
+export const AVAILABLE_BOARD_REGIONS: string[] = Object.keys(BOARD_PROVINCES).sort((a, b) => {
+  if (a === "Nasional") return -1;
+  if (b === "Nasional") return 1;
+  return a.localeCompare(b, "id");
+});
+
+function resolveBoardRegion(region: string): RawBoardProvince {
+  return BOARD_PROVINCES[region] || BOARD_PROVINCES["Jawa Barat"] || BOARD_PROVINCES["Nasional"];
+}
+
+function sliceWeeksCount(period: string): number {
+  if (period.includes("4 Pekan") || period.includes("30 Hari")) return 4;
+  if (period.includes("8 Pekan")) return 8;
+  return 12;
+}
 
 export class PriceBoardService {
   static getSupplyChainComparison(
@@ -33,37 +56,53 @@ export class PriceBoardService {
     region: string = "Jawa Barat",
     period: string = "12 Pekan Terakhir"
   ): SupplyChainComparison {
-    const prices = REGIONAL_CHAIN_DATA[region] || REGIONAL_CHAIN_DATA["Jawa Barat"];
+    const provData = resolveBoardRegion(region);
+    const use30dAvg = period.includes("30 Hari");
+    const last4 = provData.trend12w.slice(-4);
 
-    // Commodity multiplier (premium has higher margin)
-    const multiplier = commodity.includes("Premium") ? 1.08 : 1.0;
+    let farmerBase = provData.farmerEquivPrice;
+    let millerBase = provData.millerPrice;
+    let wholesaleBase = provData.wholesalePrice;
+    let retailBase = provData.retailPrice;
 
-    const farmerPrice = Math.round(prices.farmer * multiplier);
-    const millerPrice = Math.round(prices.miller * multiplier);
-    const wholesalePrice = Math.round(prices.wholesale * multiplier);
-    const retailPrice = Math.round(prices.retail * multiplier);
+    if (use30dAvg && last4.length > 0) {
+      farmerBase = Math.round(last4.reduce((s, r) => s + r.farmerPrice, 0) / last4.length);
+      millerBase = Math.round(last4.reduce((s, r) => s + r.millerPrice, 0) / last4.length);
+      wholesaleBase = Math.round(last4.reduce((s, r) => s + r.wholesalePrice, 0) / last4.length);
+      retailBase = Math.round(last4.reduce((s, r) => s + r.retailPrice, 0) / last4.length);
+    }
+
+    // Commodity view adjustment
+    const isPremium = commodity.includes("Premium");
+    const isGkpView = commodity.includes("GKP");
+    const scale = isPremium ? 1.08 : isGkpView ? 0.5338 : 1.0;
+
+    const farmerPrice = Math.round(farmerBase * scale);
+    const millerPrice = Math.round(millerBase * scale);
+    const wholesalePrice = Math.round(wholesaleBase * scale);
+    const retailPrice = Math.round(retailBase * scale);
 
     const { marginAmount, marginPercent } = calculateMargin(farmerPrice, retailPrice);
     const farmerSharePercent = calculateFarmerShare(farmerPrice, retailPrice);
 
     return {
       commodity,
-      region,
+      region: provData.province,
       period,
       farmerPrice,
       retailPrice,
       marginAmount,
       marginPercent,
       farmerSharePercent,
-      updatedAt: "20 November 2026",
+      updatedAt: priceBoardJson.updatedAt,
       levels: [
         {
           id: "petani",
-          level: "Petani Gabah (Setara Beras)",
+          level: isGkpView ? "Petani Gabah (GKP)" : "Petani Gabah (Setara Beras)",
           price: farmerPrice,
           unit: "Rp/kg",
-          note: "Konversi rendemen gabah ke beras ~53%",
-          description: "Nilai yang diterima petani setelah dikonversi ke takaran ekuivalen beras.",
+          note: "Konversi rendemen SKGB 53,38% & rasio empiris Bapanas",
+          description: "Nilai ekuivalen beras yang diterima petani sebelum penggilingan.",
           category: "petani",
         },
         {
@@ -71,8 +110,10 @@ export class PriceBoardService {
           level: "Penggilingan Padi (Produsen)",
           price: millerPrice,
           unit: "Rp/kg",
-          note: `Marjin pengolahan +Rp${(millerPrice - farmerPrice).toLocaleString("id-ID")}`,
-          description: "Harga jual beras setelah proses pengeringan, penggilingan, dan pengemasan awal.",
+          note: `Selisih tahap pengolahan +Rp${Math.max(0, millerPrice - farmerPrice).toLocaleString("id-ID")}`,
+          description: provData.isDirectProducer
+            ? "Harga jual Beras Medium I di tingkat produsen (PIHPS BI)."
+            : "Estimasi setara produsen dari Pasar Tradisional PIHPS.",
           category: "penggilingan",
         },
         {
@@ -80,32 +121,34 @@ export class PriceBoardService {
           level: "Pedagang Besar / Pasar Induk",
           price: wholesalePrice,
           unit: "Rp/kg",
-          note: `Logistik & bongkar muat +Rp${(wholesalePrice - millerPrice).toLocaleString("id-ID")}`,
-          description: "Harga transaksi volume besar di pasar induk perdagangan antardaerah.",
+          note: `Marjin perdagangan grosir +Rp${Math.max(0, wholesalePrice - millerPrice).toLocaleString("id-ID")}`,
+          description: "Harga transaksi volume besar di tingkat pedagang besar PIHPS.",
           category: "grosir",
         },
         {
           id: "konsumen",
-          level: "Pasar Eceran Konsumen (PIHPS)",
+          level: "Pasar Eceran Tradisional (PIHPS)",
           price: retailPrice,
           unit: "Rp/kg",
-          note: `Marjin ritel +Rp${(retailPrice - wholesalePrice).toLocaleString("id-ID")}`,
-          description: "Harga akhir yang dibayarkan masyarakat di pasar tradisional dan modern.",
+          note: `Marjin pasar eceran +Rp${Math.max(0, retailPrice - wholesalePrice).toLocaleString("id-ID")}`,
+          description: "Harga akhir yang dibayarkan konsumen di pasar tradisional PIHPS.",
           category: "konsumen",
         },
       ],
     };
   }
 
-  static getHistoricalTrends(region: string = "Jawa Barat"): HistoricalTrendPoint[] {
-    const prices = REGIONAL_CHAIN_DATA[region] || REGIONAL_CHAIN_DATA["Jawa Barat"];
-    const delta = prices.farmer - 12730;
-
-    return BASE_TREND_WEEKS.map((point) => ({
-      ...point,
-      farmerPrice: point.farmerPrice + delta,
-      millerPrice: point.millerPrice + delta,
-      retailPrice: point.retailPrice + delta,
+  static getHistoricalTrends(
+    region: string = "Jawa Barat",
+    period: string = "12 Pekan Terakhir"
+  ): HistoricalTrendPoint[] {
+    const provData = resolveBoardRegion(region);
+    const nWeeks = sliceWeeksCount(period);
+    return provData.trend12w.slice(-nWeeks).map((point) => ({
+      week: point.week,
+      farmerPrice: point.farmerPrice,
+      millerPrice: point.millerPrice,
+      retailPrice: point.retailPrice,
     }));
   }
 }
