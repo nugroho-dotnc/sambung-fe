@@ -33,7 +33,8 @@ export default function PublicNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/95 backdrop-blur-md">
+    <>
+      <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/95 backdrop-blur-md">
       <nav
         aria-label="Navigasi publik"
         className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -81,16 +82,12 @@ export default function PublicNavbar() {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-border/80 space-y-3">
-                <Button
-                  className="w-full min-h-11 font-semibold text-xs cursor-pointer"
-                  render={
-                    <Link href="/masuk" onClick={() => setMobileMenuOpen(false)}>
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Masuk / Mulai Bertransaksi
-                    </Link>
-                  }
-                />
+              {/* Mode Terang-Gelap di dalam hamburger menu di mobile */}
+              <div className="pt-4 border-t border-border/80 flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  Tema Tampilan
+                </span>
+                <ThemeToggle />
               </div>
             </SheetContent>
           </Sheet>
@@ -125,8 +122,8 @@ export default function PublicNavbar() {
           })}
         </div>
 
+        {/* Tombol Masuk selalu tampil di navbar header */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <ThemeToggle />
           <Button
             size="sm"
             nativeButton={false}
@@ -141,5 +138,11 @@ export default function PublicNavbar() {
         </div>
       </nav>
     </header>
+
+    {/* Mode Terang-Gelap di Kanan Bawah untuk Desktop */}
+    <div className="fixed bottom-6 right-6 z-50 hidden md:block shadow-lg rounded-xl">
+      <ThemeToggle />
+    </div>
+  </>
   );
 }
