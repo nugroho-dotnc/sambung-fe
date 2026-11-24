@@ -1,3 +1,11 @@
+/**
+ * Price reference service for contract & catalog traffic-light checks.
+ * Backed by verified fair_price_params.json (34 provinces + Nasional).
+ */
+
+import fairPriceJson from "@/data/ai/fair_price_params.json";
+import { getProvinceReferenceEntry } from "@/features/fair-price/domain/calculate-fair-price";
+
 export interface PriceReference {
   grainType: "GKP" | "GKG";
   lowerBound: number;
@@ -9,39 +17,56 @@ export interface PriceReference {
   updatedAt: string;
 }
 
-const REGIONAL_BENCHMARKS: Record<string, { GKP: { lower: number; upper: number }; GKG: { lower: number; upper: number } }> = {
-  default: {
-    GKP: { lower: 6800, upper: 7400 },
-    GKG: { lower: 8000, upper: 8700 },
-  },
-  Subang: {
-    GKP: { lower: 6900, upper: 7450 },
-    GKG: { lower: 8100, upper: 8800 },
-  },
-  Karawang: {
-    GKP: { lower: 7000, upper: 7600 },
-    GKG: { lower: 8200, upper: 8900 },
-  },
-  Indramayu: {
-    GKP: { lower: 6750, upper: 7350 },
-    GKG: { lower: 7950, upper: 8600 },
-  },
+const REGION_TO_PROVINCE: Record<string, string> = {
+  subang: "Jawa Barat",
+  karawang: "Jawa Barat",
+  indramayu: "Jawa Barat",
+  cirebon: "Jawa Barat",
+  majalengka: "Jawa Barat",
+  sragen: "Jawa Tengah",
+  demak: "Jawa Tengah",
+  grobogan: "Jawa Tengah",
+  pati: "Jawa Tengah",
+  ngawi: "Jawa Timur",
+  lamongan: "Jawa Timur",
+  jombang: "Jawa Timur",
+  kediri: "Jawa Timur",
+  banyuwangi: "Jawa Timur",
+  bone: "Sulawesi Selatan",
+  sidrap: "Sulawesi Selatan",
+  pinrang: "Sulawesi Selatan",
 };
 
+function resolveProvinceName(region: string): string {
+  const raw = (region || "").trim();
+  const provinces = fairPriceJson.provinces as Record<string, unknown>;
+  if (raw in provinces) return raw;
+
+  const lower = raw.toLowerCase();
+  for (const key of Object.keys(provinces)) {
+    if (key.toLowerCase() === lower) return key;
+  }
+  for (const [alias, prov] of Object.entries(REGION_TO_PROVINCE)) {
+    if (lower.includes(alias)) return prov;
+  }
+  return "Nasional";
+}
+
 export class PriceReferenceService {
-  static getReference(grainType: "GKP" | "GKG" = "GKP", region: string = "Subang"): PriceReference {
-    const matched = REGIONAL_BENCHMARKS[region] || REGIONAL_BENCHMARKS.default;
-    const bounds = grainType === "GKG" ? matched.GKG : matched.GKP;
+  static getReference(grainType: "GKP" | "GKG" = "GKP", region: string = "Jawa Barat"): PriceReference {
+    const resolvedProv = resolveProvinceName(region);
+    const entry = getProvinceReferenceEntry(resolvedProv);
+    const bounds = grainType === "GKG" ? entry.GKG : entry.GKP;
 
     return {
       grainType,
-      lowerBound: bounds.lower,
-      upperBound: bounds.upper,
-      medianPrice: Math.round((bounds.lower + bounds.upper) / 2),
-      toleranceDelta: 0.03, // 3%
-      region,
-      sourceNote: "Berdasarkan pemantauan pasar berkala dan acuan Badan Pangan Nasional",
-      updatedAt: "20 November 2026",
+      lowerBound: bounds.lowerBound,
+      upperBound: bounds.upperBound,
+      medianPrice: bounds.medianPrice,
+      toleranceDelta: 0.03, // Toleransi batas awal 3%
+      region: resolvedProv,
+      sourceNote: `${entry.referenceSource} + rasio empiris Bapanas`,
+      updatedAt: fairPriceJson.updatedAt,
     };
   }
 }

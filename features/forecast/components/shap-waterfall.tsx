@@ -1,20 +1,38 @@
 "use client";
 
-import { CloudRain, Sprout, Landmark, Truck } from "lucide-react";
-import type { ShapFactor } from "../domain/forecast-data";
+import { CloudRain, Sprout, Landmark, Compass, TrendingUp } from "lucide-react";
+import type { ShapFactor, ShapCategory } from "../domain/forecast-data";
 
-const CATEGORY_ICONS = {
+const CATEGORY_ICONS: Record<ShapCategory, typeof Sprout> = {
   cuaca: CloudRain,
-  panen: Sprout,
+  pasokan: Sprout,
   kebijakan: Landmark,
-  logistik: Truck,
+  sentra: Compass,
+  harga_lokal: TrendingUp,
+};
+
+const CATEGORY_LABELS: Record<ShapCategory, string> = {
+  cuaca: "Cuaca & Iklim",
+  pasokan: "Panen & Pasokan",
+  kebijakan: "HPP & Musiman",
+  sentra: "Sentra Produsen",
+  harga_lokal: "Dinamika Pasar",
 };
 
 export function ShapWaterfall({ factors }: { factors: ShapFactor[] }) {
+  if (!factors || factors.length === 0) {
+    return (
+      <div className="p-4 rounded-xl border border-dashed border-border/80 bg-muted/30 text-xs text-muted-foreground leading-relaxed">
+        Rincian faktor pendorong tidak ditampilkan untuk wilayah yang sedang menggunakan acuan harga pekan terakhir.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       {factors.map((factor, idx) => {
         const Icon = CATEGORY_ICONS[factor.category] || Sprout;
+        const label = CATEGORY_LABELS[factor.category] || factor.category;
         const isPushUp = factor.impact > 0;
 
         return (
@@ -38,7 +56,7 @@ export function ShapWaterfall({ factors }: { factors: ShapFactor[] }) {
                     {factor.feature}
                   </h4>
                   <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">
-                    Kategori: {factor.category}
+                    Kategori: {label}
                   </span>
                 </div>
               </div>

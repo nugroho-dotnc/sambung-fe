@@ -7,12 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import {
   SEED_PROVINCIAL_DATA,
-  type ProvincialPriceComparison,
+  SPATIAL_META,
 } from "@/features/region-map/domain/map-types";
 import { IndonesiaSvgMap } from "@/features/region-map/components/indonesia-svg-map";
 
 export default function PriceMapSection() {
-  const [selectedProvince, setSelectedProvince] = useState<string>("Jawa Barat");
+  const [selectedProvince, setSelectedProvince] = useState<string>("Jawa Timur");
 
   const minPriceItem = useMemo(() => {
     return SEED_PROVINCIAL_DATA.reduce(
@@ -42,14 +42,14 @@ export default function PriceMapSection() {
               Geospasial Indonesia
             </span>
             <Badge variant="outline" className="text-xs font-bold">
-              Peta Disparitas
+              PIHPS {SPATIAL_META.snapshotLabel}
             </Badge>
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-1">
-            Sebaran Harga Gabah di 34 Provinsi
+            Sebaran Harga Beras Medium I di 34 Provinsi
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Klik provinsi pada peta untuk melihat deviasi harga lokal terhadap median pasar nasional.
+            Klik provinsi pada peta untuk melihat deviasi harga Pasar Tradisional terhadap median pasar nasional ({formatRupiah(SPATIAL_META.nationalMedianPrice)}/kg).
           </p>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function PriceMapSection() {
             <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
               <TrendingUp className="w-4 h-4" />
               <p className="text-xs font-bold uppercase tracking-wider">
-                Harga Tertinggi (Wilayah Konsumen)
+                Harga Tertinggi (Wilayah Defisit)
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
@@ -109,13 +109,13 @@ export default function PriceMapSection() {
               </p>
             </div>
             <p className="text-sm font-bold text-foreground">
-              Selisih Wilayah Antarpulau
+              Selisih Wilayah Terendah vs Tertinggi
             </p>
             <p className="text-2xl font-black text-foreground font-display tabular-nums">
               {disparityPercent}%
             </p>
             <p className="text-xs text-muted-foreground">
-              Dipengaruhi jarak angkut & anomali iklim
+              Dipengaruhi neraca pasokan daerah &amp; kondisi cuaca musiman
             </p>
           </div>
         </div>

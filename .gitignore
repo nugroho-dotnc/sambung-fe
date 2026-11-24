@@ -43,4 +43,6 @@ next-env.d.ts
 docs
 
 package-lock.json
+
+/ai/
 pnpm-lock.yaml

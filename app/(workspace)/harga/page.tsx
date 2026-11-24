@@ -1,23 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import {
-  Download,
-  Percent,
-  Sprout,
-  Building2,
-  Truck,
-  Store,
-  ChevronDown,
-  Info,
-  TrendingUp,
-  CheckCircle2,
-  ArrowRight,
-  Scale,
-} from "lucide-react";
+import { Download, Sprout, Building2, Truck, Store, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   Popover,
   PopoverContent,
@@ -34,27 +20,26 @@ import {
 } from "@/components/ui/select";
 import { PageContainer } from "@/components/shared/page-container";
 import { PageHeader } from "@/components/shared/page-header";
-import { PriceBoardService } from "@/features/price-board/services/price-board.service";
 import {
-  generateSupplyChainCsv,
-  SupplyChainLevel,
-} from "@/features/price-board/domain/price-chain";
+  PriceBoardService,
+  AVAILABLE_BOARD_REGIONS,
+  PRICE_BOARD_META,
+} from "@/features/price-board/services/price-board.service";
+import { generateSupplyChainCsv } from "@/features/price-board/domain/price-chain";
 import { PriceChainChart } from "@/features/price-board/components/price-chain-chart";
 import { formatRupiah } from "@/features/offers/components/offer-summary";
 import { useMobile } from "@/hooks/use-mobile";
 
 const COMMODITY_OPTIONS = [
-  { value: "Beras Medium I", label: "Beras Medium I (Standar)" },
-  { value: "Beras Premium", label: "Beras Premium" },
+  { value: "Beras Medium I", label: "Beras Medium I (Standar PIHPS)" },
+  { value: "Beras Premium", label: "Beras Premium (Estimasi)" },
   { value: "Gabah Kering Panen (GKP)", label: "Gabah Kering Panen (GKP)" },
 ];
 
-const REGION_OPTIONS = [
-  { value: "Jawa Barat", label: "Provinsi Jawa Barat (Subang/Karawang)" },
-  { value: "Jawa Tengah", label: "Provinsi Jawa Tengah" },
-  { value: "Jawa Timur", label: "Provinsi Jawa Timur" },
-  { value: "Nasional", label: "Rata-rata Nasional (Bapanas)" },
-];
+const REGION_OPTIONS = AVAILABLE_BOARD_REGIONS.map((prov) => ({
+  value: prov,
+  label: prov === "Nasional" ? "Rata-rata Nasional (PIHPS)" : prov,
+}));
 
 const PERIOD_OPTIONS = [
   { value: "12 Pekan Terakhir", label: "12 Pekan Terakhir" },
@@ -72,7 +57,7 @@ const LEVEL_ICONS: Record<string, typeof Sprout> = {
 export default function PriceBoardPage() {
   const isMobile = useMobile();
   const [commodity, setCommodity] = useState<string>("Beras Medium I");
-  const [region, setRegion] = useState<string>("Jawa Barat");
+  const [region, setRegion] = useState<string>("Jawa Timur");
   const [period, setPeriod] = useState<string>("12 Pekan Terakhir");
 
   const comparison = useMemo(() => {
@@ -80,8 +65,8 @@ export default function PriceBoardPage() {
   }, [commodity, region, period]);
 
   const trends = useMemo(() => {
-    return PriceBoardService.getHistoricalTrends(region);
-  }, [region]);
+    return PriceBoardService.getHistoricalTrends(region, period);
+  }, [region, period]);
 
   function handleExportCsv() {
     const csvContent = generateSupplyChainCsv(comparison);
@@ -102,7 +87,7 @@ export default function PriceBoardPage() {
     <PageContainer>
       <PageHeader
         title="Papan Rantai Harga 2 Sisi"
-        description="Ikuti pembentukan nilai komoditas dari petani gabah hingga pasar konsumen eceran. Bandingkan margin distribusi secara transparan."
+        description={`Ikuti pembentukan nilai komoditas dari petani gabah hingga pasar konsumen eceran di 34 provinsi + Nasional (data PIHPS BI per ${PRICE_BOARD_META.updatedAt}).`}
         actions={
           <Button
             variant="outline"
@@ -144,7 +129,7 @@ export default function PriceBoardPage() {
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground block">
-              Wilayah Pembanding
+              Wilayah Pembanding (34 Provinsi)
             </label>
             <Select
               items={REGION_OPTIONS}
@@ -199,13 +184,13 @@ export default function PriceBoardPage() {
           <div className="border-b border-border/60 pb-3.5 flex items-start justify-between gap-3">
             <div>
               <span className="text-xs font-semibold text-primary">
-                Rantai Pasok Gabah & Beras
+                Rantai Pasok Gabah &amp; Beras
               </span>
               <h2 className="type-subheading text-foreground font-bold mt-0.5">
                 Pembentukan Harga dari Petani ke Konsumen
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Harga per kilogram ekuivalen beras medium di wilayah {region}.
+                Harga per kilogram di wilayah {region} per {comparison.updatedAt}.
               </p>
             </div>
             <Popover>
@@ -221,7 +206,7 @@ export default function PriceBoardPage() {
                   Tahapan Rantai Pasok
                 </PopoverTitle>
                 <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
-                  Menampilkan runutan pembentukan harga dari petani di sawah, pengeringan dan penggilingan pabrik, distribusi logistik pedagang grosir, hingga tiba di pasar eceran konsumen.
+                  Menampilkan runutan harga aktual PIHPS BI dari nilai setara petani, produsen penggilingan, pedagang besar/grosir, hingga pasar tradisional konsumen.
                 </PopoverDescription>
               </PopoverContent>
             </Popover>
@@ -232,7 +217,7 @@ export default function PriceBoardPage() {
               <thead className="bg-muted/40 border-b border-border/70 text-xs font-semibold text-muted-foreground">
                 <tr>
                   <th className="py-3 px-4">Tingkat Rantai</th>
-                  <th className="py-3 px-4">Keterangan Biaya</th>
+                  <th className="py-3 px-4">Keterangan Nilai</th>
                   <th className="py-3 px-4 text-right">Harga Acuan</th>
                 </tr>
               </thead>
@@ -289,14 +274,14 @@ export default function PriceBoardPage() {
               <PopoverContent align="end" className="w-80 text-xs space-y-2.5 p-3.5">
                 <PopoverTitle className="font-bold text-foreground text-xs flex items-center gap-1.5">
                   <Info className="w-3.5 h-3.5 text-primary shrink-0" />
-                  Porsi Nilai & Marjin Rantai Pasok
+                  Porsi Nilai &amp; Marjin Rantai Pasok
                 </PopoverTitle>
                 <PopoverDescription className="text-muted-foreground text-xs leading-relaxed space-y-1.5">
                   <p>
-                    Selisih nilai sebesar {formatRupiah(comparison.marginAmount)}/kg mencakup biaya pengeringan padi, penggilingan, susut mutu alami, transportasi antarkabupaten, dan kemasan ritel.
+                    Selisih nilai sebesar {formatRupiah(comparison.marginAmount)}/kg mencerminkan selisih pengolahan gabah ke beras, susut mutu alami, dan marjin perdagangan antartingkat pasar.
                   </p>
                   <p className="pt-1.5 border-t border-border/50 text-[11px]">
-                    Persentase bagian petani dihitung dari perbandingan harga gabah di sawah terhadap harga beras di pasar eceran: (Harga Petani ÷ Harga Konsumen) × 100%.
+                    Persentase bagian petani dihitung dari perbandingan nilai petani setara beras terhadap harga beras eceran: (Harga Petani ÷ Harga Konsumen) × 100%.
                   </p>
                 </PopoverDescription>
               </PopoverContent>
@@ -331,7 +316,7 @@ export default function PriceBoardPage() {
         </Card>
       </div>
 
-      {/* 12-Week Price Transmission Trend Chart */}
+      {/* Historical Price Transmission Trend Chart */}
       <Card className="p-6 sm:p-7 space-y-4 rounded-2xl bg-card mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3.5">
           <div>
@@ -339,7 +324,7 @@ export default function PriceBoardPage() {
               Pergerakan Harga Rantai Pasok ({period})
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Transmisi pergerakan harga dari tingkat petani, penggilingan padi, hingga pasar konsumen di {region}.
+              Transmisi pergerakan harga aktual PIHPS dari tingkat setara petani, penggilingan padi, hingga pasar konsumen di {region}.
             </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
@@ -359,7 +344,7 @@ export default function PriceBoardPage() {
                   Tentang Data Historis
                 </PopoverTitle>
                 <PopoverDescription className="text-muted-foreground text-xs leading-relaxed">
-                  Grafik ini memantau transmisi pergerakan harga dari tingkat petani, penggilingan padi, hingga pasar konsumen di {region} dalam rentang waktu yang dipilih.
+                  Grafik ini memantau transmisi pergerakan harga mingguan PIHPS BI di {region} pada rentang pengamatan yang dipilih.
                 </PopoverDescription>
               </PopoverContent>
             </Popover>
@@ -368,45 +353,6 @@ export default function PriceBoardPage() {
 
         <PriceChainChart data={trends} />
       </Card>
-
-      {/* Jembatan Aksi: Hubungkan Rantai Pasok ke Simulasi & Jual */}
-      {/* <Card className="p-6 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 mb-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 block">
-              Rekomendasi Tindakan
-            </span>
-            <h4 className="text-base font-bold text-foreground flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              Ingin Mengetahui Harga Bersih yang Adil untuk Gabah Anda?
-            </h4>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-              Gunakan kalkulator harga wajar untuk menghitung nilai gabah Anda berdasarkan kadar air dan rendemen riil sebelum menetapkan harga di katalog pasar.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
-            <Button
-              className="font-semibold text-xs min-h-10 px-4 cursor-pointer gap-2 flex-1 sm:flex-initial rounded-lg"
-              render={
-                <Link href="/harga-wajar">
-                  <Scale className="w-4 h-4" />
-                  {isMobile ? "Kalkulator Harga" : "Hitung di Kalkulator Harga Wajar"}
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              }
-            />
-            <Button
-              variant="outline"
-              className="text-xs min-h-10 px-3 cursor-pointer gap-1.5 flex-1 sm:flex-initial rounded-lg"
-              render={
-                <Link href="/petani/jual">
-                  {isMobile ? "Daftar Panen" : "Daftarkan Hasil Panen"}
-                </Link>
-              }
-            />
-          </div>
-        </div>
-      </Card> */}
     </PageContainer>
   );
 }
