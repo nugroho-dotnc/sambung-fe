@@ -1,7 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Sprout } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide footer on full-page map route
+  if (pathname?.startsWith("/peta-harga")) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-border/80 bg-card py-8 text-xs text-muted-foreground mt-auto">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
