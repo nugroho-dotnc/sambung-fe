@@ -600,8 +600,8 @@ export default function FullPriceMap() {
         </div>
       </div>
 
-      {/* Floating Zoom & Pan Controls (Bottom-Right) */}
-      <div className="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 z-20 pointer-events-auto flex flex-col gap-1.5">
+      {/* Floating Zoom & Pan Controls (Bottom-Right, di atas ThemeToggle pada desktop) */}
+      <div className="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 md:bottom-20 md:right-6 z-20 pointer-events-auto flex flex-col gap-1.5">
         <Button
           variant="outline"
           size="icon"
